@@ -1,0 +1,107 @@
+
+
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "retry": "Réessayer",
+    "close": "Fermer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "finish": "Terminer",
+    "optional": "Facultatif"
+  },
+  "home": {
+    "buttons": {
+      "findReseller": "Trouver un revendeur",
+      "findResellerDesc": "Localisez le point de vente le plus proche",
+      "order": "Commander",
+      "orderDesc": "Commandez votre livraison de gaz",
+      "promotions": "Promotions",
+      "promotionsDesc": "Découvrez nos offres du moment",
+      "documents": "Documents",
+      "documentsDesc": "Guides, PAMF et ressources"
+    }
+  },
+  "resellers": {
+    "title": "Revendeurs Vitogaz",
+    "found": "revendeur(s) trouvé(s)",
+    "loading": "Chargement de la carte...",
+    "noResults": "Aucun revendeur trouvé",
+    "call": "Appeler",
+    "directions": "Itinéraire",
+    "filters": {
+      "all": "Tous",
+      "official": "Points officiels",
+      "partner": "Partenaires"
+    }
+  },
+  "order": {
+    "title": "Commander votre gaz",
+    "subtitle": "Livraison rapide à domicile",
+    "contactQuick": "Contact rapide",
+    "whatsapp": "Commander sur WhatsApp",
+    "call": "Appeler maintenant",
+    "whatsappMessage": "Bonjour, je souhaite commander du gaz Vitogaz via l'application Vito.",
+    "formTitle": "Formulaire de commande",
+    "name": "Nom complet",
+    "namePlaceholder": "Votre nom",
+    "phone": "Téléphone",
+    "address": "Adresse de livraison",
+    "addressPlaceholder": "Quartier, rue, repères...",
+    "quantity": "Quantité",
+    "notes": "Notes supplémentaires",
+    "notesPlaceholder": "Instructions de livraison, étage, etc.",
+    "submit": "Envoyer la commande",
+    "deliveryInfo": {
+      "title": "Informations de livraison",
+      "zones": "Zones de livraison",
+      "hours": "Horaires",
+      "payment": "Paiement"
+    }
+  },
+  "promotions": {
+    "title": "Promotions",
+    "active": "Offres actives",
+    "expired": "Expirées",
+    "validUntil": "Valable jusqu'au",
+    "details": "Voir les détails",
+    "notifications": {
+      "title": "Notifications",
+      "enable": "Activer les alertes promos",
+      "enabled": "Alertes activées",
+      "disabled": "Alertes désactivées"
+    }
+  },
+  "documents": {
+    "title": "Documents",
+    "categories": {
+      "pamf": "Prêt PAMF",
+      "safety": "Sécurité",
+      "guides": "Guides d'utilisation"
+    },
+    "download": "Télécharger",
+    "view": "Consulter",
+    "offline": "Disponible hors ligne"
+  },
+  "settings": {
+    "language": "Langue",
+    "theme": "Thème",
+    "themeLight": "Clair",
+    "themeDark": "Sombre",
+    "themeAuto": "Automatique"
+  },
+  "offline": {
+    "banner": "Vous êtes hors ligne. Certaines fonctionnalités sont limitées.",
+    "page": "Cette page nécessite une connexion Internet."
+  },
+  "install": {
+    "title": "Installer Vito",
+    "description": "Ajoutez Vito à votre écran d'accueil pour un accès rapide",
+    "install": "Installer",
+    "later": "Plus tard"
+  }
+}

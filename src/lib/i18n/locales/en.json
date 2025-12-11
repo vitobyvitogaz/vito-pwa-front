@@ -1,0 +1,105 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "optional": "Optional"
+  },
+  "home": {
+    "buttons": {
+      "findReseller": "Find a reseller",
+      "findResellerDesc": "Locate the nearest point of sale",
+      "order": "Order",
+      "orderDesc": "Order your gas delivery",
+      "promotions": "Promotions",
+      "promotionsDesc": "Discover our current offers",
+      "documents": "Documents",
+      "documentsDesc": "Guides, PAMF and resources"
+    }
+  },
+  "resellers": {
+    "title": "Vitogaz Resellers",
+    "found": "reseller(s) found",
+    "loading": "Loading map...",
+    "noResults": "No resellers found",
+    "call": "Call",
+    "directions": "Directions",
+    "filters": {
+      "all": "All",
+      "official": "Official points",
+      "partner": "Partners"
+    }
+  },
+  "order": {
+    "title": "Order your gas",
+    "subtitle": "Fast home delivery",
+    "contactQuick": "Quick contact",
+    "whatsapp": "Order via WhatsApp",
+    "call": "Call now",
+    "whatsappMessage": "Hello, I would like to order Vitogaz gas via the Vito app.",
+    "formTitle": "Order form",
+    "name": "Full name",
+    "namePlaceholder": "Your name",
+    "phone": "Phone",
+    "address": "Delivery address",
+    "addressPlaceholder": "District, street, landmarks...",
+    "quantity": "Quantity",
+    "notes": "Additional notes",
+    "notesPlaceholder": "Delivery instructions, floor, etc.",
+    "submit": "Send order",
+    "deliveryInfo": {
+      "title": "Delivery information",
+      "zones": "Delivery zones",
+      "hours": "Hours",
+      "payment": "Payment"
+    }
+  },
+  "promotions": {
+    "title": "Promotions",
+    "active": "Active offers",
+    "expired": "Expired",
+    "validUntil": "Valid until",
+    "details": "See details",
+    "notifications": {
+      "title": "Notifications",
+      "enable": "Enable promo alerts",
+      "enabled": "Alerts enabled",
+      "disabled": "Alerts disabled"
+    }
+  },
+  "documents": {
+    "title": "Documents",
+    "categories": {
+      "pamf": "PAMF Loan",
+      "safety": "Safety",
+      "guides": "User guides"
+    },
+    "download": "Download",
+    "view": "View",
+    "offline": "Available offline"
+  },
+  "settings": {
+    "language": "Language",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Automatic"
+  },
+  "offline": {
+    "banner": "You are offline. Some features are limited.",
+    "page": "This page requires an internet connection."
+  },
+  "install": {
+    "title": "Install Vito",
+    "description": "Add Vito to your home screen for quick access",
+    "install": "Install",
+    "later": "Later"
+  }
+}

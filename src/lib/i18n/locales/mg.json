@@ -1,0 +1,106 @@
+
+{
+  "common": {
+    "loading": "Mampiasa...",
+    "error": "Nisy olana",
+    "retry": "Avereno",
+    "close": "Hidio",
+    "save": "Tehirizo",
+    "cancel": "Ajanony",
+    "confirm": "Ekeo",
+    "back": "Miverina",
+    "next": "Manaraka",
+    "finish": "Vita",
+    "optional": "Tsy voatery"
+  },
+  "home": {
+    "buttons": {
+      "findReseller": "Hitady mpivarotra",
+      "findResellerDesc": "Ahitana ny toerana akaiky indrindra",
+      "order": "Hanafatra",
+      "orderDesc": "Manafatra ny fandefasana entana",
+      "promotions": "Fanamby",
+      "promotionsDesc": "Jereo ny tolotra ankehitriny",
+      "documents": "Antontan-taratasy",
+      "documentsDesc": "Torolalana, PAMF sy loharano"
+    }
+  },
+  "resellers": {
+    "title": "Mpivarotra Vitogaz",
+    "found": "mpivarotra hita",
+    "loading": "Mampiasa ny sarintany...",
+    "noResults": "Tsy misy mpivarotra hita",
+    "call": "Miantso",
+    "directions": "Lalana",
+    "filters": {
+      "all": "Rehetra",
+      "official": "Toerana ofisialy",
+      "partner": "Mpiara-miasa"
+    }
+  },
+  "order": {
+    "title": "Manafatra ny entana",
+    "subtitle": "Fandefasana haingana",
+    "contactQuick": "Fifandraisana haingana",
+    "whatsapp": "Manafatra amin'ny WhatsApp",
+    "call": "Miantso izao",
+    "whatsappMessage": "Manao ahoana, te hanafatra entana Vitogaz aho amin'ny alalan'ny Vito.",
+    "formTitle": "Taratasy fangatahana",
+    "name": "Anarana feno",
+    "namePlaceholder": "Ny anaranao",
+    "phone": "Telefaonina",
+    "address": "Adiresy fandefasana",
+    "addressPlaceholder": "Faritra, arabe, toerana...",
+    "quantity": "Isa",
+    "notes": "Fanamarihana fanampiny",
+    "notesPlaceholder": "Torolalana, rihana, sns.",
+    "submit": "Alefaso",
+    "deliveryInfo": {
+      "title": "Mombamomba ny fandefasana",
+      "zones": "Faritra fandefasana",
+      "hours": "Ora fiasana",
+      "payment": "Fandoavam-bola"
+    }
+  },
+  "promotions": {
+    "title": "Fanamby",
+    "active": "Tolotra mavitrika",
+    "expired": "Lany daty",
+    "validUntil": "Manan-kery hatramin'ny",
+    "details": "Jereo ny antsipiriany",
+    "notifications": {
+      "title": "Fampandrenesana",
+      "enable": "Alefaso ny fanairana",
+      "enabled": "Fanairana nalefa",
+      "disabled": "Fanairana tsy alefa"
+    }
+  },
+  "documents": {
+    "title": "Antontan-taratasy",
+    "categories": {
+      "pamf": "Fampindramam-bola PAMF",
+      "safety": "Fiarovana",
+      "guides": "Torolalana fampiasana"
+    },
+    "download": "Alefaso",
+    "view": "Jereo",
+    "offline": "Azo jerena tsy misy Internet"
+  },
+  "settings": {
+    "language": "Fiteny",
+    "theme": "Endrika",
+    "themeLight": "Mazava",
+    "themeDark": "Maizina",
+    "themeAuto": "Mandeha ho azy"
+  },
+  "offline": {
+    "banner": "Tsy misy Internet ianao. Voafetra ny sasany.",
+    "page": "Mila Internet io pejy io."
+  },
+  "install": {
+    "title": "Apetraho ny Vito",
+    "description": "Apetraho eo amin'ny efijery ho azo tsapain-tànana haingana",
+    "install": "Apetraho",
+    "later": "Taty aoriana"
+  }
+}
