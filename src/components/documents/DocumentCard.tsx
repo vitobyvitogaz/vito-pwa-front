@@ -19,7 +19,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
     hapticFeedback('medium')
     
     const link = window.document.createElement('a')
-    link.href = document.url
+    link.href = document.file_url  // ✅ CHANGÉ
     link.download = `${document.title}.pdf`
     link.click()
   }
@@ -27,6 +27,13 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
   const handleView = () => {
     hapticFeedback('light')
     onClick()
+  }
+
+  // Helper pour formater la taille du fichier
+  const formatFileSize = (bytes: number | null): string => {
+    if (!bytes) return 'N/A'
+    const mb = bytes / (1024 * 1024)
+    return `${mb.toFixed(1)} MB`
   }
 
   return (
@@ -58,7 +65,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
             <FileText className="w-6 h-6 text-primary" strokeWidth={1.5} />
           </div>
           
-          {document.offline && (
+          {document.is_offline && (  // ✅ CHANGÉ
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900 text-emerald-700 dark:text-emerald-400 text-xs font-medium font-sans">
               <Cloud className="w-3.5 h-3.5" strokeWidth={1.5} />
               <span>Disponible hors ligne</span>
@@ -72,17 +79,17 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
         </h3>
         
         <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-5 line-clamp-2 leading-relaxed font-sans">
-          {document.description}
+          {document.description || 'Aucune description disponible'}  {/* ✅ CHANGÉ (peut être null) */}
         </p>
 
         {/* Metadata */}
         <div className="flex items-center justify-between text-sm text-neutral-500 dark:text-neutral-500 mb-6 font-medium font-sans">
           <span className="flex items-center gap-1">
             <span className="w-1 h-1 rounded-full bg-neutral-300 dark:bg-neutral-700"></span>
-            {document.pages} pages
+            {document.page_count || 'N/A'} pages  {/* ✅ CHANGÉ */}
           </span>
           <span className="px-2.5 py-1 rounded-md bg-neutral-50 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400">
-            {document.size}
+            {formatFileSize(document.file_size)}  {/* ✅ CHANGÉ */}
           </span>
         </div>
 
