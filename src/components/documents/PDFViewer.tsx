@@ -20,9 +20,16 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({ document: doc, onClose }) 
 
   const handleDownload = () => {
     const link = document.createElement('a')
-    link.href = doc.url
+    link.href = doc.file_url  // ✅ CHANGÉ
     link.download = `${doc.title}.pdf`
     link.click()
+  }
+
+  // Helper pour formater la taille du fichier
+  const formatFileSize = (bytes: number | null): string => {
+    if (!bytes) return 'N/A'
+    const mb = bytes / (1024 * 1024)
+    return `${mb.toFixed(1)} MB`
   }
 
   return (
@@ -39,9 +46,9 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({ document: doc, onClose }) 
                 {doc.title}
               </h2>
               <div className="flex items-center gap-4 text-sm text-neutral-500 dark:text-neutral-400 mt-1.5 font-sans">
-                <span>{doc.pages} pages</span>
+                <span>{doc.page_count || 'N/A'} pages</span>  {/* ✅ CHANGÉ */}
                 <span className="w-1 h-1 rounded-full bg-neutral-300 dark:bg-neutral-700"></span>
-                <span>{doc.size}</span>
+                <span>{formatFileSize(doc.file_size)}</span>  {/* ✅ CHANGÉ */}
               </div>
             </div>
           </div>
@@ -69,7 +76,7 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({ document: doc, onClose }) 
         <div className="flex-1 overflow-hidden bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-950 p-6">
           <div className="w-full h-full rounded-xl overflow-hidden shadow-lg">
             <iframe
-              src={doc.url}
+              src={doc.file_url}  {/* ✅ CHANGÉ */}
               className="w-full h-full bg-white"
               title={doc.title}
             />
