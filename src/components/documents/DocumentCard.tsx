@@ -19,7 +19,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
     hapticFeedback('medium')
     
     const link = window.document.createElement('a')
-    link.href = document.file_url  // ✅ CHANGÉ
+    link.href = document.file_url
     link.download = `${document.title}.pdf`
     link.click()
   }
@@ -29,10 +29,14 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
     onClick()
   }
 
-  // Helper pour formater la taille du fichier
-  const formatFileSize = (bytes: number | null): string => {
-    if (!bytes) return 'N/A'
-    const mb = bytes / (1024 * 1024)
+  const formatFileSize = (size: number | string | null): string => {
+    if (!size) return 'N/A'
+    
+    // Si c'est déjà un string formaté (ex: "1.8 MB")
+    if (typeof size === 'string') return size
+    
+    // Si c'est un number en bytes
+    const mb = size / (1024 * 1024)
     return `${mb.toFixed(1)} MB`
   }
 
@@ -50,7 +54,6 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
         transform: isHovered ? 'translateY(-2px)' : 'translateY(0)'
       }}
     >
-      {/* Gradient overlay */}
       <div
         className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-accent/2 transition-opacity duration-500"
         style={{
@@ -59,13 +62,12 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
       />
 
       <div className="relative z-10">
-        {/* Header with icon and offline badge */}
         <div className="flex items-start justify-between mb-5">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
             <FileText className="w-6 h-6 text-primary" strokeWidth={1.5} />
           </div>
           
-          {document.is_offline && (  // ✅ CHANGÉ
+          {document.is_offline && (
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900 text-emerald-700 dark:text-emerald-400 text-xs font-medium font-sans">
               <Cloud className="w-3.5 h-3.5" strokeWidth={1.5} />
               <span>Disponible hors ligne</span>
@@ -73,27 +75,24 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
           )}
         </div>
 
-        {/* Title and description */}
         <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2.5 line-clamp-2 leading-snug tracking-tight group-hover:text-primary transition-colors duration-300 font-sans">
           {document.title}
         </h3>
         
         <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-5 line-clamp-2 leading-relaxed font-sans">
-          {document.description || 'Aucune description disponible'}  {/* ✅ CHANGÉ (peut être null) */}
+          {document.description || 'Aucune description disponible'}
         </p>
 
-        {/* Metadata */}
         <div className="flex items-center justify-between text-sm text-neutral-500 dark:text-neutral-500 mb-6 font-medium font-sans">
           <span className="flex items-center gap-1">
             <span className="w-1 h-1 rounded-full bg-neutral-300 dark:bg-neutral-700"></span>
-            {document.page_count || 'N/A'} pages  {/* ✅ CHANGÉ */}
+            {document.page_count || 'N/A'} pages
           </span>
           <span className="px-2.5 py-1 rounded-md bg-neutral-50 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400">
-            {formatFileSize(document.file_size)}  {/* ✅ CHANGÉ */}
+            {formatFileSize(document.file_size)}
           </span>
         </div>
 
-        {/* Actions */}
         <div className="flex gap-3">
           <button
             onClick={handleView}

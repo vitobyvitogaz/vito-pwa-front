@@ -4,7 +4,7 @@ export interface Document {
   description: string | null;
   category: 'pamf' | 'security' | 'guides';
   file_url: string;
-  file_size: number | null;
+  file_size: number | string | null;
   page_count: number | null;
   is_offline: boolean;
   download_count: number;

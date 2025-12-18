@@ -25,9 +25,14 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({ document: doc, onClose }) 
     link.click()
   }
 
-  const formatFileSize = (bytes: number | null): string => {
-    if (!bytes) return 'N/A'
-    const mb = bytes / (1024 * 1024)
+  const formatFileSize = (size: number | string | null): string => {
+    if (!size) return 'N/A'
+    
+    // Si c'est déjà un string formaté (ex: "1.8 MB")
+    if (typeof size === 'string') return size
+    
+    // Si c'est un number en bytes
+    const mb = size / (1024 * 1024)
     return `${mb.toFixed(1)} MB`
   }
 
