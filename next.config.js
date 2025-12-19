@@ -22,6 +22,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'maps.googleapis.com',
       },
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
   },
