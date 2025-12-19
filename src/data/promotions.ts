@@ -46,3 +46,7 @@ export const sortOptions = [
   { id: 'newest', label: 'Plus récentes', value: 'newest' },
   { id: 'expiring', label: 'Bientôt expirées', value: 'expiring' },
 ]
+
+// Export vide pour compatibilité avec la popup page d'accueil
+// La popup ne s'affichera pas (tableau vide)
+export const promotions: any[] = []
