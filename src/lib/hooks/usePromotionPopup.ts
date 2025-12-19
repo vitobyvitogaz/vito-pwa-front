@@ -20,9 +20,9 @@ export const usePromotionPopup = () => {
 
     // Filtrer les promotions actives
     const activePromotions = promotions.filter(p => 
-      p.isActive && 
-      new Date(p.validUntil) > new Date() &&
-      p.discount > 0 // Seulement les promotions avec discount > 0
+      p.is_active && 
+      new Date(p.valid_until) > new Date() &&
+      p.discount_value > 0 // Seulement les promotions avec discount > 0
     )
 
     if (activePromotions.length === 0) return null
