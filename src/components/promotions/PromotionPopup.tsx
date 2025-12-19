@@ -11,7 +11,7 @@ interface PromotionPopupProps {
 }
 
 export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClose }) => {
-  const [isVisible, setIsVisible] = useState(false) // ← Changé à false par défaut
+  const [isVisible, setIsVisible] = useState(false)
   const [timeLeft, setTimeLeft] = useState('')
   const [isExpired, setIsExpired] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -27,11 +27,11 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
   }, [])
 
   useEffect(() => {
-    if (!isVisible) return // ← Important : ne pas exécuter le timer si invisible
+    if (!isVisible) return
 
     const calculateTimeLeft = () => {
       const now = new Date().getTime()
-      const end = new Date(promotion.validUntil).getTime()
+      const end = new Date(promotion.valid_until).getTime()
       const diff = end - now
 
       if (diff <= 0) {
@@ -57,12 +57,12 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
       clearInterval(interval)
       clearTimeout(autoCloseTimer)
     }
-  }, [promotion.validUntil, isVisible]) // ← Ajouté isVisible comme dépendance
+  }, [promotion.valid_until, isVisible])
 
   const handleCopyCode = () => {
-    if (!promotion.code) return
+    if (!promotion.promo_code) return
     hapticFeedback('medium')
-    navigator.clipboard.writeText(promotion.code)
+    navigator.clipboard.writeText(promotion.promo_code)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -81,18 +81,20 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
         <div className="bg-white dark:bg-dark-surface rounded-3xl shadow-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800">
           <div className="relative h-64 overflow-hidden">
             <img
-              src={promotion.image}
+              src={promotion.image_url || '/images/promotions/default.jpg'}
               alt={promotion.title}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
             
-            {promotion.discount > 0 && (
+            {promotion.discount_value > 0 && (
               <div className="absolute top-4 right-4 z-10">
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/30 rounded-2xl blur-md" />
                   <div className="relative bg-primary text-white rounded-2xl px-5 py-3 shadow-lg">
-                    <div className="text-2xl font-bold leading-none font-sans">-{promotion.discount}%</div>
+                    <div className="text-2xl font-bold leading-none font-sans">
+                      {promotion.discount_type === 'percentage' ? `-${promotion.discount_value}%` : `-${promotion.discount_value} Ar`}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -127,7 +129,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
                   </div>
                 </div>
 
-                {promotion.isActive && !isExpired && (
+                {promotion.is_active && !isExpired && (
                   <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
                     <Sparkles className="w-4 h-4" strokeWidth={1.5} />
                     <span className="text-sm font-medium font-sans">Active</span>
@@ -145,7 +147,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
               )}
             </div>
 
-            {promotion.code && promotion.isActive && !isExpired && (
+            {promotion.promo_code && promotion.is_active && !isExpired && (
               <div className="relative group">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300 font-sans">
@@ -169,10 +171,10 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
                         </div>
                         <div className="text-left">
                           <div className="text-xl font-semibold text-primary font-mono">
-                            {promotion.code}
+                            {promotion.promo_code}
                           </div>
                           <div className="text-xs text-primary/70 font-sans">
-                            Valide jusqu'au {new Date(promotion.validUntil).toLocaleDateString('fr-FR')}
+                            Valide jusqu'au {new Date(promotion.valid_until).toLocaleDateString('fr-FR')}
                           </div>
                         </div>
                       </div>
