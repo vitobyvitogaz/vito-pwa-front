@@ -10,7 +10,7 @@ export class NotificationService {
 
   private constructor() {
     this.loadPreferences()
-    this.setupServiceWorker()
+    this.setupServiceWorker() // Toujours essayer d'enregistrer le SW
   }
 
   static getInstance(): NotificationService {
@@ -29,15 +29,70 @@ export class NotificationService {
     })
   }
 
-  private async setupServiceWorker() {
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
+  private async setupServiceWorker(): Promise<ServiceWorkerRegistration | null> {
+    if ('serviceWorker' in navigator) {
       try {
-        const registration = await navigator.serviceWorker.register('/sw.js')
-        console.log('Service Worker enregistré pour les notifications')
+        console.log('📱 Tentative d\'enregistrement du Service Worker...')
+        
+        // IMPORTANT: Enregistrer le SW même sans PushManager
+        const registration = await navigator.serviceWorker.register('/sw.js', {
+          scope: '/'
+        })
+        
+        console.log('✅ Service Worker enregistré avec succès:', registration.scope)
+        
+        // Vérifier l'état
+        if (registration.installing) {
+          console.log('📱 Service Worker en cours d\'installation...')
+          registration.installing.addEventListener('statechange', () => {
+            console.log('📱 État du SW:', registration.installing?.state)
+            if (registration.installing?.state === 'activated') {
+              console.log('✅ Service Worker activé et prêt')
+            }
+          })
+        } else if (registration.waiting) {
+          console.log('📱 Service Worker en attente')
+        } else if (registration.active) {
+          console.log('✅ Service Worker déjà actif')
+        }
+        
+        // Stocker la référence pour usage futur
+        (window as any).__SW_REGISTRATION = registration
+        
+        // Vérifier les permissions push séparément
+        if ('PushManager' in window) {
+          console.log('📱 PushManager disponible')
+        } else {
+          console.log('📱 PushManager non disponible - notifications push désactivées')
+        }
+        
+        return registration
+        
       } catch (error) {
-        console.error('Échec enregistrement Service Worker:', error)
+        console.error('❌ Échec d\'enregistrement du Service Worker:', error)
+        console.warn('⚠️ L\'application continuera sans Service Worker')
+        return null
       }
+    } else {
+      console.warn('⚠️ Service Worker non supporté par ce navigateur')
+      return null
     }
+  }
+
+  public async ensureServiceWorker(): Promise<boolean> {
+    // Vérifier si le SW est déjà enregistré
+    if ('serviceWorker' in navigator) {
+      const registration = await navigator.serviceWorker.getRegistration()
+      if (registration) {
+        console.log('✅ Service Worker déjà présent:', registration.scope)
+        return true
+      }
+      
+      // Sinon essayer de l'enregistrer
+      const newRegistration = await this.setupServiceWorker()
+      return !!newRegistration
+    }
+    return false
   }
 
   public checkForNewPromotions(): void {
@@ -49,7 +104,7 @@ export class NotificationService {
     const lastCheck = parseInt(localStorage.getItem('last-promo-check') || '0')
     
     promotions.forEach(promo => {
-      const promoDate = new Date(promo.validUntil).getTime()
+      const promoDate = new Date(promo.valid_until).getTime()
       
       if (promoDate > lastCheck && promo.zones.includes(this.userZone!)) {
         this.sendNotification(promo)
@@ -61,18 +116,24 @@ export class NotificationService {
   }
 
   private async sendNotification(promo: any): Promise<void> {
-    // 1. Notification push via Service Worker (si disponible)
-    if (Notification.permission === 'granted' && 'serviceWorker' in navigator) {
+    // Vérifier d'abord si le Service Worker est disponible
+    let swAvailable = false
+    if ('serviceWorker' in navigator) {
+      const registration = await navigator.serviceWorker.ready
+      swAvailable = !!registration
+    }
+    
+    // 1. Notification via Service Worker (si disponible ET permissions accordées)
+    if (swAvailable && Notification.permission === 'granted') {
       try {
         const registration = await navigator.serviceWorker.ready
         
         // Options pour Service Worker
         const swOptions: any = {
-          body: promo.subtitle || `Nouvelle promotion de ${promo.discount}%`,
+          body: promo.subtitle || `Nouvelle promotion de ${promo.discount_value}%`,
           icon: '/icons/icon-192x192.png',
           badge: '/icons/badge-72x72.png',
           tag: `promo-${promo.id}`,
-          // renotify est une propriété SW, pas standard
           renotify: true,
           data: {
             url: `/promotions`,
@@ -95,6 +156,7 @@ export class NotificationService {
         }
         
         await registration.showNotification(`🎁 ${promo.title}`, swOptions)
+        console.log('✅ Notification envoyée via Service Worker')
         
       } catch (error) {
         console.error('Erreur notification SW:', error)
@@ -112,22 +174,29 @@ export class NotificationService {
 
   private sendFallbackNotification(promo: any): void {
     if (Notification.permission === 'granted') {
-      // API Notification standard
-      const notification = new Notification(`🎁 ${promo.title}`, {
-        body: promo.subtitle || `Réduction de ${promo.discount}%`,
-        icon: '/icons/icon-192x192.png',
-        // Options standard (pas de renotify ni actions)
-        tag: `promo-${promo.id}`,
-        requireInteraction: false,
-        silent: false
-      })
-      
-      // Gérer le clic
-      notification.onclick = () => {
-        window.focus()
-        window.location.href = '/promotions'
-        notification.close()
+      try {
+        // API Notification standard
+        const notification = new Notification(`🎁 ${promo.title}`, {
+          body: promo.subtitle || `Réduction de ${promo.discount_value}%`,
+          icon: '/icons/icon-192x192.png',
+          tag: `promo-${promo.id}`,
+          requireInteraction: false,
+          silent: false
+        })
+        
+        console.log('✅ Notification standard envoyée')
+        
+        // Gérer le clic
+        notification.onclick = () => {
+          window.focus()
+          window.location.href = '/promotions'
+          notification.close()
+        }
+      } catch (error) {
+        console.error('Erreur notification standard:', error)
       }
+    } else {
+      console.log('⚠️ Permissions notifications non accordées')
     }
   }
 
@@ -150,6 +219,28 @@ export class NotificationService {
   public startPolling(intervalMinutes = 5): void {
     setInterval(() => this.checkForNewPromotions(), intervalMinutes * 60 * 1000)
   }
+
+  // Méthode publique pour vérifier l'état PWA
+  public async checkPWAStatus() {
+    const status = {
+      serviceWorker: false,
+      pushManager: false,
+      notifications: Notification.permission,
+      manifest: !!document.querySelector('link[rel="manifest"]'),
+      https: window.location.protocol === 'https:',
+      displayMode: window.matchMedia('(display-mode: standalone)').matches
+    }
+    
+    if ('serviceWorker' in navigator) {
+      const registration = await navigator.serviceWorker.getRegistration()
+      status.serviceWorker = !!registration
+    }
+    
+    status.pushManager = 'PushManager' in window
+    
+    console.log('📱 État PWA:', status)
+    return status
+  }
 }
 
 // Version alternative sans erreur TypeScript
@@ -157,8 +248,15 @@ export const useNotificationService = () => {
   if (typeof window === 'undefined') return
   
   const service = NotificationService.getInstance()
+  
+  // Vérifier l'état PWA au démarrage
+  setTimeout(() => {
+    service.checkPWAStatus()
+    service.ensureServiceWorker()
+  }, 2000)
+  
   service.startPolling(5)
   
   // Vérifier immédiatement au chargement
-  setTimeout(() => service.checkForNewPromotions(), 2000)
+  setTimeout(() => service.checkForNewPromotions(), 3000)
 }
