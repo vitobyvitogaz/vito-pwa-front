@@ -9,12 +9,12 @@ import { InstallPrompt } from '@/components/layout/InstallPrompt'
 import { OfflineBanner } from '@/components/ui/OfflineBanner'
 import { PromotionPopup } from '@/components/promotions/PromotionPopup'
 import { usePromotionPopup } from '@/lib/hooks/usePromotionPopup'
-import { useHeroBanner } from '@/lib/hooks/useAppSettings'
+import { useHeroContent } from '@/lib/hooks/useAppSettings'
 import { promotions } from '@/data/promotions'
 
 export default function HomePage() {
   const { showPopup, selectedPromotion, initializePopup, closePopup } = usePromotionPopup()
-  const { bannerUrl, loading: bannerLoading } = useHeroBanner()
+  const { bannerUrl, title, subtitle, description, stats, loading: heroLoading } = useHeroContent()
 
   useEffect(() => {
     // Initialiser la popup avec vos données de promotions
@@ -38,7 +38,7 @@ export default function HomePage() {
       <div className="relative min-h-[70vh] sm:min-h-[80vh] flex flex-col justify-center overflow-hidden">
         {/* Image de fond - DYNAMIQUE depuis Supabase */}
         <div className="absolute inset-0 z-0">
-          {!bannerLoading && bannerUrl && (
+          {!heroLoading && bannerUrl && (
             <Image
               src={bannerUrl}
               alt="Vitogaz - Gaz domestique"
@@ -51,7 +51,7 @@ export default function HomePage() {
           )}
           
           {/* Fallback pendant le chargement */}
-          {bannerLoading && (
+          {heroLoading && (
             <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/10 animate-pulse" />
           )}
           
@@ -65,38 +65,55 @@ export default function HomePage() {
         {/* Contenu centré - textes par-dessus l'image */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            {/* Titre principal - blanc pour contraste sur image */}
+            {/* Titre principal - DYNAMIQUE */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold text-white mb-4 tracking-tight animate-slide-up drop-shadow-lg">
-              VITO
+              {heroLoading ? '...' : title}
             </h1>
             
-            {/* Sous-titre - blanc avec drop shadow */}
+            {/* Sous-titre - DYNAMIQUE */}
             <h2 className="text-lg sm:text-xl md:text-2xl font-medium text-white mb-6 tracking-tight animate-slide-up drop-shadow-md" style={{ animationDelay: '0.05s' }}>
-              Rapide. Fiable. Centré sur l'essentiel.
+              {heroLoading ? '...' : subtitle}
             </h2>
             
-            {/* Paragraphe descriptif - blanc avec opacité légère */}
+            {/* Paragraphe descriptif - DYNAMIQUE */}
             <p className="text-base text-white/95 leading-relaxed max-w-2xl mx-auto mb-8 animate-slide-up drop-shadow-md" style={{ animationDelay: '0.1s' }}>
-              VITO transforme votre expérience Vitogaz. Quatre boutons simples vous donnent un contrôle total : trouver un revendeur, commander en ligne, être au courant des promotions et gérer votre prêt PAMF pour acheter votre gaz.
+              {heroLoading ? 'Chargement...' : description}
             </p>
             
-            {/* Ligne décorative - blanc éclatant */}
+            {/* Ligne décorative */}
             <div className="w-16 h-1 bg-white mx-auto mb-8 rounded-full animate-slide-up drop-shadow-lg" style={{ animationDelay: '0.15s' }} />
             
-            {/* Mini stats discrètes - blanc pour contraste */}
+            {/* Mini stats discrètes - DYNAMIQUES */}
             <div className="flex flex-wrap justify-center gap-6 sm:gap-8 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-              <div className="text-center">
-                <div className="text-xl sm:text-2xl font-semibold text-white mb-1 drop-shadow-md">+100</div>
-                <div className="text-xs font-medium text-white/90 drop-shadow-sm">Points de vente</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl sm:text-2xl font-semibold text-white mb-1 drop-shadow-md">24/7</div>
-                <div className="text-xs font-medium text-white/90 drop-shadow-sm">Service client</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl sm:text-2xl font-semibold text-white mb-1 drop-shadow-md">100%</div>
-                <div className="text-xs font-medium text-white/90 drop-shadow-sm">Sécurité garantie</div>
-              </div>
+              {heroLoading ? (
+                // Skeleton pendant chargement
+                <>
+                  <div className="text-center animate-pulse">
+                    <div className="h-8 w-16 bg-white/20 rounded mb-2 mx-auto"></div>
+                    <div className="h-4 w-24 bg-white/20 rounded mx-auto"></div>
+                  </div>
+                  <div className="text-center animate-pulse">
+                    <div className="h-8 w-16 bg-white/20 rounded mb-2 mx-auto"></div>
+                    <div className="h-4 w-24 bg-white/20 rounded mx-auto"></div>
+                  </div>
+                  <div className="text-center animate-pulse">
+                    <div className="h-8 w-16 bg-white/20 rounded mb-2 mx-auto"></div>
+                    <div className="h-4 w-24 bg-white/20 rounded mx-auto"></div>
+                  </div>
+                </>
+              ) : (
+                // Stats dynamiques
+                stats.map((stat, index) => (
+                  <div key={index} className="text-center">
+                    <div className="text-xl sm:text-2xl font-semibold text-white mb-1 drop-shadow-md">
+                      {stat.value}
+                    </div>
+                    <div className="text-xs font-medium text-white/90 drop-shadow-sm">
+                      {stat.label}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

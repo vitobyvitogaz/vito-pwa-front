@@ -1,4 +1,5 @@
 // src/lib/hooks/useAppSettings.ts
+// VERSION COMPLÈTE avec hero content
 
 'use client';
 
@@ -16,22 +17,6 @@ interface UseAppSettingsReturn {
 
 /**
  * Hook personnalisé pour charger et gérer les paramètres de l'application
- * 
- * @param autoRefresh - Rafraîchir automatiquement toutes les X minutes (optionnel)
- * @returns {UseAppSettingsReturn} État des settings avec loading, error et méthodes utilitaires
- * 
- * @example
- * ```tsx
- * function HomePage() {
- *   const { settings, loading, getSettingValue } = useAppSettings();
- *   
- *   if (loading) return <div>Chargement...</div>;
- *   
- *   const bannerUrl = getSettingValue('hero_banner_url');
- *   
- *   return <img src={bannerUrl} alt="Hero banner" />;
- * }
- * ```
  */
 export function useAppSettings(autoRefresh?: number): UseAppSettingsReturn {
   const [settings, setSettings] = useState<SettingsMap>({});
@@ -54,10 +39,8 @@ export function useAppSettings(autoRefresh?: number): UseAppSettingsReturn {
   };
 
   useEffect(() => {
-    // Charger les settings au montage
     fetchSettings();
 
-    // Auto-refresh optionnel
     if (autoRefresh && autoRefresh > 0) {
       const interval = setInterval(() => {
         fetchSettings();
@@ -67,9 +50,6 @@ export function useAppSettings(autoRefresh?: number): UseAppSettingsReturn {
     }
   }, [autoRefresh]);
 
-  /**
-   * Récupérer la valeur d'un setting avec valeur par défaut
-   */
   const getSettingValue = (key: string, defaultValue: string = ''): string => {
     return settings[key] || defaultValue;
   };
@@ -84,26 +64,54 @@ export function useAppSettings(autoRefresh?: number): UseAppSettingsReturn {
 }
 
 /**
- * Hook spécialisé pour la bannière hero
- * 
- * @example
- * ```tsx
- * function HomePage() {
- *   const { bannerUrl, loading } = useHeroBanner();
- *   
- *   if (loading) return <Skeleton />;
- *   
- *   return <Image src={bannerUrl} alt="Hero" fill />;
- * }
- * ```
+ * Hook spécialisé pour la bannière hero uniquement
  */
 export function useHeroBanner() {
   const { settings, loading, error, getSettingValue } = useAppSettings();
 
   return {
-    bannerUrl: getSettingValue('hero_banner_url', '/images/hero-banner.jpg'), // Fallback
+    bannerUrl: getSettingValue('hero_banner_url', '/images/hero-banner.jpg'),
+    loading,
+    error,
+  };
+}
+
+/**
+ * Hook spécialisé pour TOUT le contenu hero
+ * Bannière + Titre + Sous-titre + Description + Stats
+ */
+export function useHeroContent() {
+  const { settings, loading, error, getSettingValue } = useAppSettings();
+
+  return {
+    // Bannière
+    bannerUrl: getSettingValue('hero_banner_url', '/images/hero-banner.jpg'),
+    
+    // Textes
     title: getSettingValue('hero_title', 'VITO'),
     subtitle: getSettingValue('hero_subtitle', 'Rapide. Fiable. Centré sur l\'essentiel.'),
+    description: getSettingValue(
+      'hero_description',
+      'VITO transforme votre expérience Vitogaz. Quatre boutons simples vous donnent un contrôle total : trouver un revendeur, commander en ligne, être au courant des promotions et gérer votre prêt PAMF pour acheter votre gaz.'
+    ),
+    
+    // Statistiques
+    stats: [
+      {
+        value: getSettingValue('stat_1_value', '+100'),
+        label: getSettingValue('stat_1_label', 'Points de vente'),
+      },
+      {
+        value: getSettingValue('stat_2_value', '24/7'),
+        label: getSettingValue('stat_2_label', 'Service client'),
+      },
+      {
+        value: getSettingValue('stat_3_value', '100%'),
+        label: getSettingValue('stat_3_label', 'Sécurité garantie'),
+      },
+    ],
+    
+    // États
     loading,
     error,
   };
@@ -111,20 +119,6 @@ export function useHeroBanner() {
 
 /**
  * Hook spécialisé pour les informations de contact
- * 
- * @example
- * ```tsx
- * function ContactSection() {
- *   const { phone, whatsapp, email } = useContactInfo();
- *   
- *   return (
- *     <div>
- *       <a href={`tel:${phone}`}>{phone}</a>
- *       <a href={`https://wa.me/${whatsapp}`}>WhatsApp</a>
- *     </div>
- *   );
- * }
- * ```
  */
 export function useContactInfo() {
   const { getSettingValue } = useAppSettings();
@@ -138,18 +132,6 @@ export function useContactInfo() {
 
 /**
  * Hook spécialisé pour vérifier le mode maintenance
- * 
- * @example
- * ```tsx
- * function App() {
- *   const { isMaintenanceMode, loading } = useMaintenanceMode();
- *   
- *   if (loading) return <Loading />;
- *   if (isMaintenanceMode) return <MaintenancePage />;
- *   
- *   return <NormalApp />;
- * }
- * ```
  */
 export function useMaintenanceMode() {
   const { settings, loading, getSettingValue } = useAppSettings();
