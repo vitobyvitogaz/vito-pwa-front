@@ -9,15 +9,16 @@ import { TravelModeSelector } from '@/components/resellers/TravelModeSelector'
 import { GeolocationPrompt } from '@/components/resellers/GeolocationPrompt'
 import { MapPin, List, Grid3x3, Navigation, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
 import type { Reseller } from '@/types/reseller'
-import { resellers } from '@/data/resellersData'
+import { useResellerStore } from '@/store/useResellerStore'
 import { useDistanceMatrix, type TravelMode } from '@/lib/hooks/useDistanceMatrix'
 
 const PAGE_SIZE = 10
 
 export default function ResellersPage() {
+  const { resellers, loading: isLoadingResellers, fetchResellers } = useResellerStore()
   const [view, setView] = useState<'split' | 'list' | 'map'>('split')
   const [selectedReseller, setSelectedReseller] = useState<Reseller | null>(null)
-  const [filteredResellers, setFilteredResellers] = useState(resellers)
+  const [filteredResellers, setFilteredResellers] = useState<Reseller[]>([])
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [travelMode, setTravelMode] = useState<TravelMode>('DRIVING')
@@ -25,6 +26,18 @@ export default function ResellersPage() {
   const [isGeolocationLoading, setIsGeolocationLoading] = useState(false)
   const [showGeolocationPrompt, setShowGeolocationPrompt] = useState(true)
   const [hasSkippedGeolocation, setHasSkippedGeolocation] = useState(false)
+
+  // Charger les resellers depuis l'API au montage
+  useEffect(() => {
+    fetchResellers()
+  }, [fetchResellers])
+
+  // Mettre à jour les resellers filtrés quand les resellers changent
+  useEffect(() => {
+    if (resellers.length > 0) {
+      setFilteredResellers(resellers)
+    }
+  }, [resellers])
 
   // Charger depuis localStorage au démarrage
   useEffect(() => {
@@ -157,7 +170,7 @@ export default function ResellersPage() {
   // Liste des villes uniques
   const cities = useMemo(
     () => Array.from(new Set(resellers.map(r => r.city))).sort(),
-    []
+    [resellers]
   )
 
   const handleTravelModeChange = useCallback((mode: TravelMode) => {
@@ -168,9 +181,20 @@ export default function ResellersPage() {
   // Afficher le prompt seulement si pas encore de position ET pas encore ignoré
   const shouldShowPrompt = showGeolocationPrompt && !userLocation && !hasSkippedGeolocation
 
+  // Afficher un loader pendant le chargement initial
+  if (isLoadingResellers) {
+    return (
+      <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-4" strokeWidth={1.5} />
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">Chargement des revendeurs...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16">
-      {/* Nouveau prompt de géolocalisation */}
       {shouldShowPrompt && (
         <GeolocationPrompt
           onEnable={handleEnableGeolocation}
@@ -179,7 +203,6 @@ export default function ResellersPage() {
         />
       )}
 
-      {/* Header */}
       <div className="bg-white dark:bg-dark-surface border-b border-neutral-200 dark:border-neutral-800">
         <div className="container mx-auto px-4 py-6 sm:py-8">
           <div className="flex items-center justify-between mb-4">
@@ -200,9 +223,7 @@ export default function ResellersPage() {
               )}
             </div>
 
-            {/* Toggle pour les 3 modes d'affichage */}
             <div className="flex gap-2">
-              {/* Desktop: 3 boutons */}
               <div className="hidden lg:flex gap-2">
                 <button
                   onClick={() => setView('split')}
@@ -239,7 +260,6 @@ export default function ResellersPage() {
                 </button>
               </div>
               
-              {/* Mobile: 2 boutons */}
               <div className="flex lg:hidden gap-2">
                 <button
                   onClick={() => setView(view === 'map' ? 'list' : 'map')}
@@ -259,7 +279,6 @@ export default function ResellersPage() {
             </div>
           </div>
 
-          {/* Filtres */}
           <div className="mb-4">
             <MapFilters
               resellers={resellers}
@@ -267,10 +286,8 @@ export default function ResellersPage() {
             />
           </div>
 
-          {/* Section des distances avec design amélioré */}
           <div className="bg-white dark:bg-dark-surface rounded-xl p-4 border border-neutral-200 dark:border-neutral-800 shadow-sm">
             <div className="space-y-4">
-              {/* En-tête avec statut GPS amélioré */}
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-base font-medium text-neutral-900 dark:text-white">
@@ -316,7 +333,6 @@ export default function ResellersPage() {
                 </div>
               </div>
               
-              {/* TravelModeSelector */}
               <div className="pt-2">
                 <TravelModeSelector
                   mode={travelMode}
@@ -324,7 +340,6 @@ export default function ResellersPage() {
                 />
               </div>
               
-              {/* États et messages */}
               <div className="space-y-2 pt-2">
                 {isGeolocationLoading && (
                   <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800 animate-pulse">
@@ -431,10 +446,8 @@ export default function ResellersPage() {
         </div>
       </div>
 
-      {/* Contenu principal */}
       <div className="relative h-[calc(100vh-320px)] sm:h-[calc(100vh-360px)]">
         
-        {/* Mode SPLIT (Partagé) */}
         {view === 'split' && (
           <div className="hidden lg:flex h-full">
             <div className="w-2/5 overflow-y-auto">
@@ -458,7 +471,6 @@ export default function ResellersPage() {
           </div>
         )}
 
-        {/* Mode LIST (Liste seule) */}
         {view === 'list' && (
           <div className="h-full flex flex-col">
             <div className="bg-white dark:bg-dark-surface p-4 border-b border-neutral-200 dark:border-neutral-800">
@@ -511,7 +523,6 @@ export default function ResellersPage() {
           </div>
         )}
 
-        {/* Mode MAP (Carte seule) */}
         {view === 'map' && (
           <div className="relative h-full">
             <ResellerMap
@@ -524,7 +535,6 @@ export default function ResellersPage() {
           </div>
         )}
 
-        {/* Mobile view */}
         <div className="lg:hidden h-full flex flex-col">
           {view === 'map' ? (
             <div className="relative h-full">
