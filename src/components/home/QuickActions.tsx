@@ -1,23 +1,15 @@
 'use client'
 
-import { Phone, MapPin, ChevronRight } from 'lucide-react'
+import { Phone, MapPin, ChevronRight, Package } from 'lucide-react'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 export const QuickActions: React.FC = () => {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
+  const router = useRouter()
 
   const actions = [
-    {
-      id: 'assistance',
-      icon: Phone,
-      title: 'Assistance',
-      subtitle: 'Contactez-nous',
-      color: 'text-blue-600 dark:text-blue-400',
-      bg: 'bg-blue-50 dark:bg-blue-900/20',
-      border: 'border-blue-200 dark:border-blue-800',
-      phone: '+261340000000',
-    },
     {
       id: 'position',
       icon: MapPin,
@@ -37,6 +29,28 @@ export const QuickActions: React.FC = () => {
           )
         }
       },
+    },
+    {
+      id: 'produits',
+      icon: Package,
+      title: 'Produits',
+      subtitle: 'Notre gamme',
+      color: 'text-primary dark:text-primary',
+      bg: 'bg-primary/10 dark:bg-primary/20',
+      border: 'border-primary/20 dark:border-primary/30',
+      action: () => {
+        router.push('/fr/produits')
+      },
+    },
+    {
+      id: 'assistance',
+      icon: Phone,
+      title: 'Assistance',
+      subtitle: 'Contactez-nous',
+      color: 'text-blue-600 dark:text-blue-400',
+      bg: 'bg-blue-50 dark:bg-blue-900/20',
+      border: 'border-blue-200 dark:border-blue-800',
+      phone: '+261340000000',
     },
   ]
 
