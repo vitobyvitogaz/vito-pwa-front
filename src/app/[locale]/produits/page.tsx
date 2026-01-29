@@ -19,7 +19,7 @@ export default function ProduitsPage() {
           
           <div className="max-w-2xl mx-auto">
             <p className="text-lg sm:text-xl text-neutral-600 dark:text-neutral-400 leading-relaxed tracking-wide font-sans">
-              Découvrez notre gamme complète de produits gaz Vitogaz
+              Découvrez la gamme complète de produits Vitogaz
             </p>
             <div className="h-px w-24 mx-auto mt-6 bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent"></div>
           </div>

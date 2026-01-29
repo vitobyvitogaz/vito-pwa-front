@@ -44,12 +44,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, delay = 0 }) 
       }}
     >
       {/* Image */}
-      <div className="relative h-64 overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+      <div className="relative h-64 overflow-hidden bg-white">
         {product.image_url ? (
           <img
             src={product.image_url}
             alt={product.name}
-            className="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-110"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -125,7 +125,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, delay = 0 }) 
           <div className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary/5 border border-primary/20 hover:border-primary/40 hover:bg-primary/10 transition-all duration-300 group/btn">
             <Package className="w-5 h-5 text-primary group-hover/btn:scale-110 transition-transform" strokeWidth={1.5} />
             <span className="font-medium text-primary font-sans">
-              Voir les détails
+              Voir revendeurs
             </span>
           </div>
         </div>
