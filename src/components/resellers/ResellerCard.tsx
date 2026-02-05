@@ -138,10 +138,22 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
         <Clock className="w-4 h-4 text-neutral-500 dark:text-neutral-400" strokeWidth={1.5} />
         <p className="text-sm text-neutral-600 dark:text-neutral-400">{reseller.hours}</p>
       </div>
-
-      {/* Services */}
+      
+      {/* Services 
       <div className="flex flex-wrap gap-2 mb-4">
         {reseller.services?.map(service => (
+          <span
+            key={service}
+            className="px-2.5 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl text-xs font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700"
+          >
+            {service}
+          </span>
+        ))}
+      </div>
+      */}   
+      {/* Services */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {Array.isArray(reseller.services) && reseller.services.map(service => (
           <span
             key={service}
             className="px-2.5 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl text-xs font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700"
