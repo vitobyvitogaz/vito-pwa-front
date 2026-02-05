@@ -1,8 +1,29 @@
 'use client'
 
+//import { useState, useMemo, useCallback, useEffect } from 'react'
+//import { ResellerMap } from '@/components/resellers/ResellerMap'
+//import { ResellersList } from '@/components/resellers/ResellersList'
 import { useState, useMemo, useCallback, useEffect } from 'react'
-import { ResellerMap } from '@/components/resellers/ResellerMap'
+import dynamic from 'next/dynamic'
+
+// Import dynamique pour éviter l'erreur SSR avec Leaflet
+const ResellerMap = dynamic(
+  () => import('@/components/resellers/ResellerMap').then(mod => ({ default: mod.ResellerMap })),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="h-full flex items-center justify-center bg-neutral-100 dark:bg-neutral-900">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">Chargement de la carte...</p>
+        </div>
+      </div>
+    )
+  }
+)
+
 import { ResellersList } from '@/components/resellers/ResellersList'
+
 import { MapFilters } from '@/components/resellers/MapFilters'
 import { GeolocationButton } from '@/components/resellers/GeolocationButton'
 import { TravelModeSelector } from '@/components/resellers/TravelModeSelector'

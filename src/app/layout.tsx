@@ -5,6 +5,7 @@ import { Footer } from '@/components/layout/Footer'
 import { Breadcrumb } from '@/components/shared/Breadcrumb'
 import { ScrollToTop } from '@/components/shared/ScrollToTop'
 import '@/styles/globals.css'
+import 'leaflet/dist/leaflet.css'  // ← AJOUTEZ CETTE LIGNE
 
 const inter = Inter({ 
   subsets: ['latin'],

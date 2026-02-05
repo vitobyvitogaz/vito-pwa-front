@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
+import L from 'leaflet'
 import type { Reseller } from '@/types/reseller'
-import { setOptions, importLibrary } from '@googlemaps/js-api-loader'
-import { AlertCircle, Navigation } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 
 interface ResellerMapProps {
   resellers: Reseller[]
@@ -12,6 +13,7 @@ interface ResellerMapProps {
   userLocation: { lat: number; lng: number } | null
 }
 
+// Couleurs par type de revendeur
 const getColorForType = (type: Reseller['type']) => {
   switch (type) {
     case 'Quincaillerie':
@@ -20,10 +22,112 @@ const getColorForType = (type: Reseller['type']) => {
       return '#008B7F'
     case 'Station Service':
       return '#FF8C00'
-    case 'Autres':
+    case 'Libre service':
+      return '#7C3AED'
     default:
       return '#4B5563'
   }
+}
+
+// Configuration de la légende
+const LEGEND_ITEMS = [
+  { type: 'Quincaillerie' as const, color: '#C8102E', label: 'Quincaillerie' },
+  { type: 'Épicerie' as const, color: '#008B7F', label: 'Épicerie' },
+  { type: 'Station Service' as const, color: '#FF8C00', label: 'Station Service' },
+  { type: 'Libre service' as const, color: '#7C3AED', label: 'Libre service' },
+]
+
+// Créer une icône personnalisée pour les revendeurs
+const createResellerIcon = (color: string, isSelected: boolean = false) => {
+  const size = isSelected ? 28 : 20
+  const borderColor = isSelected ? '#FFD700' : '#ffffff'
+  const borderWidth = isSelected ? 3 : 2
+
+  return L.divIcon({
+    className: 'custom-marker',
+    html: `
+      <div style="
+        width: ${size}px;
+        height: ${size}px;
+        background-color: ${color};
+        border: ${borderWidth}px solid ${borderColor};
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        ${isSelected ? 'animation: bounce 0.7s;' : ''}
+      "></div>
+    `,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+  })
+}
+
+// Créer une icône pour l'utilisateur
+const createUserIcon = () => {
+  return L.divIcon({
+    className: 'custom-marker',
+    html: `
+      <div style="
+        width: 24px;
+        height: 24px;
+        background-color: #3B82F6;
+        border: 3px solid #ffffff;
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      "></div>
+    `,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+  })
+}
+
+// Composant pour gérer le centrage et le zoom de la carte
+const MapController = ({
+  resellers,
+  selectedReseller,
+  userLocation,
+  isInitialCenteringDone,
+  setIsInitialCenteringDone,
+}: {
+  resellers: Reseller[]
+  selectedReseller: Reseller | null
+  userLocation: { lat: number; lng: number } | null
+  isInitialCenteringDone: boolean
+  setIsInitialCenteringDone: (value: boolean) => void
+}) => {
+  const map = useMap()
+
+  // Centrer sur la position utilisateur avec zoom 2km
+  useEffect(() => {
+    if (userLocation && !isInitialCenteringDone) {
+      // Zoom 15 = environ 2km de rayon
+      map.setView([userLocation.lat, userLocation.lng], 15)
+      setIsInitialCenteringDone(true)
+      console.log('📍 Carte centrée sur position utilisateur (rayon 2km)')
+    }
+  }, [userLocation, isInitialCenteringDone, map, setIsInitialCenteringDone])
+
+  // Centrer sur tous les markers si pas de position utilisateur
+  useEffect(() => {
+    if (!userLocation && resellers.length > 0 && !isInitialCenteringDone) {
+      const bounds = L.latLngBounds(
+        resellers.map((r) => [r.lat, r.lng])
+      )
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 })
+      setIsInitialCenteringDone(true)
+      console.log('📍 Carte centrée sur tous les revendeurs')
+    }
+  }, [userLocation, resellers, isInitialCenteringDone, map, setIsInitialCenteringDone])
+
+  // Centrer sur le revendeur sélectionné
+  useEffect(() => {
+    if (selectedReseller) {
+      map.setView([selectedReseller.lat, selectedReseller.lng], 15, {
+        animate: true,
+      })
+    }
+  }, [selectedReseller, map])
+
+  return null
 }
 
 export const ResellerMap: React.FC<ResellerMapProps> = ({
@@ -32,287 +136,140 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
   onSelectReseller,
   userLocation,
 }) => {
-  const mapRef = useRef<HTMLDivElement>(null)
-  const mapInstanceRef = useRef<google.maps.Map | null>(null)
-  const markersRef = useRef<google.maps.Marker[]>([])
-  const userMarkerRef = useRef<google.maps.Marker | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const lastUserLocationRef = useRef<string>('')
-  const lastResellersRef = useRef<string>('')
-  const isInitialCenteringDoneRef = useRef(false)
+  const [isInitialCenteringDone, setIsInitialCenteringDone] = useState(false)
+  const [isClient, setIsClient] = useState(false)
 
-  const createMarkers = useCallback(() => {
-    if (!mapInstanceRef.current) {
-      console.warn('Carte non disponible')
-      return
-    }
-
-    if (resellers.length === 0) {
-      markersRef.current.forEach(marker => marker.setMap(null))
-      markersRef.current = []
-      return
-    }
-
-    // Vérifier si les revendeurs ont changé
-    const resellersKey = resellers.map(r => `${r.lat},${r.lng}`).join('|')
-    if (resellersKey === lastResellersRef.current && markersRef.current.length > 0) {
-      console.log('📍 Markers inchangés')
-      return
-    }
-
-    // Supprimer les anciens markers
-    markersRef.current.forEach(marker => marker.setMap(null))
-    markersRef.current = []
-
-    // Créer les nouveaux markers
-    resellers.forEach((reseller) => {
-      const marker = new google.maps.Marker({
-        position: { lat: reseller.lat, lng: reseller.lng },
-        map: mapInstanceRef.current,
-        title: reseller.name,
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 10,
-          fillColor: getColorForType(reseller.type),
-          fillOpacity: 1,
-          strokeColor: '#ffffff',
-          strokeWeight: 2,
-        },
-      })
-
-      marker.addListener('click', () => {
-        onSelectReseller(reseller)
-        mapInstanceRef.current?.panTo({ lat: reseller.lat, lng: reseller.lng })
-        mapInstanceRef.current?.setZoom(15)
-      })
-
-      markersRef.current.push(marker)
-    })
-
-    // Centrer sur les markers seulement si pas de position utilisateur
-    if (markersRef.current.length > 0 && mapInstanceRef.current && !isInitialCenteringDoneRef.current) {
-      const bounds = new google.maps.LatLngBounds()
-      markersRef.current.forEach(marker => {
-        const position = marker.getPosition()
-        if (position) bounds.extend(position)
-      })
-
-      if (!bounds.isEmpty()) {
-        mapInstanceRef.current.fitBounds(bounds)
-        
-        google.maps.event.addListenerOnce(mapInstanceRef.current, 'bounds_changed', () => {
-          const currentZoom = mapInstanceRef.current!.getZoom()
-          if (currentZoom && currentZoom > 15) {
-            mapInstanceRef.current!.setZoom(15)
-          }
-        })
-      }
-    }
-
-    lastResellersRef.current = resellersKey
-    console.log(`📍 ${markersRef.current.length} markers créés`)
-  }, [resellers, onSelectReseller])
-
-  const centerOnUserLocation = useCallback((location: { lat: number; lng: number }) => {
-    if (!mapInstanceRef.current) return
-
-    const locationKey = `${location.lat},${location.lng}`
-    if (locationKey === lastUserLocationRef.current) {
-      console.log('📍 Position utilisateur déjà centrée')
-      return
-    }
-
-    // Créer ou mettre à jour le marker utilisateur
-    if (userMarkerRef.current) {
-      userMarkerRef.current.setMap(null)
-    }
-
-    userMarkerRef.current = new google.maps.Marker({
-      position: location,
-      map: mapInstanceRef.current,
-      title: 'Votre position',
-      icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale: 12,
-        fillColor: '#3B82F6',
-        fillOpacity: 1,
-        strokeColor: '#ffffff',
-        strokeWeight: 3,
-      },
-      animation: google.maps.Animation.DROP,
-    })
-
-    // Centrer la carte sur l'utilisateur
-    mapInstanceRef.current.panTo(location)
-    mapInstanceRef.current.setZoom(14)
-    
-    isInitialCenteringDoneRef.current = true
-    lastUserLocationRef.current = locationKey
-    
-    console.log('📍 Carte centrée sur position utilisateur')
+  // S'assurer qu'on est côté client (pour éviter les erreurs SSR)
+  useEffect(() => {
+    setIsClient(true)
   }, [])
 
-  // Initialisation de la carte
-  useEffect(() => {
-    const initMap = async () => {
-      try {
-        const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-        
-        if (!apiKey) {
-          setError('Clé Google Maps manquante')
-          setIsLoading(false)
-          return
-        }
-
-        setOptions({ key: apiKey })
-
-        const { Map } = await importLibrary('maps')
-
-        if (!mapRef.current) {
-          setError('Erreur de chargement de la carte')
-          setIsLoading(false)
-          return
-        }
-
-        // Centre par défaut basé sur les revendeurs
-        const getDefaultCenter = () => {
-          if (resellers.length > 0) {
-            const avgLat = resellers.reduce((sum, r) => sum + r.lat, 0) / resellers.length
-            const avgLng = resellers.reduce((sum, r) => sum + r.lng, 0) / resellers.length
-            return { lat: avgLat, lng: avgLng }
-          }
-          return { lat: -18.9137, lng: 47.5236 } // Fallback
-        }
-
-        const map = new Map(mapRef.current, {
-          center: getDefaultCenter(),
-          zoom: 14,
-          styles: [
-            {
-              featureType: 'poi',
-              elementType: 'labels',
-              stylers: [{ visibility: 'off' }],
-            },
-          ],
-        })
-
-        mapInstanceRef.current = map
-        setIsLoading(false)
-
-        // Créer les markers initiaux
-        createMarkers()
-        
-      } catch (err) {
-        console.error('Erreur initialisation map:', err)
-        setError('Erreur de chargement de la carte')
-        setIsLoading(false)
-      }
-    }
-
-    initMap()
-  }, [createMarkers, resellers])
-
-  // Mettre à jour les markers quand les revendeurs changent
-  useEffect(() => {
-    if (mapInstanceRef.current && !isLoading) {
-      createMarkers()
-    }
-  }, [resellers, isLoading, createMarkers])
-
-  // Centrer sur la position utilisateur quand elle change
-  useEffect(() => {
-    if (userLocation && mapInstanceRef.current && !isLoading) {
-      centerOnUserLocation(userLocation)
-    }
-  }, [userLocation, isLoading, centerOnUserLocation])
-
-  // Mise en évidence du revendeur sélectionné
-  useEffect(() => {
-    if (!selectedReseller || markersRef.current.length === 0) return
-
-    markersRef.current.forEach(marker => {
-      const isSelected = marker.getTitle() === selectedReseller.name
-
-      if (isSelected) {
-        marker.setIcon({
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 14,
-          fillColor: getColorForType(selectedReseller.type),
-          fillOpacity: 1,
-          strokeColor: '#FFD700',
-          strokeWeight: 3,
-        })
-
-        marker.setAnimation(google.maps.Animation.BOUNCE)
-        setTimeout(() => marker.setAnimation(null), 1400)
-      } else {
-        marker.setIcon({
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 10,
-          fillColor: getColorForType(selectedReseller.type),
-          fillOpacity: 1,
-          strokeColor: '#ffffff',
-          strokeWeight: 2,
-        })
-      }
-    })
-
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.panTo({
-        lat: selectedReseller.lat,
-        lng: selectedReseller.lng,
-      })
-      mapInstanceRef.current.setZoom(15)
-    }
-  }, [selectedReseller])
-
-  // Nettoyage
-  useEffect(() => {
-    return () => {
-      markersRef.current.forEach(marker => marker.setMap(null))
-      if (userMarkerRef.current) {
-        userMarkerRef.current.setMap(null)
-      }
-    }
-  }, [])
-
-  if (error) {
+  if (!isClient) {
     return (
       <div className="h-full flex items-center justify-center bg-neutral-100 dark:bg-neutral-900">
-        <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-red-600 dark:text-red-400 mx-auto mb-4" strokeWidth={1.5} />
-          <p className="text-red-600 dark:text-red-400 font-medium mb-2">{error}</p>
-          <p className="text-sm text-neutral-600 dark:text-neutral-400">
-            Vérifiez votre clé API Google Maps
-          </p>
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">Chargement de la carte...</p>
         </div>
       </div>
     )
   }
 
+  // Centre par défaut (Madagascar)
+  const defaultCenter: [number, number] = [-18.9137, 47.5236]
+
   return (
     <div className="relative h-full">
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-neutral-100 dark:bg-neutral-900 z-10">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-            <p className="text-sm text-neutral-600 dark:text-neutral-400">Chargement de la carte...</p>
+      <style jsx global>{`
+        @keyframes bounce {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
+      `}</style>
+
+      <MapContainer
+        center={defaultCenter}
+        zoom={12}
+        className="h-full w-full"
+        zoomControl={true}
+        scrollWheelZoom={true}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+
+        <MapController
+          resellers={resellers}
+          selectedReseller={selectedReseller}
+          userLocation={userLocation}
+          isInitialCenteringDone={isInitialCenteringDone}
+          setIsInitialCenteringDone={setIsInitialCenteringDone}
+        />
+
+        {/* Marker utilisateur */}
+        {userLocation && (
+          <Marker
+            position={[userLocation.lat, userLocation.lng]}
+            icon={createUserIcon()}
+          >
+            <Popup>
+              <div className="text-sm font-medium">Votre position</div>
+            </Popup>
+          </Marker>
+        )}
+
+        {/* Markers revendeurs */}
+        {resellers.map((reseller) => (
+          <Marker
+            key={reseller.id}
+            position={[reseller.lat, reseller.lng]}
+            icon={createResellerIcon(
+              getColorForType(reseller.type),
+              selectedReseller?.id === reseller.id
+            )}
+            eventHandlers={{
+              click: () => onSelectReseller(reseller),
+            }}
+          >
+            <Popup>
+              <div className="min-w-[200px]">
+                <h3 className="font-semibold text-neutral-900 mb-1">
+                  {reseller.name}
+                </h3>
+                <p className="text-sm text-neutral-600 mb-2">
+                  {reseller.address}
+                </p>
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="px-2 py-1 bg-neutral-100 rounded-lg">
+                    {reseller.type}
+                  </span>
+                </div>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+
+      {/* Légende */}
+      <div className="absolute bottom-4 left-4 bg-white dark:bg-dark-surface rounded-xl p-3 shadow-lg border border-neutral-200 dark:border-neutral-800 z-[1000]">
+        <h4 className="text-xs font-semibold text-neutral-900 dark:text-white mb-2">
+          Types de revendeurs
+        </h4>
+        <div className="space-y-2">
+          {LEGEND_ITEMS.map((item) => (
+            <div key={item.type} className="flex items-center gap-2">
+              <div
+                className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                style={{ backgroundColor: item.color }}
+              />
+              <span className="text-xs text-neutral-700 dark:text-neutral-300">
+                {item.label}
+              </span>
+            </div>
+          ))}
+          <div className="flex items-center gap-2 pt-1 border-t border-neutral-200 dark:border-neutral-700">
+            <div
+              className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
+              style={{ backgroundColor: '#3B82F6' }}
+            />
+            <span className="text-xs text-neutral-700 dark:text-neutral-300">
+              Votre position
+            </span>
           </div>
         </div>
-      )}
-      <div 
-        ref={mapRef} 
-        className="w-full h-full"
-        style={{ minHeight: '400px' }}
-      />
-      
-      {/* Debug info */}
-      {process.env.NODE_ENV === 'development' && !isLoading && (
-        <div className="absolute bottom-4 left-4 bg-black/80 text-white text-xs p-2 rounded-xl z-20">
-          <div>Markers: {markersRef.current.length}</div>
+      </div>
+
+      {/* Debug info en développement */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="absolute bottom-4 right-4 bg-black/80 text-white text-xs p-2 rounded-xl z-[1000]">
+          <div>Markers: {resellers.length}</div>
           <div>User loc: {userLocation ? '✓' : '✗'}</div>
-          <div>Centered: {isInitialCenteringDoneRef.current ? '✓' : '✗'}</div>
+          <div>Centered: {isInitialCenteringDone ? '✓' : '✗'}</div>
         </div>
       )}
     </div>

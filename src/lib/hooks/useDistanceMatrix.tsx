@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import type { Reseller } from '@/types/reseller'
 
-// ✅ CORRECTION : Garder seulement DRIVING et WALKING
 export type TravelMode = 'DRIVING' | 'WALKING'
 
 export interface DistanceResult {
@@ -13,8 +12,8 @@ export interface DistanceResult {
   durationValue: number
 }
 
-const MAX_DESTINATIONS_PER_REQUEST = 25
 const CACHE_DURATION = 60 * 60 * 1000 // 1 heure
+const BATCH_DELAY = 100 // Délai entre les requêtes (ms)
 
 // Générer une clé de cache
 const getCacheKey = (
@@ -35,7 +34,6 @@ const loadFromCache = (cacheKey: string): Record<string, DistanceResult> | null 
     const { data, timestamp } = JSON.parse(cached)
     const now = Date.now()
 
-    // Vérifier si le cache est encore valide
     if (now - timestamp < CACHE_DURATION) {
       console.log('✅ Distances chargées depuis le cache')
       return data
@@ -63,6 +61,68 @@ const saveToCache = (cacheKey: string, data: Record<string, DistanceResult>) => 
   }
 }
 
+// Formater la distance
+const formatDistance = (meters: number): string => {
+  if (meters < 1000) {
+    return `${Math.round(meters)} m`
+  }
+  return `${(meters / 1000).toFixed(1)} km`
+}
+
+// Formater la durée
+const formatDuration = (seconds: number): string => {
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  
+  if (hours > 0) {
+    return `${hours}h ${minutes}min`
+  }
+  return `${minutes} min`
+}
+
+// Calculer une distance avec OSRM
+const calculateDistanceWithOSRM = async (
+  origin: { lat: number; lng: number },
+  destination: { lat: number; lng: number },
+  travelMode: TravelMode
+): Promise<DistanceResult | null> => {
+  try {
+    // Choisir le profil OSRM selon le mode
+    const profile = travelMode === 'DRIVING' ? 'car' : 'foot'
+    
+    // URL de l'API OSRM publique
+    const url = `https://router.project-osrm.org/route/v1/${profile}/${origin.lng},${origin.lat};${destination.lng},${destination.lat}?overview=false`
+    
+    const response = await fetch(url)
+    
+    if (!response.ok) {
+      console.warn(`⚠️ Erreur OSRM: ${response.status}`)
+      return null
+    }
+    
+    const data = await response.json()
+    
+    if (data.code !== 'Ok' || !data.routes || data.routes.length === 0) {
+      console.warn('⚠️ Pas de route trouvée')
+      return null
+    }
+    
+    const route = data.routes[0]
+    const distanceMeters = route.distance
+    const durationSeconds = route.duration
+    
+    return {
+      distance: formatDistance(distanceMeters),
+      duration: formatDuration(durationSeconds),
+      distanceValue: distanceMeters,
+      durationValue: durationSeconds,
+    }
+  } catch (err) {
+    console.error('❌ Erreur calcul OSRM:', err)
+    return null
+  }
+}
+
 export const useDistanceMatrix = (
   userLocation: { lat: number; lng: number } | null,
   resellers: Reseller[],
@@ -77,11 +137,10 @@ export const useDistanceMatrix = (
   const lastTravelModeRef = useRef<TravelMode>(travelMode)
 
   const calculateDistances = useCallback(async () => {
-    console.log('🔍 [useDistanceMatrix] Début du calcul', {
+    console.log('🔍 [useDistanceMatrix] Début du calcul avec OSRM', {
       userLocation,
       resellersCount: resellers.length,
-      travelMode,
-      googleMapsReady: typeof google !== 'undefined' && google.maps?.DistanceMatrixService
+      travelMode
     })
 
     if (!userLocation || resellers.length === 0) {
@@ -126,97 +185,50 @@ export const useDistanceMatrix = (
       return
     }
 
-    // Vérifier Google Maps
-    if (typeof google === 'undefined') {
-      console.error('❌ Google Maps non chargé')
-      setError('Google Maps non disponible')
-      return
-    }
-
-    if (!google.maps?.DistanceMatrixService) {
-      console.error('❌ DistanceMatrixService non disponible')
-      setError('Service de calcul non disponible')
-      return
-    }
-
-    // ✅ CORRECTION : Vérifier que le mode est valide
-    const validModes: TravelMode[] = ['DRIVING', 'WALKING']
-    if (!validModes.includes(travelMode)) {
-      console.error(`❌ Mode ${travelMode} non supporté`)
-      setError(`Mode ${travelMode} non disponible`)
-      return
-    }
-
     isCalculatingRef.current = true
     setIsLoading(true)
     setError(null)
     
-    console.log(`🗺️ Calcul des distances pour ${resellers.length} revendeurs (${travelMode})`)
+    console.log(`🗺️ Calcul des distances pour ${resellers.length} revendeurs avec OSRM (${travelMode})`)
 
     try {
-      const service = new google.maps.DistanceMatrixService()
-      const origin = new google.maps.LatLng(userLocation.lat, userLocation.lng)
       const allDistances: Record<string, DistanceResult> = {}
+      let successCount = 0
+      let errorCount = 0
 
-      // Diviser en batches
-      const batches: Reseller[][] = []
-      for (let i = 0; i < resellers.length; i += MAX_DESTINATIONS_PER_REQUEST) {
-        batches.push(resellers.slice(i, i + MAX_DESTINATIONS_PER_REQUEST))
-      }
-
-      console.log(`📦 ${batches.length} batch(es) à traiter`)
-
-      // Traiter chaque batch
-      for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
-        const batch = batches[batchIndex]
-        console.log(`⏳ Batch ${batchIndex + 1}/${batches.length} (${batch.length} revendeurs)`)
-
-        const destinations = batch.map(r => new google.maps.LatLng(r.lat, r.lng))
-
-        const response = await new Promise<google.maps.DistanceMatrixResponse>((resolve, reject) => {
-          service.getDistanceMatrix(
-            {
-              origins: [origin],
-              destinations: destinations,
-              travelMode: google.maps.TravelMode[travelMode],
-              unitSystem: google.maps.UnitSystem.METRIC,
-            },
-            (result, status) => {
-              if (status === google.maps.DistanceMatrixStatus.OK && result) {
-                resolve(result)
-              } else {
-                console.error(`❌ Erreur batch ${batchIndex + 1}:`, status)
-                reject(new Error(`Erreur: ${status}`))
-              }
-            }
-          )
-        })
-
-        // Traiter les résultats du batch
-        response.rows[0].elements.forEach((element, index) => {
-          const reseller = batch[index]
-          if (element.status === 'OK') {
-            allDistances[reseller.id] = {
-              distance: element.distance.text,
-              duration: element.duration.text,
-              distanceValue: element.distance.value,
-              durationValue: element.duration.value,
-            }
-          } else {
-            console.warn(`⚠️ Pas de route pour ${reseller.name}: ${element.status}`)
-          }
-        })
-
-        console.log(`✅ Batch ${batchIndex + 1} traité`)
-
-        // Petite pause entre les batches
-        if (batchIndex < batches.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 200))
+      // Calculer les distances une par une avec un délai
+      for (let i = 0; i < resellers.length; i++) {
+        const reseller = resellers[i]
+        
+        const result = await calculateDistanceWithOSRM(
+          userLocation,
+          { lat: reseller.lat, lng: reseller.lng },
+          travelMode
+        )
+        
+        if (result) {
+          allDistances[reseller.id] = result
+          successCount++
+        } else {
+          errorCount++
+          console.warn(`⚠️ Impossible de calculer la distance pour ${reseller.name}`)
+        }
+        
+        // Petit délai entre chaque requête pour éviter de surcharger l'API
+        if (i < resellers.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, BATCH_DELAY))
+        }
+        
+        // Afficher la progression tous les 5 revendeurs
+        if ((i + 1) % 5 === 0 || i === resellers.length - 1) {
+          console.log(`⏳ Progression: ${i + 1}/${resellers.length} revendeurs traités`)
         }
       }
 
       // Sauvegarder en cache
-      saveToCache(cacheKey, allDistances)
+      if (Object.keys(allDistances).length > 0) {
+        saveToCache(cacheKey, allDistances)
+      }
       
       // Mettre à jour les références
       lastUserLocationRef.current = userLocationKey
@@ -225,26 +237,15 @@ export const useDistanceMatrix = (
       
       // Mettre à jour l'état
       setDistances(allDistances)
-      console.log(`✅ ${Object.keys(allDistances).length} distances calculées`)
+      console.log(`✅ ${successCount} distances calculées (${errorCount} erreurs)`)
+      
+      if (errorCount > 0) {
+        setError(`${errorCount} revendeur(s) non accessible(s)`)
+      }
       
     } catch (err: any) {
       console.error('❌ Erreur calcul distances:', err)
-      
-      // Gestion des erreurs spécifiques
-      if (err.message.includes('OVER_QUERY_LIMIT')) {
-        setError('Limite de requêtes dépassée')
-        console.error('❌ Vérifiez votre quota Google Maps API')
-      } else if (err.message.includes('REQUEST_DENIED')) {
-        setError('Accès refusé - vérifiez la clé API')
-      } else if (err.message.includes('INVALID_REQUEST')) {
-        setError('Requête invalide')
-      } else if (err.message.includes('UNKNOWN_ERROR')) {
-        setError('Erreur inconnue, réessayez')
-      } else {
-        setError('Impossible de calculer les distances')
-      }
-      
-      // Vider les distances en cas d'erreur
+      setError('Impossible de calculer les distances')
       setDistances({})
     } finally {
       setIsLoading(false)
@@ -252,13 +253,8 @@ export const useDistanceMatrix = (
     }
   }, [userLocation, resellers, travelMode, distances])
 
-  // ✅ CORRECTION : Recréer les distances quand les paramètres changent
   useEffect(() => {
-    console.log('🔄 [useDistanceMatrix] Dépendances changées:', {
-      userLocation,
-      resellersCount: resellers.length,
-      travelMode
-    })
+    console.log('🔄 [useDistanceMatrix] Dépendances changées')
     
     const timer = setTimeout(() => {
       calculateDistances()

@@ -6,9 +6,24 @@ export interface Reseller {
   lat: number
   lng: number
   phone: string
-  whatsapp?: string; // AJOUTEZ CETTE LIGNE
-  type: 'Quincaillerie' | 'Épicerie' | 'Station Service' |'Autres'
+  whatsapp?: string
+  type: 'Quincaillerie' | 'Épicerie' | 'Station Service' | 'Libre service' | 'Autres'
   services: string[]
   hours?: string
   rating?: number
+  reseller_products?: Array<{
+    product_id: string
+    products: {
+      id: string
+      name: string
+      price: number
+      category: string
+      image_url?: string
+      description?: string
+      product_code?: string
+      created_at?: string
+      updated_at?: string
+      deleted_at?: string | null
+    }
+  }>
 }
