@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import type { Reseller } from '@/types/reseller'
 import { RefreshCw } from 'lucide-react'
 
@@ -11,10 +11,32 @@ interface MapFiltersProps {
 
 export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChange }) => {
   const [selectedType, setSelectedType] = useState<'all' | Reseller['type']>('all')
-  const [selectedServices, setSelectedServices] = useState<string[]>([])
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([])
   const [selectedCity, setSelectedCity] = useState<string>('all')
 
   const cities = Array.from(new Set(resellers.map(r => r.city))).sort()
+
+  // Extraction dynamique des produits uniques depuis reseller_products
+  const availableProducts = useMemo(() => {
+    const productsMap = new Map<string, { id: string; name: string; category: string }>()
+    
+    resellers.forEach(reseller => {
+      if (Array.isArray(reseller.reseller_products)) {
+        reseller.reseller_products.forEach(rp => {
+          if (rp.products && !productsMap.has(rp.products.id)) {
+            productsMap.set(rp.products.id, {
+              id: rp.products.id,
+              name: rp.products.name,
+              category: rp.products.category || 'Autre'
+            })
+          }
+        })
+      }
+    })
+
+    // Tri alphabétique par nom
+    return Array.from(productsMap.values()).sort((a, b) => a.name.localeCompare(b.name))
+  }, [resellers])
 
   const applyFilters = useCallback(() => {
     let filtered = resellers
@@ -23,38 +45,55 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
       filtered = filtered.filter(r => r.type === selectedType)
     }
 
-    if (selectedServices.length > 0) {
-      filtered = filtered.filter(r =>
-        selectedServices.every(service => r.services.includes(service))
-      )
+    if (selectedProducts.length > 0) {
+      filtered = filtered.filter(r => {
+        if (!Array.isArray(r.reseller_products)) return false
+        const resellerProductIds = r.reseller_products.map(rp => rp.product_id)
+        return selectedProducts.every(productId => resellerProductIds.includes(productId))
+      })
     }
 
     if (selectedCity !== 'all') {
       filtered = filtered.filter(r => r.city === selectedCity)
     }
 
+    console.log('🎯 Filtres appliqués:', filtered.length, 'revendeurs')
     onFilterChange(filtered)
-  }, [selectedType, selectedServices, selectedCity, resellers, onFilterChange])
+  }, [selectedType, selectedProducts, selectedCity, resellers, onFilterChange])
 
   useEffect(() => {
     applyFilters()
   }, [applyFilters])
 
-  const toggleService = (service: string) => {
-    setSelectedServices(prev =>
-      prev.includes(service)
-        ? prev.filter(s => s !== service)
-        : [...prev, service]
+  const toggleProduct = (productId: string) => {
+    setSelectedProducts(prev =>
+      prev.includes(productId)
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
     )
   }
 
   const resetFilters = () => {
     setSelectedType('all')
-    setSelectedServices([])
+    setSelectedProducts([])
     setSelectedCity('all')
   }
 
-  const hasActiveFilters = selectedType !== 'all' || selectedServices.length > 0 || selectedCity !== 'all'
+  const hasActiveFilters = selectedType !== 'all' || selectedProducts.length > 0 || selectedCity !== 'all'
+
+  // Fonction pour obtenir la couleur du badge selon la catégorie
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'Bouteille':
+        return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-800'
+      case 'Accessoire':
+        return 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 border-purple-200 dark:border-purple-800'
+      case 'Kit':
+        return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-800'
+      default:
+        return 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700'
+    }
+  }
 
   return (
     <div className="w-full">
@@ -92,18 +131,18 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
             </div>
           )}
 
-          {/* Services */}
-          {(['Bouteille 9kg', 'Bouteille 13kg', 'Kit Fatapera', 'Détendeur', 'Pack connectique'] as const).map(service => (
+          {/* Produits dynamiques */}
+          {availableProducts.map(product => (
             <button
-              key={service}
-              onClick={() => toggleService(service)}
+              key={product.id}
+              onClick={() => toggleProduct(product.id)}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 border shrink-0 ${
-                selectedServices.includes(service)
+                selectedProducts.includes(product.id)
                   ? 'bg-primary text-white border-primary'
-                  : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600'
+                  : `${getCategoryColor(product.category)} hover:opacity-80`
               }`}
             >
-              {service}
+              {product.name}
             </button>
           ))}
         </div>
@@ -155,19 +194,19 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
           )}
         </div>
 
-        {/* Services en grille */}
+        {/* Produits en grille */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {(['Bouteille 9kg', 'Bouteille 13kg', 'Kit Fatapera', 'Détendeur', 'Pack connectique'] as const).map(service => (
+          {availableProducts.map(product => (
             <button
-              key={service}
-              onClick={() => toggleService(service)}
+              key={product.id}
+              onClick={() => toggleProduct(product.id)}
               className={`px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 border ${
-                selectedServices.includes(service)
+                selectedProducts.includes(product.id)
                   ? 'bg-primary text-white border-primary'
-                  : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600'
+                  : `${getCategoryColor(product.category)} hover:opacity-80`
               }`}
             >
-              {service}
+              {product.name}
             </button>
           ))}
         </div>
