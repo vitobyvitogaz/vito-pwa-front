@@ -7,7 +7,7 @@ export interface Reseller {
   lng: number
   phone: string
   whatsapp?: string
-  type: 'Quincaillerie' | 'Épicerie' | 'Station Service' | 'Libre service' | 'Autres'
+  type: 'Quincaillerie' | 'Épicerie' | 'Station Service' | 'Libre Service' | 'Maison du gaz' | 'Autres'
   services: string[]
   hours?: string
   rating?: number
