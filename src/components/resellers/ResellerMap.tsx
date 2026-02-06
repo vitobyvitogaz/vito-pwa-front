@@ -14,27 +14,49 @@ interface ResellerMapProps {
 }
 
 // Couleurs par type de revendeur
+/*
 const getColorForType = (type: Reseller['type']) => {
   switch (type) {
     case 'Quincaillerie':
-      return '#C8102E'
+      return '#C8102E' // Rouge
     case 'Épicerie':
-      return '#008B7F'
+      return '#008B7F' // Vert émeraude
     case 'Station Service':
-      return '#FF8C00'
-    case 'Libre service':
-      return '#7C3AED'
+      return '#FF8C00' // Orange
+    case 'Libre Service':
+      return '#7C3AED' // Violet
+    case 'Maison du gaz':
+      return '#F59E0B' // Ambre
     default:
-      return '#4B5563'
+      return '#4B5563' // Gris
+  }
+}
+*/
+// Couleurs par type de revendeur
+const getColorForType = (type: Reseller['type']) => {
+  switch (type) {
+    case 'Quincaillerie':
+      return '#C8102E' // Rouge
+    case 'Épicerie':
+      return '#008B7F' // Vert émeraude
+    case 'Station Service':
+      return '#FF8C00' // Orange
+    case 'Libre Service':  // ← MAJUSCULE ICI
+      return '#7C3AED' // Violet
+    case 'Maison du gaz':
+      return '#F59E0B' // Ambre
+    default:
+      return '#4B5563' // Gris
   }
 }
 
 // Configuration de la légende
 const LEGEND_ITEMS = [
+  { type: 'Station Service' as const, color: '#FF8C00', label: 'Station Service' },
   { type: 'Quincaillerie' as const, color: '#C8102E', label: 'Quincaillerie' },
   { type: 'Épicerie' as const, color: '#008B7F', label: 'Épicerie' },
-  { type: 'Station Service' as const, color: '#FF8C00', label: 'Station Service' },
-  { type: 'Libre service' as const, color: '#7C3AED', label: 'Libre service' },
+  { type: 'Libre Service' as const, color: '#7C3AED', label: 'Libre Service' },
+  { type: 'Maison du gaz' as const, color: '#F59E0B', label: 'Maison du gaz' },
 ]
 
 // Créer une icône personnalisée pour les revendeurs
@@ -85,43 +107,51 @@ const MapController = ({
   resellers,
   selectedReseller,
   userLocation,
-  isInitialCenteringDone,
-  setIsInitialCenteringDone,
 }: {
   resellers: Reseller[]
   selectedReseller: Reseller | null
   userLocation: { lat: number; lng: number } | null
-  isInitialCenteringDone: boolean
-  setIsInitialCenteringDone: (value: boolean) => void
 }) => {
   const map = useMap()
+  const [hasInitialCentering, setHasInitialCentering] = useState(false)
 
-  // Centrer sur la position utilisateur avec zoom 2km
+  // Centrage initial sur la position utilisateur avec zoom 2km
   useEffect(() => {
-    if (userLocation && !isInitialCenteringDone) {
+    if (userLocation && !hasInitialCentering) {
       // Zoom 15 = environ 2km de rayon
       map.setView([userLocation.lat, userLocation.lng], 15)
-      setIsInitialCenteringDone(true)
+      setHasInitialCentering(true)
       console.log('📍 Carte centrée sur position utilisateur (rayon 2km)')
     }
-  }, [userLocation, isInitialCenteringDone, map, setIsInitialCenteringDone])
+  }, [userLocation, hasInitialCentering, map])
 
-  // Centrer sur tous les markers si pas de position utilisateur
+  // Centrage initial sur tous les markers si pas de position utilisateur
   useEffect(() => {
-    if (!userLocation && resellers.length > 0 && !isInitialCenteringDone) {
+    if (!userLocation && resellers.length > 0 && !hasInitialCentering) {
       const bounds = L.latLngBounds(
         resellers.map((r) => [r.lat, r.lng])
       )
       map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 })
-      setIsInitialCenteringDone(true)
+      setHasInitialCentering(true)
       console.log('📍 Carte centrée sur tous les revendeurs')
     }
-  }, [userLocation, resellers, isInitialCenteringDone, map, setIsInitialCenteringDone])
+  }, [userLocation, resellers, hasInitialCentering, map])
+
+  // Recentrer quand les revendeurs changent (filtrage)
+  useEffect(() => {
+    if (hasInitialCentering && resellers.length > 0) {
+      const bounds = L.latLngBounds(
+        resellers.map((r) => [r.lat, r.lng])
+      )
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 })
+      console.log('🔄 Carte recentrée après filtrage:', resellers.length, 'revendeurs')
+    }
+  }, [resellers, hasInitialCentering, map])
 
   // Centrer sur le revendeur sélectionné
   useEffect(() => {
     if (selectedReseller) {
-      map.setView([selectedReseller.lat, selectedReseller.lng], 15, {
+      map.setView([selectedReseller.lat, selectedReseller.lng], 16, {
         animate: true,
       })
     }
@@ -136,7 +166,6 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
   onSelectReseller,
   userLocation,
 }) => {
-  const [isInitialCenteringDone, setIsInitialCenteringDone] = useState(false)
   const [isClient, setIsClient] = useState(false)
 
   // S'assurer qu'on est côté client (pour éviter les erreurs SSR)
@@ -187,8 +216,6 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
           resellers={resellers}
           selectedReseller={selectedReseller}
           userLocation={userLocation}
-          isInitialCenteringDone={isInitialCenteringDone}
-          setIsInitialCenteringDone={setIsInitialCenteringDone}
         />
 
         {/* Marker utilisateur */}
@@ -269,7 +296,6 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
         <div className="absolute bottom-4 right-4 bg-black/80 text-white text-xs p-2 rounded-xl z-[1000]">
           <div>Markers: {resellers.length}</div>
           <div>User loc: {userLocation ? '✓' : '✗'}</div>
-          <div>Centered: {isInitialCenteringDone ? '✓' : '✗'}</div>
         </div>
       )}
     </div>
