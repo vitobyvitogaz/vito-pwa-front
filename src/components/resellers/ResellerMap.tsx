@@ -14,7 +14,6 @@ interface ResellerMapProps {
 }
 
 // Couleurs par type de revendeur
-/*
 const getColorForType = (type: Reseller['type']) => {
   switch (type) {
     case 'Quincaillerie':
@@ -24,24 +23,6 @@ const getColorForType = (type: Reseller['type']) => {
     case 'Station Service':
       return '#FF8C00' // Orange
     case 'Libre Service':
-      return '#7C3AED' // Violet
-    case 'Maison du gaz':
-      return '#F59E0B' // Ambre
-    default:
-      return '#4B5563' // Gris
-  }
-}
-*/
-// Couleurs par type de revendeur
-const getColorForType = (type: Reseller['type']) => {
-  switch (type) {
-    case 'Quincaillerie':
-      return '#C8102E' // Rouge
-    case 'Épicerie':
-      return '#008B7F' // Vert émeraude
-    case 'Station Service':
-      return '#FF8C00' // Orange
-    case 'Libre Service':  // ← MAJUSCULE ICI
       return '#7C3AED' // Violet
     case 'Maison du gaz':
       return '#F59E0B' // Ambre
@@ -140,13 +121,20 @@ const MapController = ({
   // Recentrer quand les revendeurs changent (filtrage)
   useEffect(() => {
     if (hasInitialCentering && resellers.length > 0) {
-      const bounds = L.latLngBounds(
-        resellers.map((r) => [r.lat, r.lng])
-      )
-      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 })
-      console.log('🔄 Carte recentrée après filtrage:', resellers.length, 'revendeurs')
+      // Si l'utilisateur a une position, garder le centrage sur lui avec un rayon fixe
+      if (userLocation) {
+        map.setView([userLocation.lat, userLocation.lng], 13, { animate: true })
+        console.log('🔄 Carte maintenue sur position utilisateur après filtrage')
+      } else {
+        // Sinon, recentrer sur tous les marqueurs
+        const bounds = L.latLngBounds(
+          resellers.map((r) => [r.lat, r.lng])
+        )
+        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 13 })
+        console.log('🔄 Carte recentrée sur tous les marqueurs:', resellers.length)
+      }
     }
-  }, [resellers, hasInitialCentering, map])
+  }, [resellers, hasInitialCentering, userLocation, map])
 
   // Centrer sur le revendeur sélectionné
   useEffect(() => {
