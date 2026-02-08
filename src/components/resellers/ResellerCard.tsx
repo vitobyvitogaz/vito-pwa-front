@@ -5,6 +5,7 @@ import type { Reseller } from '@/types/reseller'
 import { Phone, MapPin, Clock, Navigation, MessageCircle, Wrench, ShoppingBag, Truck, Store } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 import type { DistanceResult } from '@/lib/hooks/useDistanceMatrix'
+import { BusinessHours } from './BusinessHours'
 
 interface ResellerCardProps {
   reseller: Reseller
@@ -155,6 +156,17 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
         <MapPin className="w-4 h-4 text-neutral-500 dark:text-neutral-400 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
         <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">{reseller.address}</p>
       </div>
+
+      {/* Horaires détaillés */}
+      {reseller.hours && (
+        <div className="mb-4">
+          <BusinessHours
+            hours={reseller.hours}
+            currentDay={reseller.business_status?.currentDay}
+            isOpen={reseller.business_status?.isOpen}
+          />
+        </div>
+      )}
 
       {/* Services */}
       <div className="flex flex-wrap gap-2 mb-4">
