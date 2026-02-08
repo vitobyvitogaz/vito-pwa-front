@@ -1,8 +1,5 @@
 'use client'
 
-//import { useState, useMemo, useCallback, useEffect } from 'react'
-//import { ResellerMap } from '@/components/resellers/ResellerMap'
-//import { ResellersList } from '@/components/resellers/ResellersList'
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 
@@ -23,7 +20,6 @@ const ResellerMap = dynamic(
 )
 
 import { ResellersList } from '@/components/resellers/ResellersList'
-
 import { MapFilters } from '@/components/resellers/MapFilters'
 import { GeolocationButton } from '@/components/resellers/GeolocationButton'
 import { TravelModeSelector } from '@/components/resellers/TravelModeSelector'
@@ -31,7 +27,7 @@ import { GeolocationPrompt } from '@/components/resellers/GeolocationPrompt'
 import { MapPin, List, Grid3x3, Navigation, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
 import type { Reseller } from '@/types/reseller'
 import { useResellerStore } from '@/store/useResellerStore'
-import { useDistanceMatrix, type TravelMode } from '@/lib/hooks/useDistanceMatrix'
+import { useOptimizedDistances, type TravelMode } from '@/lib/hooks/useOptimizedDistances'
 
 const PAGE_SIZE = 10
 
@@ -95,10 +91,8 @@ export default function ResellersPage() {
       lng: location.lng.toFixed(6)
     })
     
-    // Sauvegarder la position
     setUserLocation(location)
     saveUserLocation(location)
-    
     setHasGeolocationAttempted(true)
     setIsGeolocationLoading(false)
     setShowGeolocationPrompt(false)
@@ -132,8 +126,8 @@ export default function ResellersPage() {
     setIsGeolocationLoading(false)
   }, [])
 
-  // Hook de calcul des distances
-  const { distances, isLoading: isLoadingDistances, error: distanceError } = useDistanceMatrix(
+  // Hook optimisé de calcul des distances
+  const { distances, sortedResellers, isLoading: isLoadingDistances } = useOptimizedDistances(
     userLocation,
     filteredResellers,
     travelMode
@@ -149,33 +143,6 @@ export default function ResellersPage() {
     }
   }, [distances])
 
-  // Trier les revendeurs par distance
-  const sortedResellers = useMemo(() => {
-    // Si pas de position utilisateur, retourner les revendeurs filtrés sans tri
-    if (!userLocation) {
-      return filteredResellers
-    }
-    
-    // Si pas de distances calculées, retourner les revendeurs filtrés
-    if (!distances || Object.keys(distances).length === 0) {
-      return filteredResellers
-    }
-
-    // Vérifier qu'on a des distances pour au moins certains revendeurs
-    const revendeursAvecDistance = filteredResellers.filter(r => distances[r.id])
-    const revendeursSansDistance = filteredResellers.filter(r => !distances[r.id])
-
-    // Trier ceux qui ont une distance
-    const tries = [...revendeursAvecDistance].sort((a, b) => {
-      const distA = distances[a.id]?.distanceValue ?? Infinity
-      const distB = distances[b.id]?.distanceValue ?? Infinity
-      return distA - distB
-    })
-
-    // Ajouter ceux sans distance à la fin
-    return [...tries, ...revendeursSansDistance]
-  }, [filteredResellers, distances, userLocation])
-
   const handleFilterChange = useCallback((filtered: Reseller[]) => {
     console.log(`🎯 Filtres appliqués: ${filtered.length} revendeurs`)
     setFilteredResellers(filtered)
@@ -187,12 +154,6 @@ export default function ResellersPage() {
     const start = (currentPage - 1) * PAGE_SIZE
     return sortedResellers.slice(start, start + PAGE_SIZE)
   }, [sortedResellers, currentPage])
-
-  // Liste des villes uniques
-  const cities = useMemo(
-    () => Array.from(new Set(resellers.map(r => r.city))).sort(),
-    [resellers]
-  )
 
   const handleTravelModeChange = useCallback((mode: TravelMode) => {
     console.log(`🚗 Mode de transport changé: ${mode}`)
@@ -385,37 +346,11 @@ export default function ResellersPage() {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-primary dark:text-primary-400">
-                        Calcul des distances en cours
+                        Calcul optimisé en cours
                       </p>
                       <p className="text-xs text-primary/80 dark:text-primary-300/80">
-                        Traitement de {filteredResellers.length} revendeurs
+                        Affichage instantané avec distances précises pour les plus proches
                       </p>
-                    </div>
-                  </div>
-                )}
-                
-                {distanceError && (
-                  <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
-                    <div className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-xl bg-red-100 dark:bg-red-800 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <AlertCircle className="w-3 h-3 text-red-600 dark:text-red-400" strokeWidth={1.5} />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-red-800 dark:text-red-300">
-                          Erreur de calcul
-                        </p>
-                        <p className="text-sm text-red-700/80 dark:text-red-400/80">
-                          {distanceError}
-                        </p>
-                        {!userLocation && (
-                          <button
-                            onClick={handleEnableGeolocation}
-                            className="mt-2 text-xs bg-red-600 text-white px-3 py-1.5 rounded-xl hover:bg-red-700 transition-all duration-300"
-                          >
-                            Réessayer avec GPS
-                          </button>
-                        )}
-                      </div>
                     </div>
                   </div>
                 )}
@@ -455,7 +390,7 @@ export default function ResellersPage() {
                           {Object.keys(distances).length} distances calculées
                         </p>
                         <p className="text-sm text-emerald-700/80 dark:text-emerald-400/80">
-                          Les revendeurs sont triés par proximité
+                          Revendeurs triés par proximité • ≈ = Distance estimée
                         </p>
                       </div>
                     </div>
