@@ -5,8 +5,8 @@ import type { Reseller } from '@/types/reseller'
 import { Phone, MapPin, Clock, Navigation, MessageCircle, Wrench, ShoppingBag, Truck, Store } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 import type { DistanceResult } from '@/lib/hooks/useDistanceMatrix'
-import { BusinessHours } from './BusinessHours'
-import { ProductsDisplay } from './ProductsDisplay'
+import { BusinessHoursCompact } from './BusinessHoursCompact'
+import { ProductsDisplayCompact } from './ProductsDisplayCompact'
 
 interface ResellerCardProps {
   reseller: Reseller
@@ -153,15 +153,15 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
       )}
 
       {/* Adresse */}
-      <div className="flex items-start gap-2 mb-4">
+      <div className="flex items-start gap-2 mb-3">
         <MapPin className="w-4 h-4 text-neutral-500 dark:text-neutral-400 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
         <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">{reseller.address}</p>
       </div>
 
-      {/* Horaires détaillés */}
+      {/* Horaires compacts */}
       {reseller.hours && (
-        <div className="mb-4">
-          <BusinessHours
+        <div className="mb-3">
+          <BusinessHoursCompact
             hours={reseller.hours}
             currentDay={reseller.business_status?.currentDay}
             isOpen={reseller.business_status?.isOpen}
@@ -169,22 +169,24 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
         </div>
       )}
 
-      {/* Produits disponibles */}
+      {/* Produits compacts */}
       <div className="mb-4">
-        <ProductsDisplay reseller={reseller} />
+        <ProductsDisplayCompact reseller={reseller} />
       </div>
 
       {/* Services */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        {Array.isArray(reseller.services) && reseller.services.map(service => (
-          <span
-            key={service}
-            className="px-2.5 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl text-xs font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700"
-          >
-            {service}
-          </span>
-        ))}
-      </div>
+      {Array.isArray(reseller.services) && reseller.services.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          {reseller.services.map(service => (
+            <span
+              key={service}
+              className="px-2.5 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl text-xs font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700"
+            >
+              {service}
+            </span>
+          ))}
+        </div>
+      )}
 
       {/* Actions */}
       <div className="flex gap-2">
