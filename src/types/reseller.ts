@@ -40,10 +40,10 @@ export interface Reseller {
   whatsapp?: string;
   type: 'Quincaillerie' | 'Épicerie' | 'Station Service' | 'Libre Service' | 'Maison du gaz' | 'Autres';
   services: string[];
-  hours?: BusinessHours; // 👈 MODIFIÉ (était string)
+  hours?: BusinessHours;
   rating?: number;
-  business_status?: BusinessStatus; // 👈 NOUVEAU
-  segment_id?: number; // 👈 NOUVEAU
+  business_status?: BusinessStatus;
+  segment_id?: number;
   reseller_products?: Array<{
     product_id: string;
     products: {
@@ -54,6 +54,9 @@ export interface Reseller {
       image_url?: string;
       description?: string;
       product_code?: string;
+      is_featured?: boolean; // 👈 AJOUTÉ
+      is_active?: boolean;    // 👈 AJOUTÉ (bonus)
+      order_position?: number; // 👈 AJOUTÉ (bonus)
       created_at?: string;
       updated_at?: string;
       deleted_at?: string | null;

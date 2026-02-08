@@ -6,6 +6,7 @@ import { Phone, MapPin, Clock, Navigation, MessageCircle, Wrench, ShoppingBag, T
 import { hapticFeedback } from '@/lib/utils/haptic'
 import type { DistanceResult } from '@/lib/hooks/useDistanceMatrix'
 import { BusinessHours } from './BusinessHours'
+import { ProductsDisplay } from './ProductsDisplay'
 
 interface ResellerCardProps {
   reseller: Reseller
@@ -167,6 +168,11 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
           />
         </div>
       )}
+
+      {/* Produits disponibles */}
+      <div className="mb-4">
+        <ProductsDisplay reseller={reseller} />
+      </div>
 
       {/* Services */}
       <div className="flex flex-wrap gap-2 mb-4">
