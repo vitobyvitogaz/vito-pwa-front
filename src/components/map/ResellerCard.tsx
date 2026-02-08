@@ -11,7 +11,6 @@ import type { Location } from '@/types'
 import {
   PhoneIcon,
   MapPinIcon,
-  ClockIcon,
 } from '@heroicons/react/24/outline'
 import { useTranslation } from 'react-i18next'
 
@@ -77,10 +76,26 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
           )}
         </div>
 
-        {reseller.hours && (
-          <div className="flex items-center text-sm text-light-text-secondary dark:text-dark-text-secondary mb-3">
-            <ClockIcon className="w-4 h-4 mr-1" />
-            {reseller.hours}
+        {/* Badge Ouvert/Fermé */}
+        {reseller.business_status && (
+          <div className="flex items-center gap-2 mb-3">
+            <span
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
+                reseller.business_status.isOpen
+                  ? 'bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800'
+                  : 'bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800'
+              }`}
+            >
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  reseller.business_status.isOpen ? 'bg-green-500' : 'bg-red-500'
+                }`}
+              />
+              {reseller.business_status.isOpen ? 'OUVERT' : 'FERMÉ'}
+            </span>
+            <span className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
+              {reseller.business_status.message}
+            </span>
           </div>
         )}
 
