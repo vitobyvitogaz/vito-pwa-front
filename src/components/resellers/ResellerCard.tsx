@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import type { Reseller } from '@/types/reseller'
-import { Phone, MapPin, Clock, Wrench, ShoppingBag, Truck, Store, Navigation, MessageCircle } from 'lucide-react'
+import { Phone, MapPin, Clock, Navigation, MessageCircle, Wrench, ShoppingBag, Truck, Store } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 import type { DistanceResult } from '@/lib/hooks/useDistanceMatrix'
 
@@ -113,6 +113,29 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
         {reseller.name}
       </h3>
 
+      {/* Badge Ouvert/Fermé */}
+      {reseller.business_status && (
+        <div className="flex items-center gap-2 mb-3">
+          <span
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
+              reseller.business_status.isOpen
+                ? 'bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800'
+                : 'bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800'
+            }`}
+          >
+            <span
+              className={`w-2 h-2 rounded-full ${
+                reseller.business_status.isOpen ? 'bg-green-500' : 'bg-red-500'
+              }`}
+            />
+            {reseller.business_status.isOpen ? 'OUVERT' : 'FERMÉ'}
+          </span>
+          <span className="text-xs text-neutral-500 dark:text-neutral-400">
+            {reseller.business_status.message}
+          </span>
+        </div>
+      )}
+
       {/* Distance si disponible */}
       {distance && (
         <div className="flex items-center gap-3 mb-3 text-sm">
@@ -128,29 +151,11 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
       )}
 
       {/* Adresse */}
-      <div className="flex items-start gap-2 mb-3">
+      <div className="flex items-start gap-2 mb-4">
         <MapPin className="w-4 h-4 text-neutral-500 dark:text-neutral-400 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
         <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">{reseller.address}</p>
       </div>
 
-      {/* Horaires */}
-      <div className="flex items-center gap-2 mb-4">
-        <Clock className="w-4 h-4 text-neutral-500 dark:text-neutral-400" strokeWidth={1.5} />
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">{reseller.hours}</p>
-      </div>
-      
-      {/* Services 
-      <div className="flex flex-wrap gap-2 mb-4">
-        {reseller.services?.map(service => (
-          <span
-            key={service}
-            className="px-2.5 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl text-xs font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700"
-          >
-            {service}
-          </span>
-        ))}
-      </div>
-      */}   
       {/* Services */}
       <div className="flex flex-wrap gap-2 mb-4">
         {Array.isArray(reseller.services) && reseller.services.map(service => (
