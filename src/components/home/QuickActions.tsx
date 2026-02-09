@@ -1,6 +1,6 @@
 'use client'
 
-import { Phone, MapPin, ChevronRight, Package } from 'lucide-react'
+import { Phone, MapPin, ChevronRight, Package, Briefcase } from 'lucide-react'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { hapticFeedback } from '@/lib/utils/haptic'
@@ -40,6 +40,18 @@ export const QuickActions: React.FC = () => {
       border: 'border-primary/20 dark:border-primary/30',
       action: () => {
         router.push('/fr/produits')
+      },
+    },
+    {
+      id: 'revendeur',
+      icon: Briefcase,
+      title: 'Devenir revendeur',
+      subtitle: 'Rejoignez notre réseau',
+      color: 'text-purple-600 dark:text-purple-400',
+      bg: 'bg-purple-50 dark:bg-purple-900/20',
+      border: 'border-purple-200 dark:border-purple-800',
+      action: () => {
+        router.push('/fr/contact-pro')
       },
     },
     {
