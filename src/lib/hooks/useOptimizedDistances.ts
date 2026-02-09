@@ -10,7 +10,7 @@ export interface DistanceResult {
   duration: string
   distanceValue: number
   durationValue: number
-  isEstimated: boolean // true = Haversine, false = OSRM
+  isEstimated: boolean
 }
 
 const CACHE_DURATION = 24 * 60 * 60 * 1000 // 24 heures
@@ -153,12 +153,14 @@ export function useOptimizedDistances(
   travelMode: TravelMode = 'DRIVING'
 ) {
   const [distances, setDistances] = useState<Record<string, DistanceResult>>({})
+  const [sortedResellers, setSortedResellers] = useState<Reseller[]>(resellers)
   const [isLoading, setIsLoading] = useState(false)
   const isCalculatingRef = useRef(false)
 
   const calculateDistances = useCallback(async () => {
     if (!userLocation || resellers.length === 0) {
       setDistances({})
+      setSortedResellers(resellers)
       return
     }
 
@@ -190,7 +192,11 @@ export function useOptimizedDistances(
       // ÉTAPE 2 : Trier par distance Haversine
       withHaversine.sort((a, b) => a.haversineKm - b.haversineKm)
 
-      // ÉTAPE 3 : Créer distances estimées pour TOUS
+      // ÉTAPE 3 : Extraire les revendeurs triés
+      const sorted = withHaversine.map(item => item.reseller)
+      setSortedResellers(sorted)
+
+      // ÉTAPE 4 : Créer distances estimées pour TOUS
       withHaversine.forEach(({ reseller, haversineMeters }) => {
         const estimatedDurationSec = estimateDuration(haversineMeters / 1000, travelMode)
         
@@ -207,7 +213,7 @@ export function useOptimizedDistances(
       setDistances(result)
       console.log(`⚡ ${resellers.length} estimations Haversine affichées`)
 
-      // ÉTAPE 4 : Calculer précisément les N plus proches avec OSRM
+      // ÉTAPE 5 : Calculer précisément les N plus proches avec OSRM
       const closestResellers = withHaversine.slice(0, PRECISE_LIMIT)
       console.log(`🎯 Calcul OSRM précis pour ${closestResellers.length} revendeurs proches`)
 
@@ -268,6 +274,7 @@ export function useOptimizedDistances(
 
     } catch (err) {
       console.error('❌ Erreur calcul distances:', err)
+      setSortedResellers(resellers) // Fallback à l'ordre original
     } finally {
       setIsLoading(false)
       isCalculatingRef.current = false
@@ -282,6 +289,6 @@ export function useOptimizedDistances(
   return { 
     distances, 
     isLoading,
-    sortedResellers: resellers // Déjà triés par Haversine dans le calcul
+    sortedResellers // ✅ Maintenant triés par distance !
   }
 }
