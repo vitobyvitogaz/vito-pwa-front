@@ -58,7 +58,7 @@ export default function ContactProPage() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  /*const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!validateForm()) return
@@ -97,7 +97,61 @@ export default function ContactProPage() {
     } finally {
       setIsSubmitting(false)
     }
+  }*/
+
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  
+  if (!validateForm()) return
+
+  setIsSubmitting(true)
+  setSubmitStatus('idle')
+
+  try {
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/contact/professional`
+    console.log('🔍 URL complète:', apiUrl)
+    console.log('📤 Données:', formData)
+    
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    })
+
+    console.log('📥 Status:', response.status)
+    console.log('📥 OK:', response.ok)
+
+    // ✅ AJOUT : Lire la réponse même en cas d'erreur
+    const responseData = await response.json()
+    console.log('📥 Réponse serveur:', responseData)
+
+    if (!response.ok) {
+      console.error('❌ Erreur serveur:', responseData)
+      throw new Error(responseData.message || 'Erreur lors de l\'envoi')
+    }
+
+    setSubmitStatus('success')
+    
+    setTimeout(() => {
+      setFormData({
+        type: 'revendeur',
+        fullName: '',
+        company: '',
+        phone: '',
+        email: '',
+        city: '',
+        message: ''
+      })
+      setSubmitStatus('idle')
+    }, 3000)
+
+  } catch (error) {
+    console.error('❌ Erreur complète:', error)
+    setSubmitStatus('error')
+  } finally {
+    setIsSubmitting(false)
   }
+}
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16">
