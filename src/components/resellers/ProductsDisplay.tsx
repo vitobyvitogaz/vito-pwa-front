@@ -94,6 +94,8 @@ export const ProductsDisplay: React.FC<ProductsDisplayProps> = ({ reseller }) =>
                           src={product.image_url}
                           alt={product.name}
                           fill
+                          unoptimized
+                          sizes="(max-width: 768px) 50vw, 25vw"
                           className="object-contain p-2"
                         />
                       </div>
