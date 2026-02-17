@@ -1,5 +1,5 @@
 // src/lib/hooks/useAppSettings.ts
-// VERSION COMPLÈTE avec hero content
+// VERSION COMPLÈTE avec hero content - CORRIGÉE
 
 'use client';
 
@@ -28,10 +28,13 @@ export function useAppSettings(autoRefresh?: number): UseAppSettingsReturn {
       setLoading(true);
       setError(null);
       
+      console.log('📡 Fetching settings from backend API...');
       const data = await settingsService.getAllAsMap(true);
+      console.log('✅ Settings loaded:', Object.keys(data));
+      
       setSettings(data);
     } catch (err) {
-      console.error('Erreur chargement settings:', err);
+      console.error('❌ Erreur chargement settings:', err);
       setError(err instanceof Error ? err : new Error('Erreur inconnue'));
     } finally {
       setLoading(false);
@@ -78,38 +81,59 @@ export function useHeroBanner() {
 
 /**
  * Hook spécialisé pour TOUT le contenu hero
- * Bannière + Titre + Sous-titre + Description + Stats
+ * Bannière Desktop + Mobile + Titre + Sous-titre + Description + Stats
  */
 export function useHeroContent() {
   const { settings, loading, error, getSettingValue } = useAppSettings();
 
+  // Récupérer l'URL desktop pour servir de fallback au mobile
+  const desktopUrl = getSettingValue('hero_banner_url', '/images/hero-banner.jpg');
+  const mobileUrl = getSettingValue('hero_banner_url_mobile', desktopUrl);
+  const title = getSettingValue('hero_title', 'VITO');
+  const subtitle = getSettingValue('hero_subtitle', 'Rapide. Fiable. Centré sur l\'essentiel.');
+  const description = getSettingValue(
+    'hero_description',
+    'VITO transforme votre expérience Vitogaz. Quatre boutons simples vous donnent un contrôle total : trouver un revendeur, commander en ligne, être au courant des promotions et gérer votre prêt PAMF pour acheter votre gaz.'
+  );
+
+  const stats = [
+    {
+      value: getSettingValue('stat_1_value', '+100'),
+      label: getSettingValue('stat_1_label', 'Points de vente'),
+    },
+    {
+      value: getSettingValue('stat_2_value', '24/7'),
+      label: getSettingValue('stat_2_label', 'Service client'),
+    },
+    {
+      value: getSettingValue('stat_3_value', '100%'),
+      label: getSettingValue('stat_3_label', 'Sécurité garantie'),
+    },
+  ];
+
+  // LOG POUR DEBUGGING
+  console.log('🔍 Hero Content:', {
+    desktopUrl,
+    mobileUrl,
+    title,
+    loading,
+    settingsCount: Object.keys(settings).length
+  });
+
   return {
-    // Bannière
-    bannerUrl: getSettingValue('hero_banner_url', '/images/hero-banner.jpg'),
+    // Bannière DESKTOP (paysage 1920x1080)
+    bannerUrlDesktop: desktopUrl,
+
+    // Bannière MOBILE (portrait 1080x1350) - fallback sur desktop si non définie
+    bannerUrlMobile: mobileUrl,
     
     // Textes
-    title: getSettingValue('hero_title', 'VITO'),
-    subtitle: getSettingValue('hero_subtitle', 'Rapide. Fiable. Centré sur l\'essentiel.'),
-    description: getSettingValue(
-      'hero_description',
-      'VITO transforme votre expérience Vitogaz. Quatre boutons simples vous donnent un contrôle total : trouver un revendeur, commander en ligne, être au courant des promotions et gérer votre prêt PAMF pour acheter votre gaz.'
-    ),
+    title,
+    subtitle,
+    description,
     
     // Statistiques
-    stats: [
-      {
-        value: getSettingValue('stat_1_value', '+100'),
-        label: getSettingValue('stat_1_label', 'Points de vente'),
-      },
-      {
-        value: getSettingValue('stat_2_value', '24/7'),
-        label: getSettingValue('stat_2_label', 'Service client'),
-      },
-      {
-        value: getSettingValue('stat_3_value', '100%'),
-        label: getSettingValue('stat_3_label', 'Sécurité garantie'),
-      },
-    ],
+    stats,
     
     // États
     loading,
