@@ -24,6 +24,14 @@ export default function HomePage() {
     initializePopup(promotions)
   }, [initializePopup])
 
+  // Vérifier si la Glass Card a du contenu
+  const hasContent = !heroLoading && (
+    title || 
+    subtitle || 
+    description || 
+    (stats && stats.length > 0)
+  )
+
   return (
     <main className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16">
       <OfflineBanner />
@@ -62,8 +70,8 @@ export default function HomePage() {
         {/* Overlay léger pour profondeur */}
         <div className="absolute inset-0 bg-black/10" />
 
-        {/* Glass Card avec bouton fermer */}
-        {showGlassCard && (
+        {/* Glass Card avec bouton fermer - SEULEMENT SI CONTENU */}
+        {hasContent && showGlassCard && (
           <div className="absolute inset-0 flex items-center justify-center animate-fade-in">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               
@@ -79,38 +87,36 @@ export default function HomePage() {
                   <X className="w-5 h-5 text-white group-hover:rotate-90 transition-transform duration-200" />
                 </button>
 
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold text-white mb-4 tracking-tight animate-slide-up drop-shadow-2xl text-center">
-                  {heroLoading ? '...' : title}
-                </h1>
+                {/* Titre */}
+                {title && (
+                  <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold text-white mb-4 tracking-tight animate-slide-up drop-shadow-2xl text-center">
+                    {title}
+                  </h1>
+                )}
 
-                <h2 className="text-lg sm:text-xl md:text-2xl font-medium text-white mb-6 tracking-tight animate-slide-up drop-shadow-lg text-center" style={{ animationDelay: '0.05s' }}>
-                  {heroLoading ? '...' : subtitle}
-                </h2>
+                {/* Sous-titre */}
+                {subtitle && (
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-medium text-white mb-6 tracking-tight animate-slide-up drop-shadow-lg text-center" style={{ animationDelay: '0.05s' }}>
+                    {subtitle}
+                  </h2>
+                )}
 
-                <p className="text-base text-white/95 leading-relaxed mb-8 animate-slide-up drop-shadow-lg text-center max-w-xl mx-auto" style={{ animationDelay: '0.1s' }}>
-                  {heroLoading ? 'Chargement...' : description}
-                </p>
+                {/* Description */}
+                {description && (
+                  <p className="text-base text-white/95 leading-relaxed mb-8 animate-slide-up drop-shadow-lg text-center max-w-xl mx-auto" style={{ animationDelay: '0.1s' }}>
+                    {description}
+                  </p>
+                )}
 
-                <div className="w-16 h-1 bg-white mb-8 rounded-full animate-slide-up drop-shadow-lg mx-auto" style={{ animationDelay: '0.15s' }} />
+                {/* Séparateur si textes présents */}
+                {(title || subtitle || description) && stats.length > 0 && (
+                  <div className="w-16 h-1 bg-white mb-8 rounded-full animate-slide-up drop-shadow-lg mx-auto" style={{ animationDelay: '0.15s' }} />
+                )}
 
-                <div className="flex flex-wrap justify-center gap-6 sm:gap-8 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                  {heroLoading ? (
-                    <>
-                      <div className="animate-pulse text-center">
-                        <div className="h-8 w-16 bg-white/20 rounded mb-2 mx-auto"></div>
-                        <div className="h-4 w-24 bg-white/20 rounded mx-auto"></div>
-                      </div>
-                      <div className="animate-pulse text-center">
-                        <div className="h-8 w-16 bg-white/20 rounded mb-2 mx-auto"></div>
-                        <div className="h-4 w-24 bg-white/20 rounded mx-auto"></div>
-                      </div>
-                      <div className="animate-pulse text-center">
-                        <div className="h-8 w-16 bg-white/20 rounded mb-2 mx-auto"></div>
-                        <div className="h-4 w-24 bg-white/20 rounded mx-auto"></div>
-                      </div>
-                    </>
-                  ) : (
-                    stats.map((stat, index) => (
+                {/* Stats */}
+                {stats.length > 0 && (
+                  <div className="flex flex-wrap justify-center gap-6 sm:gap-8 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                    {stats.map((stat, index) => (
                       <div key={index} className="text-center">
                         <div className="text-xl sm:text-2xl font-semibold text-white mb-1 drop-shadow-lg">
                           {stat.value}
@@ -119,16 +125,16 @@ export default function HomePage() {
                           {stat.label}
                         </div>
                       </div>
-                    ))
-                  )}
-                </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
         )}
 
-        {/* Bouton pour rouvrir la Glass Card */}
-        {!showGlassCard && (
+        {/* Bouton pour rouvrir la Glass Card - SEULEMENT SI CONTENU */}
+        {hasContent && !showGlassCard && (
           <div className="absolute bottom-8 right-8 animate-fade-in">
             <button
               onClick={() => setShowGlassCard(true)}
@@ -167,8 +173,8 @@ export default function HomePage() {
         {/* Overlay léger pour profondeur */}
         <div className="absolute inset-0 bg-black/10" />
 
-        {/* Glass Card avec bouton fermer */}
-        {showGlassCard && (
+        {/* Glass Card avec bouton fermer - SEULEMENT SI CONTENU */}
+        {hasContent && showGlassCard && (
           <div className="absolute inset-0 flex items-center justify-center px-4 animate-fade-in">
             
             {/* Glass Card CENTRÉE */}
@@ -183,34 +189,36 @@ export default function HomePage() {
                 <X className="w-4 h-4 text-white group-hover:rotate-90 transition-transform duration-200" />
               </button>
 
-              <h1 className="text-3xl font-semibold text-white mb-3 tracking-tight animate-slide-up drop-shadow-2xl text-center pr-8">
-                {heroLoading ? '...' : title}
-              </h1>
+              {/* Titre */}
+              {title && (
+                <h1 className="text-3xl font-semibold text-white mb-3 tracking-tight animate-slide-up drop-shadow-2xl text-center pr-8">
+                  {title}
+                </h1>
+              )}
 
-              <h2 className="text-base font-medium text-white mb-4 tracking-tight animate-slide-up drop-shadow-lg text-center" style={{ animationDelay: '0.05s' }}>
-                {heroLoading ? '...' : subtitle}
-              </h2>
+              {/* Sous-titre */}
+              {subtitle && (
+                <h2 className="text-base font-medium text-white mb-4 tracking-tight animate-slide-up drop-shadow-lg text-center" style={{ animationDelay: '0.05s' }}>
+                  {subtitle}
+                </h2>
+              )}
 
-              <p className="text-sm text-white/95 leading-relaxed mb-6 animate-slide-up drop-shadow-lg text-center" style={{ animationDelay: '0.1s' }}>
-                {heroLoading ? 'Chargement...' : description}
-              </p>
+              {/* Description */}
+              {description && (
+                <p className="text-sm text-white/95 leading-relaxed mb-6 animate-slide-up drop-shadow-lg text-center" style={{ animationDelay: '0.1s' }}>
+                  {description}
+                </p>
+              )}
 
-              <div className="w-12 h-1 bg-white mb-6 rounded-full animate-slide-up drop-shadow-lg mx-auto" style={{ animationDelay: '0.15s' }} />
+              {/* Séparateur si textes présents */}
+              {(title || subtitle || description) && stats.length > 0 && (
+                <div className="w-12 h-1 bg-white mb-6 rounded-full animate-slide-up drop-shadow-lg mx-auto" style={{ animationDelay: '0.15s' }} />
+              )}
 
-              <div className="flex flex-wrap justify-center gap-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                {heroLoading ? (
-                  <>
-                    <div className="animate-pulse text-center">
-                      <div className="h-6 w-12 bg-white/20 rounded mb-1 mx-auto"></div>
-                      <div className="h-3 w-20 bg-white/20 rounded mx-auto"></div>
-                    </div>
-                    <div className="animate-pulse text-center">
-                      <div className="h-6 w-12 bg-white/20 rounded mb-1 mx-auto"></div>
-                      <div className="h-3 w-20 bg-white/20 rounded mx-auto"></div>
-                    </div>
-                  </>
-                ) : (
-                  stats.map((stat, index) => (
+              {/* Stats */}
+              {stats.length > 0 && (
+                <div className="flex flex-wrap justify-center gap-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                  {stats.map((stat, index) => (
                     <div key={index} className="text-center">
                       <div className="text-lg font-semibold text-white mb-0.5 drop-shadow-lg">
                         {stat.value}
@@ -219,15 +227,15 @@ export default function HomePage() {
                         {stat.label}
                       </div>
                     </div>
-                  ))
-                )}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
 
-        {/* Bouton pour rouvrir la Glass Card */}
-        {!showGlassCard && (
+        {/* Bouton pour rouvrir la Glass Card - SEULEMENT SI CONTENU */}
+        {hasContent && !showGlassCard && (
           <div className="absolute bottom-6 right-6 animate-fade-in">
             <button
               onClick={() => setShowGlassCard(true)}

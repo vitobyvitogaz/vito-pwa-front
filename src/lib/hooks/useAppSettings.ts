@@ -1,5 +1,5 @@
 // src/lib/hooks/useAppSettings.ts
-// VERSION COMPLÈTE avec hero content - CORRIGÉE
+// VERSION SANS FALLBACKS - Si vide dans Supabase = vide sur le frontend
 
 'use client';
 
@@ -12,11 +12,12 @@ interface UseAppSettingsReturn {
   loading: boolean;
   error: Error | null;
   refetch: () => Promise<void>;
-  getSettingValue: (key: string, defaultValue?: string) => string;
+  getSettingValue: (key: string) => string;
 }
 
 /**
  * Hook personnalisé pour charger et gérer les paramètres de l'application
+ * SANS valeurs par défaut - Si le champ est vide dans Supabase, on affiche vide
  */
 export function useAppSettings(autoRefresh?: number): UseAppSettingsReturn {
   const [settings, setSettings] = useState<SettingsMap>({});
@@ -53,8 +54,9 @@ export function useAppSettings(autoRefresh?: number): UseAppSettingsReturn {
     }
   }, [autoRefresh]);
 
-  const getSettingValue = (key: string, defaultValue: string = ''): string => {
-    return settings[key] || defaultValue;
+  // SANS fallback - retourne chaîne vide si pas de valeur
+  const getSettingValue = (key: string): string => {
+    return settings[key] || '';
   };
 
   return {
@@ -73,7 +75,7 @@ export function useHeroBanner() {
   const { settings, loading, error, getSettingValue } = useAppSettings();
 
   return {
-    bannerUrl: getSettingValue('hero_banner_url', '/images/hero-banner.jpg'),
+    bannerUrl: getSettingValue('hero_banner_url'),
     loading,
     error,
   };
@@ -82,40 +84,44 @@ export function useHeroBanner() {
 /**
  * Hook spécialisé pour TOUT le contenu hero
  * Bannière Desktop + Mobile + Titre + Sous-titre + Description + Stats
+ * SANS FALLBACKS - Si vide = vide
  */
 export function useHeroContent() {
   const { settings, loading, error, getSettingValue } = useAppSettings();
 
-  // Récupérer l'URL desktop pour servir de fallback au mobile
-  const desktopUrl = getSettingValue('hero_banner_url', '/images/hero-banner.jpg');
-  const mobileUrl = getSettingValue('hero_banner_url_mobile', desktopUrl);
-  const title = getSettingValue('hero_title', 'VITO');
-  const subtitle = getSettingValue('hero_subtitle', 'Rapide. Fiable. Centré sur l\'essentiel.');
-  const description = getSettingValue(
-    'hero_description',
-    'VITO transforme votre expérience Vitogaz. Quatre boutons simples vous donnent un contrôle total : trouver un revendeur, commander en ligne, être au courant des promotions et gérer votre prêt PAMF pour acheter votre gaz.'
-  );
+  // Récupérer les URLs des bannières (pas de fallback)
+  const desktopUrl = getSettingValue('hero_banner_url');
+  const mobileUrl = getSettingValue('hero_banner_url_mobile') || desktopUrl; // Fallback mobile sur desktop uniquement
+  
+  // Textes sans fallback
+  const title = getSettingValue('hero_title');
+  const subtitle = getSettingValue('hero_subtitle');
+  const description = getSettingValue('hero_description');
 
+  // Stats sans fallback
   const stats = [
     {
-      value: getSettingValue('stat_1_value', '+100'),
-      label: getSettingValue('stat_1_label', 'Points de vente'),
+      value: getSettingValue('stat_1_value'),
+      label: getSettingValue('stat_1_label'),
     },
     {
-      value: getSettingValue('stat_2_value', '24/7'),
-      label: getSettingValue('stat_2_label', 'Service client'),
+      value: getSettingValue('stat_2_value'),
+      label: getSettingValue('stat_2_label'),
     },
     {
-      value: getSettingValue('stat_3_value', '100%'),
-      label: getSettingValue('stat_3_label', 'Sécurité garantie'),
+      value: getSettingValue('stat_3_value'),
+      label: getSettingValue('stat_3_label'),
     },
-  ];
+  ].filter(stat => stat.value || stat.label); // Filtrer les stats complètement vides
 
   // LOG POUR DEBUGGING
   console.log('🔍 Hero Content:', {
     desktopUrl,
     mobileUrl,
     title,
+    subtitle,
+    description,
+    statsCount: stats.length,
     loading,
     settingsCount: Object.keys(settings).length
   });
@@ -127,12 +133,12 @@ export function useHeroContent() {
     // Bannière MOBILE (portrait 1080x1350) - fallback sur desktop si non définie
     bannerUrlMobile: mobileUrl,
     
-    // Textes
+    // Textes (vides si non définis)
     title,
     subtitle,
     description,
     
-    // Statistiques
+    // Statistiques (filtrées si vides)
     stats,
     
     // États
@@ -148,9 +154,9 @@ export function useContactInfo() {
   const { getSettingValue } = useAppSettings();
 
   return {
-    phone: getSettingValue('support_phone', '+261 00 00 000 00'),
-    whatsapp: getSettingValue('support_whatsapp', '+261 00 00 000 00'),
-    email: getSettingValue('support_email', 'support@vitogaz.mg'),
+    phone: getSettingValue('support_phone'),
+    whatsapp: getSettingValue('support_whatsapp'),
+    email: getSettingValue('support_email'),
   };
 }
 
