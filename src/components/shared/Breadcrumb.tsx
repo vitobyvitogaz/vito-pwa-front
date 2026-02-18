@@ -25,15 +25,15 @@ export const Breadcrumb: React.FC = () => {
 
   return (
     <nav className="bg-white dark:bg-dark-surface border-b border-neutral-200 dark:border-neutral-800 mt-14 sm:mt-16">
-      <div className="container mx-auto px-4 sm:px-6 max-w-7xl py-3">
-        <ol className="flex items-center gap-2 text-sm font-sans">
-          <li>
+      <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
+        <ol className="flex items-center gap-2 text-sm font-sans min-h-[3rem] py-3">
+          <li className="flex items-center">
             <Link
               href={`/${locale}`}
               className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400 hover:text-primary transition-all duration-300"
             >
-              <Home className="w-4 h-4" strokeWidth={1.5} />
-              <span>Accueil</span>
+              <Home className="w-4 h-4 flex-shrink-0" strokeWidth={1.5} />
+              <span className="leading-none">Accueil</span>
             </Link>
           </li>
           
@@ -44,15 +44,15 @@ export const Breadcrumb: React.FC = () => {
 
             return (
               <li key={segment} className="flex items-center gap-2">
-                <ChevronRight className="w-4 h-4 text-neutral-400" strokeWidth={1.5} />
+                <ChevronRight className="w-4 h-4 text-neutral-400 flex-shrink-0" strokeWidth={1.5} />
                 {isLast ? (
-                  <span className="text-neutral-900 dark:text-white font-semibold">
+                  <span className="text-neutral-900 dark:text-white font-semibold leading-none">
                     {label}
                   </span>
                 ) : (
                   <Link
                     href={path}
-                    className="text-neutral-600 dark:text-neutral-400 hover:text-primary transition-all duration-300"
+                    className="text-neutral-600 dark:text-neutral-400 hover:text-primary transition-all duration-300 leading-none"
                   >
                     {label}
                   </Link>
