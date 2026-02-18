@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/Footer'
 import { Breadcrumb } from '@/components/shared/Breadcrumb'
 import { ScrollToTop } from '@/components/shared/ScrollToTop'
 import '@/styles/globals.css'
-import 'leaflet/dist/leaflet.css'  // ← AJOUTEZ CETTE LIGNE
+import 'leaflet/dist/leaflet.css'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -22,15 +22,40 @@ const montserrat = Montserrat({
 export const metadata = {
   title: 'Vito - Vitogaz Madagascar',
   description: 'Trouvez votre revendeur Vitogaz, commandez votre gaz',
+  manifest: '/manifest.json',
+  
+  // Icônes
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32' },
+      { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
+  
+  // Métadonnées PWA
+  themeColor: '#008B7F',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+  },
+  
+  // Open Graph
+  openGraph: {
+    title: 'Vito - Vitogaz Madagascar',
+    description: 'Trouvez votre revendeur Vitogaz, commandez votre gaz',
+    type: 'website',
+    locale: 'fr_FR',
+  },
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fr" className={`${inter.variable} ${montserrat.variable}`}>
-      <head>
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#008B7F" />
-      </head>
       <body className={inter.className}>
         <Header />
         <Breadcrumb />
