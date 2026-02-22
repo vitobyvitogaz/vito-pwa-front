@@ -203,7 +203,7 @@ export default function ContactProPage() {
               >
                 <Briefcase className={`w-5 h-5 mx-auto mb-2 ${formData.type === 'revendeur' ? 'text-primary' : 'text-neutral-500 dark:text-neutral-400'}`} strokeWidth={1.5} />
                 <span className={`text-sm font-medium ${formData.type === 'revendeur' ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>
-                  Revendeur
+                  Je veux devenir Revendeur
                 </span>
               </button>
               
@@ -218,7 +218,7 @@ export default function ContactProPage() {
               >
                 <Building2 className={`w-5 h-5 mx-auto mb-2 ${formData.type === 'client_pro' ? 'text-primary' : 'text-neutral-500 dark:text-neutral-400'}`} strokeWidth={1.5} />
                 <span className={`text-sm font-medium ${formData.type === 'client_pro' ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>
-                  Client professionnel
+                  Je veux devenir Client professionnel
                 </span>
               </button>
             </div>

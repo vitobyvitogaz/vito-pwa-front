@@ -1,7 +1,7 @@
 {
   "name": "VitoByVitogaz",
-  "short_name": "Vito",
-  "description": "Trouvez votre revendeur Vitogaz, commandez votre gaz et consultez les promotions",
+  "short_name": "VitoByBitogaz",
+  "description": "Votre compagnon pour utiliser du gaz tous les jours",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FFFFFF",

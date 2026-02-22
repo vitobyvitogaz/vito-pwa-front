@@ -20,8 +20,8 @@ const montserrat = Montserrat({
 })
 
 export const metadata = {
-  title: 'Vito - Vitogaz Madagascar',
-  description: 'Trouvez votre revendeur Vitogaz, commandez votre gaz',
+  title: 'VitoByVitogaz',
+  description: 'Votre compagnon pour utiliser du gaz tous les jours',
   manifest: '/manifest.json',
   
   // Icônes
@@ -46,8 +46,8 @@ export const metadata = {
   
   // Open Graph
   openGraph: {
-    title: 'Vito - Vitogaz Madagascar',
-    description: 'Trouvez votre revendeur Vitogaz, commandez votre gaz',
+    title: 'VitoByVitogaz',
+    description: 'Votre compagnon pour utiliser du gaz tous les jours',
     type: 'website',
     locale: 'fr_FR',
   },
