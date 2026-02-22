@@ -1,6 +1,6 @@
 {
   "name": "VitoByVitogaz",
-  "short_name": "VitoByBitogaz",
+  "short_name": "VitoByVitogaz",
   "description": "Votre compagnon pour utiliser du gaz tous les jours",
   "start_url": "/",
   "display": "standalone",
