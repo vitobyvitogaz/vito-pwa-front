@@ -17,14 +17,19 @@ export const Breadcrumb: React.FC = () => {
   const segments = pathSegments.slice(1)
 
   const breadcrumbLabels: Record<string, string> = {
-    revendeurs: 'Revendeurs',
-    commander: 'Commander',
-    promotions: 'Promotions',
-    documents: 'Documents',
-  }
+  revendeurs: 'Revendeurs',
+  commander: 'Commander',
+  promotions: 'Promotions',
+  documents: 'Documents',
+  produits: 'Produits',
+  assistance: 'Service Clients',
+  'contact-pro': 'Devenir partenaire',
+  profil: 'Mon profil',
+}
 
   return (
-    <nav className="bg-white dark:bg-dark-surface border-b border-neutral-200 dark:border-neutral-800 mt-14 sm:mt-16">
+    //<nav className="bg-white dark:bg-dark-surface border-b border-neutral-200 dark:border-neutral-800 mt-14 sm:mt-16">
+    <nav className="bg-white dark:bg-dark-surface border-b border-neutral-200 dark:border-neutral-800 mt-[64px] sm:mt-[70px]">
       <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
         <ol className="flex items-center gap-2 text-sm font-sans min-h-[3rem] py-3">
           <li className="flex items-center">

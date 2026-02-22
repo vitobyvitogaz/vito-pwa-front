@@ -33,7 +33,8 @@ const PAGE_SIZE = 10
 
 export default function ResellersPage() {
   const { resellers, loading: isLoadingResellers, fetchResellers } = useResellerStore()
-  const [view, setView] = useState<'split' | 'list' | 'map'>('split')
+  //const [view, setView] = useState<'split' | 'list' | 'map'>('split')
+  const [view, setView] = useState<'split' | 'list' | 'map'>('map')
   const [selectedReseller, setSelectedReseller] = useState<Reseller | null>(null)
   const [filteredResellers, setFilteredResellers] = useState<Reseller[]>([])
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
@@ -480,7 +481,8 @@ export default function ResellersPage() {
         )}
 
         {view === 'map' && (
-          <div className="relative h-full">
+          //<div className="relative h-full">
+          <div className="hidden lg:block relative h-full">
             <ResellerMap
               resellers={filteredResellers}
               selectedReseller={selectedReseller}

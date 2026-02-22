@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import { Package, Star, Tag } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
@@ -24,9 +25,18 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, delay = 0 }) => {
   const [isHovered, setIsHovered] = useState(false)
+  const router = useRouter()
+  const pathname = usePathname()
+  const locale = pathname.split('/')[1]
 
   const handleCardClick = () => {
     hapticFeedback('light')
+  }
+
+  const handleSeeResellers = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    hapticFeedback('light')
+    router.push(`/${locale}/revendeurs?produit=${product.id}`)
   }
 
   return (
@@ -121,7 +131,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, delay = 0 }) 
         )}
 
         {/* Call to action */}
-        <div className="mt-4">
+        <div className="mt-4" onClick={handleSeeResellers}>
           <div className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary/5 border border-primary/20 hover:border-primary/40 hover:bg-primary/10 transition-all duration-300 group/btn">
             <Package className="w-5 h-5 text-primary group-hover/btn:scale-110 transition-transform" strokeWidth={1.5} />
             <span className="font-medium text-primary font-sans">

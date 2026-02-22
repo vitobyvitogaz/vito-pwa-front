@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useSearchParams } from 'next/navigation'
 import type { Reseller } from '@/types/reseller'
 import { RefreshCw } from 'lucide-react'
 
@@ -10,8 +11,13 @@ interface MapFiltersProps {
 }
 
 export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChange }) => {
+  const searchParams = useSearchParams()
+  const produitParam = searchParams.get('produit')
+
   const [selectedSegment, setSelectedSegment] = useState<string>('all')
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([])
+  const [selectedProducts, setSelectedProducts] = useState<string[]>(
+    produitParam ? [produitParam] : []
+  )
   const [selectedCity, setSelectedCity] = useState<string>('all')
 
   const cities = Array.from(new Set(resellers.map(r => r.city))).sort()
@@ -40,7 +46,6 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
       }
     })
 
-    // Tri alphabétique par nom
     return Array.from(productsMap.values()).sort((a, b) => a.name.localeCompare(b.name))
   }, [resellers])
 
@@ -87,7 +92,6 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
 
   const hasActiveFilters = selectedSegment !== 'all' || selectedProducts.length > 0 || selectedCity !== 'all'
 
-  // Fonction pour obtenir la couleur du badge selon la catégorie produit
   const getProductCategoryColor = (category: string) => {
     switch (category) {
       case 'Bouteille':
@@ -103,7 +107,6 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
     }
   }
 
-  // Fonction pour obtenir la couleur du badge selon le segment
   const getSegmentColor = (segment: string) => {
     switch (segment) {
       case 'Station Service':

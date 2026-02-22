@@ -35,7 +35,6 @@ export default function ContactProPage() {
 
   const handleChange = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
-    // Effacer l'erreur du champ modifié
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }))
     }
@@ -43,7 +42,6 @@ export default function ContactProPage() {
 
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<keyof FormData, string>> = {}
-
     if (!formData.fullName.trim()) newErrors.fullName = 'Le nom est requis'
     if (!formData.company.trim()) newErrors.company = 'Le nom de l\'entreprise est requis'
     if (!formData.phone.trim()) newErrors.phone = 'Le téléphone est requis'
@@ -53,31 +51,28 @@ export default function ContactProPage() {
       newErrors.email = 'Email invalide'
     }
     if (!formData.city.trim()) newErrors.city = 'La ville est requise'
-
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  /*const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
     if (!validateForm()) return
 
     setIsSubmitting(true)
     setSubmitStatus('idle')
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contact/professional`, {
+      const response = await fetch('/api/contact-pro', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       })
 
       if (!response.ok) throw new Error('Erreur lors de l\'envoi')
 
       setSubmitStatus('success')
-      
-      // Réinitialiser le formulaire après 3 secondes
+
       setTimeout(() => {
         setFormData({
           type: 'revendeur',
@@ -86,72 +81,17 @@ export default function ContactProPage() {
           phone: '',
           email: '',
           city: '',
-          message: ''
+          message: '',
         })
         setSubmitStatus('idle')
       }, 3000)
-
     } catch (error) {
-      console.error('Erreur soumission:', error)
+      console.error('❌ Erreur:', error)
       setSubmitStatus('error')
     } finally {
       setIsSubmitting(false)
     }
-  }*/
-
-  const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault()
-  
-  if (!validateForm()) return
-
-  setIsSubmitting(true)
-  setSubmitStatus('idle')
-
-  try {
-    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/contact/professional`
-    console.log('🔍 URL complète:', apiUrl)
-    console.log('📤 Données:', formData)
-    
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    })
-
-    console.log('📥 Status:', response.status)
-    console.log('📥 OK:', response.ok)
-
-    // ✅ AJOUT : Lire la réponse même en cas d'erreur
-    const responseData = await response.json()
-    console.log('📥 Réponse serveur:', responseData)
-
-    if (!response.ok) {
-      console.error('❌ Erreur serveur:', responseData)
-      throw new Error(responseData.message || 'Erreur lors de l\'envoi')
-    }
-
-    setSubmitStatus('success')
-    
-    setTimeout(() => {
-      setFormData({
-        type: 'revendeur',
-        fullName: '',
-        company: '',
-        phone: '',
-        email: '',
-        city: '',
-        message: ''
-      })
-      setSubmitStatus('idle')
-    }, 3000)
-
-  } catch (error) {
-    console.error('❌ Erreur complète:', error)
-    setSubmitStatus('error')
-  } finally {
-    setIsSubmitting(false)
   }
-}
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16">
@@ -203,7 +143,7 @@ export default function ContactProPage() {
               >
                 <Briefcase className={`w-5 h-5 mx-auto mb-2 ${formData.type === 'revendeur' ? 'text-primary' : 'text-neutral-500 dark:text-neutral-400'}`} strokeWidth={1.5} />
                 <span className={`text-sm font-medium ${formData.type === 'revendeur' ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>
-                  Je veux devenir Revendeur
+                  Je veux devenir un Revendeur
                 </span>
               </button>
               
@@ -218,7 +158,7 @@ export default function ContactProPage() {
               >
                 <Building2 className={`w-5 h-5 mx-auto mb-2 ${formData.type === 'client_pro' ? 'text-primary' : 'text-neutral-500 dark:text-neutral-400'}`} strokeWidth={1.5} />
                 <span className={`text-sm font-medium ${formData.type === 'client_pro' ? 'text-primary' : 'text-neutral-700 dark:text-neutral-300'}`}>
-                  Je veux devenir Client professionnel
+                  Je veux devenir un Client Professionnel
                 </span>
               </button>
             </div>
@@ -226,7 +166,6 @@ export default function ContactProPage() {
 
           {/* Grille de champs */}
           <div className="grid sm:grid-cols-2 gap-4 mb-4">
-            {/* Nom complet */}
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                 Nom complet *
@@ -237,20 +176,13 @@ export default function ContactProPage() {
                   type="text"
                   value={formData.fullName}
                   onChange={(e) => handleChange('fullName', e.target.value)}
-                  className={`w-full pl-10 pr-4 py-2.5 rounded-xl border ${
-                    errors.fullName 
-                      ? 'border-red-300 dark:border-red-700' 
-                      : 'border-neutral-200 dark:border-neutral-700'
-                  } bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all`}
+                  className={`w-full pl-10 pr-4 py-2.5 rounded-xl border ${errors.fullName ? 'border-red-300 dark:border-red-700' : 'border-neutral-200 dark:border-neutral-700'} bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all`}
                   placeholder="Votre nom"
                 />
               </div>
-              {errors.fullName && (
-                <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.fullName}</p>
-              )}
+              {errors.fullName && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.fullName}</p>}
             </div>
 
-            {/* Entreprise */}
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                 Entreprise / Commerce *
@@ -261,20 +193,13 @@ export default function ContactProPage() {
                   type="text"
                   value={formData.company}
                   onChange={(e) => handleChange('company', e.target.value)}
-                  className={`w-full pl-10 pr-4 py-2.5 rounded-xl border ${
-                    errors.company 
-                      ? 'border-red-300 dark:border-red-700' 
-                      : 'border-neutral-200 dark:border-neutral-700'
-                  } bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all`}
+                  className={`w-full pl-10 pr-4 py-2.5 rounded-xl border ${errors.company ? 'border-red-300 dark:border-red-700' : 'border-neutral-200 dark:border-neutral-700'} bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all`}
                   placeholder="Nom de l'entreprise"
                 />
               </div>
-              {errors.company && (
-                <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.company}</p>
-              )}
+              {errors.company && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.company}</p>}
             </div>
 
-            {/* Téléphone */}
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                 Téléphone *
@@ -285,20 +210,13 @@ export default function ContactProPage() {
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => handleChange('phone', e.target.value)}
-                  className={`w-full pl-10 pr-4 py-2.5 rounded-xl border ${
-                    errors.phone 
-                      ? 'border-red-300 dark:border-red-700' 
-                      : 'border-neutral-200 dark:border-neutral-700'
-                  } bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all`}
+                  className={`w-full pl-10 pr-4 py-2.5 rounded-xl border ${errors.phone ? 'border-red-300 dark:border-red-700' : 'border-neutral-200 dark:border-neutral-700'} bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all`}
                   placeholder="034 00 000 00"
                 />
               </div>
-              {errors.phone && (
-                <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.phone}</p>
-              )}
+              {errors.phone && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.phone}</p>}
             </div>
 
-            {/* Email */}
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                 Email *
@@ -309,17 +227,11 @@ export default function ContactProPage() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => handleChange('email', e.target.value)}
-                  className={`w-full pl-10 pr-4 py-2.5 rounded-xl border ${
-                    errors.email 
-                      ? 'border-red-300 dark:border-red-700' 
-                      : 'border-neutral-200 dark:border-neutral-700'
-                  } bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all`}
+                  className={`w-full pl-10 pr-4 py-2.5 rounded-xl border ${errors.email ? 'border-red-300 dark:border-red-700' : 'border-neutral-200 dark:border-neutral-700'} bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all`}
                   placeholder="email@exemple.com"
                 />
               </div>
-              {errors.email && (
-                <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.email}</p>
-              )}
+              {errors.email && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.email}</p>}
             </div>
           </div>
 
@@ -334,17 +246,11 @@ export default function ContactProPage() {
                 type="text"
                 value={formData.city}
                 onChange={(e) => handleChange('city', e.target.value)}
-                className={`w-full pl-10 pr-4 py-2.5 rounded-xl border ${
-                  errors.city 
-                    ? 'border-red-300 dark:border-red-700' 
-                    : 'border-neutral-200 dark:border-neutral-700'
-                } bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all`}
+                className={`w-full pl-10 pr-4 py-2.5 rounded-xl border ${errors.city ? 'border-red-300 dark:border-red-700' : 'border-neutral-200 dark:border-neutral-700'} bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all`}
                 placeholder="Antananarivo, Antsirabe, Toamasina..."
               />
             </div>
-            {errors.city && (
-              <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.city}</p>
-            )}
+            {errors.city && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.city}</p>}
           </div>
 
           {/* Message */}
@@ -356,25 +262,32 @@ export default function ContactProPage() {
               <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-neutral-400" strokeWidth={1.5} />
               <textarea
                 value={formData.message}
-                onChange={(e) => handleChange('message', e.target.value)}
+                onChange={(e) => {
+                  if (e.target.value.length <= 500) handleChange('message', e.target.value)
+                }}
                 rows={4}
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all resize-none"
                 placeholder="Parlez-nous de votre projet..."
               />
+              <div className="absolute bottom-3 right-3">
+                <span className={`text-xs font-mono ${
+                  formData.message.length >= 500 ? 'text-red-500' :
+                  formData.message.length >= 400 ? 'text-amber-500' :
+                  formData.message.length > 0 ? 'text-emerald-500' :
+                  'text-neutral-400'
+                }`}>
+                  {formData.message.length}/500
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Status Messages */}
           {submitStatus === 'success' && (
             <div className="mb-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 flex items-start gap-3 animate-slide-up">
               <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
               <div>
-                <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">
-                  Demande envoyée avec succès !
-                </p>
-                <p className="text-sm text-emerald-700 dark:text-emerald-400 mt-0.5">
-                  Notre équipe vous recontactera sous 48h
-                </p>
+                <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">Demande envoyée avec succès !</p>
+                <p className="text-sm text-emerald-700 dark:text-emerald-400 mt-0.5">Notre équipe vous recontactera sous 48h</p>
               </div>
             </div>
           )}
@@ -383,17 +296,12 @@ export default function ContactProPage() {
             <div className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
               <div>
-                <p className="text-sm font-semibold text-red-800 dark:text-red-300">
-                  Erreur d'envoi
-                </p>
-                <p className="text-sm text-red-700 dark:text-red-400 mt-0.5">
-                  Veuillez réessayer ou nous contacter directement
-                </p>
+                <p className="text-sm font-semibold text-red-800 dark:text-red-300">Erreur d'envoi</p>
+                <p className="text-sm text-red-700 dark:text-red-400 mt-0.5">Veuillez réessayer ou nous contacter directement</p>
               </div>
             </div>
           )}
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={isSubmitting || submitStatus === 'success'}
@@ -422,7 +330,6 @@ export default function ContactProPage() {
           </p>
         </form>
 
-        {/* Info supplémentaire */}
         <div className="mt-6 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
           <p className="text-sm text-blue-800 dark:text-blue-300">
             💡 <strong>Bon à savoir :</strong> Nous recherchons activement des partenaires dans toutes les régions de Madagascar pour développer notre réseau.

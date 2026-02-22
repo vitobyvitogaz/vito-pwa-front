@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import type { Reseller } from '@/types/reseller'
-import { Phone, MapPin, Clock, Navigation, MessageCircle, Wrench, ShoppingBag, Truck, Store } from 'lucide-react'
+//import { Phone, MapPin, Clock, Navigation, MessageCircle, Wrench, ShoppingBag, Truck, Store } from 'lucide-react'
+import { Phone, MapPin, Clock, Navigation, MessageCircle, Wrench, ShoppingBag, Truck, Store, Fuel, ShoppingCart, Home } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 import type { DistanceResult } from '@/lib/hooks/useDistanceMatrix'
 import { BusinessHoursCompact } from './BusinessHoursCompact'
@@ -56,31 +57,27 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
     )
   }
 
-  const getBadgeStyle = () => {
-    switch (reseller.type) {
-      case 'Quincaillerie':
-        return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 border-red-200 dark:border-red-800'
-      case 'Épicerie':
-        return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
-      case 'Station Service':
-        return 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 border-orange-200 dark:border-orange-800'
-      default:
-        return 'bg-neutral-100 text-neutral-700 dark:bg-neutral-900/30 dark:text-neutral-300 border-neutral-200 dark:border-neutral-800'
-    }
+  const getBadgeColor = () => {
+  switch (reseller.type) {
+    case 'Quincaillerie': return '#C8102E'
+    case 'Épicerie': return '#008B7F'
+    case 'Station Service': return '#FF8C00'
+    case 'Libre Service': return '#7C3AED'
+    case 'Maison du gaz': return '#0EA5E9'
+    default: return '#4B5563'
   }
+}
 
-  const getTypeIcon = () => {
-    switch (reseller.type) {
-      case 'Quincaillerie':
-        return Wrench
-      case 'Épicerie':
-        return ShoppingBag
-      case 'Station Service':
-        return Truck
-      default:
-        return Store
-    }
+const getTypeIcon = () => {
+  switch (reseller.type) {
+    case 'Quincaillerie': return Wrench
+    case 'Épicerie': return ShoppingBag
+    case 'Station Service': return Fuel
+    case 'Libre Service': return ShoppingCart
+    case 'Maison du gaz': return Home
+    default: return Store
   }
+}
 
   const TypeIcon = getTypeIcon()
 
@@ -104,7 +101,10 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
     >
       {/* Badge type avec icône */}
       <div className="absolute top-4 right-4">
-        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border ${getBadgeStyle()}`}>
+        <div
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/40 text-white"
+          style={{ backgroundColor: getBadgeColor() }}
+        >
           <TypeIcon className="w-3.5 h-3.5" strokeWidth={1.5} />
           <span>{reseller.type}</span>
         </div>

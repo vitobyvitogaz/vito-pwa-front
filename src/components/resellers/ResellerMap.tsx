@@ -25,7 +25,7 @@ const getColorForType = (type: Reseller['type']) => {
     case 'Libre Service':
       return '#7C3AED' // Violet
     case 'Maison du gaz':
-      return '#F59E0B' // Ambre
+      return '#0639a7ff' // Ambre
     default:
       return '#4B5563' // Gris
   }
@@ -37,7 +37,7 @@ const LEGEND_ITEMS = [
   { type: 'Quincaillerie' as const, color: '#C8102E', label: 'Quincaillerie' },
   { type: 'Épicerie' as const, color: '#008B7F', label: 'Épicerie' },
   { type: 'Libre Service' as const, color: '#7C3AED', label: 'Libre Service' },
-  { type: 'Maison du gaz' as const, color: '#F59E0B', label: 'Maison du gaz' },
+  { type: 'Maison du gaz' as const, color: '#0639a7ff', label: 'Maison du gaz' },
 ]
 
 // Créer une icône personnalisée pour les revendeurs
@@ -69,17 +69,29 @@ const createUserIcon = () => {
   return L.divIcon({
     className: 'custom-marker',
     html: `
-      <div style="
-        width: 24px;
-        height: 24px;
-        background-color: #3B82F6;
-        border: 3px solid #ffffff;
-        border-radius: 50%;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      "></div>
+      <div style="position: relative; width: 36px; height: 36px;">
+        <div style="
+          width: 36px;
+          height: 36px;
+          background-color: #3B82F6;
+          border: 3px solid #ffffff;
+          border-radius: 50%;
+          box-shadow: 0 0 0 4px rgba(59,130,246,0.3), 0 4px 12px rgba(0,0,0,0.3);
+        "></div>
+        <div style="
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 10px;
+          height: 10px;
+          background-color: #ffffff;
+          border-radius: 50%;
+        "></div>
+      </div>
     `,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
   })
 }
 
@@ -253,7 +265,7 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
       {/* Légende */}
       <div className="absolute bottom-4 left-4 bg-white dark:bg-dark-surface rounded-xl p-3 shadow-lg border border-neutral-200 dark:border-neutral-800 z-[1000]">
         <h4 className="text-xs font-semibold text-neutral-900 dark:text-white mb-2">
-          Types de revendeurs
+          Revendeurs
         </h4>
         <div className="space-y-2">
           {LEGEND_ITEMS.map((item) => (
@@ -267,12 +279,29 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
               </span>
             </div>
           ))}
+          {/* Votre position */}
           <div className="flex items-center gap-2 pt-1 border-t border-neutral-200 dark:border-neutral-700">
-            <div
-              className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
-              style={{ backgroundColor: '#3B82F6' }}
-            />
-            <span className="text-xs text-neutral-700 dark:text-neutral-300">
+            <div style={{ position: 'relative', width: 20, height: 20, flexShrink: 0 }}>
+              <div style={{
+                width: 20,
+                height: 20,
+                backgroundColor: '#3B82F6',
+                border: '2px solid #ffffff',
+                borderRadius: '50%',
+                boxShadow: '0 0 0 2px rgba(59,130,246,0.3)',
+              }} />
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 6,
+                height: 6,
+                backgroundColor: '#ffffff',
+                borderRadius: '50%',
+              }} />
+            </div>
+            <span className="text-xs text-neutral-700 dark:text-neutral-300 font-medium">
               Votre position
             </span>
           </div>
