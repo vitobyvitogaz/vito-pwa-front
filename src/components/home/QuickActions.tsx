@@ -67,7 +67,7 @@ export const QuickActions: React.FC = () => {
     {
       id: 'revendeur',
       icon: Briefcase,
-      title: 'Devenir revendeur/Client professionnel',
+      title: 'Devenir Revendeur/Client Professionnel',
       subtitle: 'Rejoignez notre reseau',
       color: 'text-purple-600 dark:text-purple-400',
       bg: 'bg-purple-50 dark:bg-purple-900/20',

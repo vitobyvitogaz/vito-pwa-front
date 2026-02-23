@@ -12,7 +12,7 @@ export const MainButtons: React.FC = () => {
   const buttons = [
     {
       id: 'resellers',
-      title: 'Revendeur',
+      title: 'Revendeurs',
       description: 'Géolocalisation en temps réel',
       icon: MapPin,
       href: '/fr/revendeurs',

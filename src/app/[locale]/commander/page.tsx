@@ -107,7 +107,7 @@ export default function DeliveryPage() {
       <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-primary to-primary-600 shadow-lg">
+          <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-xl bg-gradient-to-br from-primary to-primary-600 shadow-lg">
             <Truck className="w-10 h-10 text-white" strokeWidth={1.5} />
           </div>
           
@@ -158,7 +158,7 @@ export default function DeliveryPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Rechercher une société, une ville, un service..."
-                  className="w-full pl-12 pr-4 py-3 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-neutral-900 dark:text-white placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all font-sans"
+                  className="w-full pl-12 pr-4 py-3 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-neutral-900 dark:text-white placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all font-sans"
                 />
               </div>
             </div>
@@ -167,7 +167,7 @@ export default function DeliveryPage() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="w-full px-4 py-3 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all font-sans"
+                className="w-full px-4 py-3 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all font-sans"
               >
                 <option value="rating">Meilleures notes</option>
                 <option value="deliveryTime">Plus rapide</option>
@@ -184,7 +184,7 @@ export default function DeliveryPage() {
                 key={filter.id}
                 onClick={() => setSelectedFilter(filter.id)}
                 className={`
-                  relative px-6 py-3 rounded-xl font-medium text-sm transition-all duration-300
+                  relative px-6 py-3 rounded-full font-medium text-sm transition-all duration-300
                   after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2
                   after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300
                   hover:after:w-full font-sans
@@ -244,7 +244,7 @@ export default function DeliveryPage() {
                   setSelectedFilter('all')
                   setSearchQuery('')
                 }}
-                className="px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-600 transition-colors duration-200 font-sans"
+                className="px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary-600 transition-colors duration-200 font-sans"
               >
                 Voir toutes les sociétés
               </button>
@@ -259,7 +259,7 @@ export default function DeliveryPage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white dark:bg-dark-surface rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
-              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-4">
+              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4">
                 <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">1</span>
               </div>
               <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">
@@ -270,7 +270,7 @@ export default function DeliveryPage() {
               </p>
             </div>
             <div className="bg-white dark:bg-dark-surface rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
-              <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center mb-4">
+              <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mb-4">
                 <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">2</span>
               </div>
               <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">
@@ -281,7 +281,7 @@ export default function DeliveryPage() {
               </p>
             </div>
             <div className="bg-white dark:bg-dark-surface rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
-              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mb-4">
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mb-4">
                 <span className="text-2xl font-bold text-purple-600 dark:text-purple-400">3</span>
               </div>
               <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">
