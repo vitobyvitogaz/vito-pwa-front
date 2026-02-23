@@ -3,7 +3,6 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 
-// Import dynamique pour éviter l'erreur SSR avec Leaflet
 const ResellerMap = dynamic(
   () => import('@/components/resellers/ResellerMap').then(mod => ({ default: mod.ResellerMap })),
   { 
@@ -33,8 +32,8 @@ const PAGE_SIZE = 10
 
 export default function ResellersPage() {
   const { resellers, loading: isLoadingResellers, fetchResellers } = useResellerStore()
-  //const [view, setView] = useState<'split' | 'list' | 'map'>('split')
-  const [view, setView] = useState<'split' | 'list' | 'map'>('map')
+  const [view, setView] = useState<'split' | 'list' | 'map'>('split') // desktop : split par défaut
+  const [mobileView, setMobileView] = useState<'map' | 'list'>('map') // mobile : map par défaut
   const [selectedReseller, setSelectedReseller] = useState<Reseller | null>(null)
   const [filteredResellers, setFilteredResellers] = useState<Reseller[]>([])
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
@@ -45,19 +44,16 @@ export default function ResellersPage() {
   const [showGeolocationPrompt, setShowGeolocationPrompt] = useState(true)
   const [hasSkippedGeolocation, setHasSkippedGeolocation] = useState(false)
 
-  // Charger les resellers depuis l'API au montage
   useEffect(() => {
     fetchResellers()
   }, [fetchResellers])
 
-  // Mettre à jour les resellers filtrés quand les resellers changent
   useEffect(() => {
     if (resellers.length > 0) {
       setFilteredResellers(resellers)
     }
   }, [resellers])
 
-  // Charger depuis localStorage au démarrage
   useEffect(() => {
     const loadUserLocation = () => {
       try {
@@ -65,106 +61,70 @@ export default function ResellersPage() {
         if (savedLocation) {
           const location = JSON.parse(savedLocation)
           setUserLocation(location)
-          console.log('📍 Position chargée depuis le stockage local:', location)
         }
       } catch (err) {
         console.error('❌ Erreur chargement position:', err)
       }
     }
-
     loadUserLocation()
   }, [])
 
-  // Sauvegarder la position dans localStorage
   const saveUserLocation = useCallback((location: { lat: number; lng: number }) => {
     try {
       localStorage.setItem('userLocation', JSON.stringify(location))
-      console.log('💾 Position sauvegardée dans le stockage local')
     } catch (err) {
       console.error('❌ Erreur sauvegarde position:', err)
     }
   }, [])
 
-  // Fonction pour gérer la géolocalisation
   const handleLocationFound = useCallback((location: { lat: number; lng: number }) => {
-    console.log('📍 [page] Position GPS reçue:', {
-      lat: location.lat.toFixed(6),
-      lng: location.lng.toFixed(6)
-    })
-    
     setUserLocation(location)
     saveUserLocation(location)
     setHasGeolocationAttempted(true)
     setIsGeolocationLoading(false)
     setShowGeolocationPrompt(false)
-    
-    setTimeout(() => {
-      console.log('✅ Géolocalisation activée! Calcul des distances en cours...')
-    }, 500)
   }, [saveUserLocation])
 
-  // Fonction pour activer manuellement la géoloc
   const handleEnableGeolocation = useCallback(() => {
-    console.log('📍 Activation manuelle de la géolocalisation')
     setIsGeolocationLoading(true)
-    
     setTimeout(() => {
       const geolocButton = document.querySelector('[title="Utiliser ma position"]') as HTMLButtonElement
       if (geolocButton && !geolocButton.disabled) {
         geolocButton.click()
       } else {
-        console.warn('⚠️ Bouton de géolocalisation non trouvé ou désactivé')
         setIsGeolocationLoading(false)
       }
     }, 100)
   }, [])
 
-  // Fonction pour ignorer la géolocalisation
   const handleSkipGeolocation = useCallback(() => {
-    console.log('📍 Géolocalisation ignorée par l\'utilisateur')
     setHasSkippedGeolocation(true)
     setShowGeolocationPrompt(false)
     setIsGeolocationLoading(false)
   }, [])
 
-  // Hook optimisé de calcul des distances
   const { distances, sortedResellers, isLoading: isLoadingDistances } = useOptimizedDistances(
     userLocation,
     filteredResellers,
     travelMode
   )
 
-  // Log des distances pour debug
-  useEffect(() => {
-    if (distances && Object.keys(distances).length > 0) {
-      console.log('📏 Distances calculées:', {
-        count: Object.keys(distances).length,
-        sample: Object.entries(distances).slice(0, 3)
-      })
-    }
-  }, [distances])
-
   const handleFilterChange = useCallback((filtered: Reseller[]) => {
-    console.log(`🎯 Filtres appliqués: ${filtered.length} revendeurs`)
     setFilteredResellers(filtered)
     setCurrentPage(1)
   }, [])
 
-  // Pagination pour la vue liste seule
   const paginatedResellers = useMemo(() => {
     const start = (currentPage - 1) * PAGE_SIZE
     return sortedResellers.slice(start, start + PAGE_SIZE)
   }, [sortedResellers, currentPage])
 
   const handleTravelModeChange = useCallback((mode: TravelMode) => {
-    console.log(`🚗 Mode de transport changé: ${mode}`)
     setTravelMode(mode)
   }, [])
 
-  // Afficher le prompt seulement si pas encore de position ET pas encore ignoré
   const shouldShowPrompt = showGeolocationPrompt && !userLocation && !hasSkippedGeolocation
 
-  // Afficher un loader pendant le chargement initial
   if (isLoadingResellers) {
     return (
       <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16 flex items-center justify-center">
@@ -199,60 +159,44 @@ export default function ResellersPage() {
               {userLocation && (
                 <p className="text-xs text-primary mt-1 flex items-center gap-1">
                   <MapPin className="w-3 h-3" strokeWidth={1.5} />
-                  <span>
-                    Position: {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
-                  </span>
+                  <span>Position: {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}</span>
                 </p>
               )}
             </div>
 
             <div className="flex gap-2">
+              {/* Boutons vue Desktop */}
               <div className="hidden lg:flex gap-2">
                 <button
                   onClick={() => setView('split')}
-                  className={`p-2 rounded-xl transition-all duration-300 ${
-                    view === 'split'
-                      ? 'bg-primary text-white'
-                      : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'
-                  }`}
+                  className={`p-2 rounded-xl transition-all duration-300 ${view === 'split' ? 'bg-primary text-white' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'}`}
                   title="Vue partagée"
                 >
                   <Grid3x3 className="w-5 h-5" strokeWidth={1.5} />
                 </button>
                 <button
                   onClick={() => setView('list')}
-                  className={`p-2 rounded-xl transition-all duration-300 ${
-                    view === 'list'
-                      ? 'bg-primary text-white'
-                      : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'
-                  }`}
+                  className={`p-2 rounded-xl transition-all duration-300 ${view === 'list' ? 'bg-primary text-white' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'}`}
                   title="Liste seule"
                 >
                   <List className="w-5 h-5" strokeWidth={1.5} />
                 </button>
                 <button
                   onClick={() => setView('map')}
-                  className={`p-2 rounded-xl transition-all duration-300 ${
-                    view === 'map'
-                      ? 'bg-primary text-white'
-                      : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'
-                  }`}
+                  className={`p-2 rounded-xl transition-all duration-300 ${view === 'map' ? 'bg-primary text-white' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'}`}
                   title="Carte seule"
                 >
                   <MapPin className="w-5 h-5" strokeWidth={1.5} />
                 </button>
               </div>
-              
+
+              {/* Bouton toggle Mobile */}
               <div className="flex lg:hidden gap-2">
                 <button
-                  onClick={() => setView(view === 'map' ? 'list' : 'map')}
-                  className={`p-2 rounded-xl transition-all duration-300 ${
-                    view === 'map'
-                      ? 'bg-primary text-white'
-                      : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'
-                  }`}
+                  onClick={() => setMobileView(mobileView === 'map' ? 'list' : 'map')}
+                  className={`p-2 rounded-xl transition-all duration-300 ${mobileView === 'map' ? 'bg-primary text-white' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'}`}
                 >
-                  {view === 'map' ? (
+                  {mobileView === 'map' ? (
                     <List className="w-5 h-5" strokeWidth={1.5} />
                   ) : (
                     <MapPin className="w-5 h-5" strokeWidth={1.5} />
@@ -263,38 +207,28 @@ export default function ResellersPage() {
           </div>
 
           <div className="mb-4">
-            <MapFilters
-              resellers={resellers}
-              onFilterChange={handleFilterChange}
-            />
+            <MapFilters resellers={resellers} onFilterChange={handleFilterChange} />
           </div>
 
           <div className="bg-white dark:bg-dark-surface rounded-xl p-4 border border-neutral-200 dark:border-neutral-800 shadow-sm">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-medium text-neutral-900 dark:text-white">
-                    Calcul des distances
-                  </h3>
+                  <h3 className="text-base font-medium text-neutral-900 dark:text-white">Calcul des distances</h3>
                   <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-0.5">
                     {userLocation ? 'Personnalisé selon votre position' : 'Activez la géolocalisation'}
                   </p>
                 </div>
-                
                 <div className="flex items-center gap-2">
                   {userLocation ? (
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
                       <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                      <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
-                        GPS activé
-                      </span>
+                      <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">GPS activé</span>
                     </div>
                   ) : isGeolocationLoading ? (
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
                       <Loader2 className="w-3 h-3 text-blue-600 dark:text-blue-400 animate-spin" strokeWidth={1.5} />
-                      <span className="text-xs font-medium text-blue-700 dark:text-blue-300">
-                        En cours...
-                      </span>
+                      <span className="text-xs font-medium text-blue-700 dark:text-blue-300">En cours...</span>
                     </div>
                   ) : !hasSkippedGeolocation ? (
                     <button
@@ -302,27 +236,20 @@ export default function ResellersPage() {
                       className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 dark:bg-primary/20 dark:hover:bg-primary/30 rounded-xl border border-primary/20 dark:border-primary/30 transition-all duration-300"
                     >
                       <MapPin className="w-3 h-3 text-primary" strokeWidth={1.5} />
-                      <span className="text-xs font-medium text-primary">
-                        Activer GPS
-                      </span>
+                      <span className="text-xs font-medium text-primary">Activer GPS</span>
                     </button>
                   ) : (
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800">
-                      <span className="text-xs font-medium text-amber-700 dark:text-amber-300">
-                        GPS désactivé
-                      </span>
+                      <span className="text-xs font-medium text-amber-700 dark:text-amber-300">GPS désactivé</span>
                     </div>
                   )}
                 </div>
               </div>
-              
+
               <div className="pt-2">
-                <TravelModeSelector
-                  mode={travelMode}
-                  onChange={handleTravelModeChange}
-                />
+                <TravelModeSelector mode={travelMode} onChange={handleTravelModeChange} />
               </div>
-              
+
               <div className="space-y-2 pt-2">
                 {isGeolocationLoading && (
                   <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800 animate-pulse">
@@ -330,32 +257,24 @@ export default function ResellersPage() {
                       <Loader2 className="w-4 h-4 text-blue-600 dark:text-blue-400 animate-spin" strokeWidth={1.5} />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-blue-800 dark:text-blue-300">
-                        Détection de votre position
-                      </p>
-                      <p className="text-xs text-blue-700/80 dark:text-blue-400/80">
-                        Autorisez l'accès à votre position dans le navigateur
-                      </p>
+                      <p className="text-sm font-medium text-blue-800 dark:text-blue-300">Détection de votre position</p>
+                      <p className="text-xs text-blue-700/80 dark:text-blue-400/80">Autorisez l'accès à votre position dans le navigateur</p>
                     </div>
                   </div>
                 )}
-                
+
                 {isLoadingDistances && userLocation && (
                   <div className="flex items-center gap-3 p-3 bg-primary/5 dark:bg-primary/10 rounded-xl border border-primary/20 dark:border-primary/30">
                     <div className="w-8 h-8 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                       <Loader2 className="w-4 h-4 text-primary animate-spin" strokeWidth={1.5} />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-primary dark:text-primary-400">
-                        Calcul optimisé en cours
-                      </p>
-                      <p className="text-xs text-primary/80 dark:text-primary-300/80">
-                        Affichage instantané avec distances précises pour les plus proches
-                      </p>
+                      <p className="text-sm font-medium text-primary">Calcul optimisé en cours</p>
+                      <p className="text-xs text-primary/80">Affichage instantané avec distances précises pour les plus proches</p>
                     </div>
                   </div>
                 )}
-                
+
                 {!userLocation && hasSkippedGeolocation && (
                   <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800">
                     <div className="flex items-start gap-3">
@@ -363,12 +282,8 @@ export default function ResellersPage() {
                         <AlertCircle className="w-3 h-3 text-amber-600 dark:text-amber-400" strokeWidth={1.5} />
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
-                          Géolocalisation désactivée
-                        </p>
-                        <p className="text-sm text-amber-700/80 dark:text-amber-400/80 mb-2">
-                          Les distances ne seront pas calculées
-                        </p>
+                        <p className="text-sm font-medium text-amber-800 dark:text-amber-300">Géolocalisation désactivée</p>
+                        <p className="text-sm text-amber-700/80 dark:text-amber-400/80 mb-2">Les distances ne seront pas calculées</p>
                         <button
                           onClick={handleEnableGeolocation}
                           className="text-xs bg-amber-600 text-white px-3 py-1.5 rounded-xl hover:bg-amber-700 transition-all duration-300"
@@ -379,7 +294,7 @@ export default function ResellersPage() {
                     </div>
                   </div>
                 )}
-                
+
                 {distances && Object.keys(distances).length > 0 && userLocation && (
                   <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
                     <div className="flex items-start gap-3">
@@ -387,12 +302,8 @@ export default function ResellersPage() {
                         <CheckCircle className="w-3 h-3 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-emerald-800 dark:text-emerald-300">
-                          {Object.keys(distances).length} distances calculées
-                        </p>
-                        <p className="text-sm text-emerald-700/80 dark:text-emerald-400/80">
-                          Revendeurs triés par proximité • ≈ = Distance estimée
-                        </p>
+                        <p className="text-sm font-medium text-emerald-800 dark:text-emerald-300">{Object.keys(distances).length} distances calculées</p>
+                        <p className="text-sm text-emerald-700/80 dark:text-emerald-400/80">Revendeurs triés par proximité • ≈ = Distance estimée</p>
                       </div>
                     </div>
                   </div>
@@ -404,7 +315,9 @@ export default function ResellersPage() {
       </div>
 
       <div className="relative h-[calc(100vh-320px)] sm:h-[calc(100vh-360px)]">
-        
+
+        {/* ===== DESKTOP ===== */}
+
         {view === 'split' && (
           <div className="hidden lg:flex h-full">
             <div className="w-2/5 overflow-y-auto">
@@ -415,7 +328,6 @@ export default function ResellersPage() {
                 distances={distances}
               />
             </div>
-
             <div className="w-3/5 relative">
               <ResellerMap
                 resellers={filteredResellers}
@@ -429,7 +341,7 @@ export default function ResellersPage() {
         )}
 
         {view === 'list' && (
-          <div className="h-full flex flex-col">
+          <div className="hidden lg:flex h-full flex-col">
             <div className="bg-white dark:bg-dark-surface p-4 border-b border-neutral-200 dark:border-neutral-800">
               <div className="flex items-center justify-between">
                 <div>
@@ -437,9 +349,7 @@ export default function ResellersPage() {
                     {sortedResellers.length} revendeur{sortedResellers.length > 1 ? 's' : ''}
                   </p>
                   {userLocation && distances && Object.keys(distances).length > 0 && (
-                    <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">
-                      Triés par distance
-                    </p>
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">Triés par distance</p>
                   )}
                 </div>
                 <div className="text-xs text-neutral-500 dark:text-neutral-500">
@@ -456,24 +366,15 @@ export default function ResellersPage() {
                 distances={distances}
               />
             </div>
-
             {sortedResellers.length > PAGE_SIZE && (
               <div className="flex justify-center gap-2 p-4 bg-white dark:bg-dark-surface border-t border-neutral-200 dark:border-neutral-800">
-                <button
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage((p) => p - 1)}
-                  className="px-4 py-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all duration-300 flex items-center gap-2"
-                >
-                  <Navigation className="w-4 h-4 rotate-180" strokeWidth={1.5} />
+                <button disabled={currentPage === 1} onClick={() => setCurrentPage((p) => p - 1)} className="px-4 py-2.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all duration-300 flex items-center gap-2">
+                  {/*<Navigation className="w-4 h-4 rotate-180" strokeWidth={1.5} />*/}
                   Précédent
                 </button>
-                <button
-                  disabled={currentPage === Math.ceil(sortedResellers.length / PAGE_SIZE)}
-                  onClick={() => setCurrentPage((p) => p + 1)}
-                  className="px-4 py-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all duration-300 flex items-center gap-2"
-                >
+                <button disabled={currentPage === Math.ceil(sortedResellers.length / PAGE_SIZE)} onClick={() => setCurrentPage((p) => p + 1)} className="px-4 py-2.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all duration-300 flex items-center gap-2">
                   Suivant
-                  <Navigation className="w-4 h-4" strokeWidth={1.5} />
+                  {/*<Navigation className="w-4 h-4" strokeWidth={1.5} />*/}
                 </button>
               </div>
             )}
@@ -481,7 +382,6 @@ export default function ResellersPage() {
         )}
 
         {view === 'map' && (
-          //<div className="relative h-full">
           <div className="hidden lg:block relative h-full">
             <ResellerMap
               resellers={filteredResellers}
@@ -493,8 +393,10 @@ export default function ResellersPage() {
           </div>
         )}
 
+        {/* ===== MOBILE ===== */}
+
         <div className="lg:hidden h-full flex flex-col">
-          {view === 'map' ? (
+          {mobileView === 'map' ? (
             <div className="relative h-full">
               <ResellerMap
                 resellers={filteredResellers}
@@ -513,14 +415,11 @@ export default function ResellersPage() {
                       {sortedResellers.length} revendeur{sortedResellers.length > 1 ? 's' : ''}
                     </p>
                     {userLocation && distances && Object.keys(distances).length > 0 && (
-                      <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">
-                        Triés par distance
-                      </p>
+                      <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">Triés par distance</p>
                     )}
                   </div>
                 </div>
               </div>
-              
               <div className="flex-1 overflow-y-auto">
                 <ResellersList
                   resellers={paginatedResellers}
@@ -529,30 +428,22 @@ export default function ResellersPage() {
                   distances={distances}
                 />
               </div>
-
               {sortedResellers.length > PAGE_SIZE && (
                 <div className="flex justify-center gap-2 p-4 bg-white dark:bg-dark-surface border-t border-neutral-200 dark:border-neutral-800">
-                  <button
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage((p) => p - 1)}
-                    className="px-4 py-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all duration-300 flex items-center gap-2"
-                  >
-                    <Navigation className="w-4 h-4 rotate-180" strokeWidth={1.5} />
+                  <button disabled={currentPage === 1} onClick={() => setCurrentPage((p) => p - 1)} className="px-4 py-2.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all duration-300 flex items-center gap-2">
+                    {/*<Navigation className="w-4 h-4 rotate-180" strokeWidth={1.5} />*/}
                     Précédent
                   </button>
-                  <button
-                    disabled={currentPage === Math.ceil(sortedResellers.length / PAGE_SIZE)}
-                    onClick={() => setCurrentPage((p) => p + 1)}
-                    className="px-4 py-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all duration-300 flex items-center gap-2"
-                  >
+                  <button disabled={currentPage === Math.ceil(sortedResellers.length / PAGE_SIZE)} onClick={() => setCurrentPage((p) => p + 1)} className="px-4 py-2.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all duration-300 flex items-center gap-2">
                     Suivant
-                    <Navigation className="w-4 h-4" strokeWidth={1.5} />
+                    {/*<Navigation className="w-4 h-4" strokeWidth={1.5} />*/}
                   </button>
                 </div>
               )}
             </div>
           )}
         </div>
+
       </div>
     </div>
   )

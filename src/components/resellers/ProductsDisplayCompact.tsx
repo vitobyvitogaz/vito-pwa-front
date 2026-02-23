@@ -18,14 +18,20 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
 
   const allProducts = reseller.reseller_products
   const featuredProducts = allProducts.filter(rp => rp.products.is_featured)
+  // Remplace
+  //const displayProducts = isExpanded 
+  //  ? allProducts 
+  //  : (featuredProducts.length > 0 ? featuredProducts.slice(0, 6) : allProducts.slice(0, 6))
+
+  // Par
   const displayProducts = isExpanded 
     ? allProducts 
-    : (featuredProducts.length > 0 ? featuredProducts.slice(0, 3) : allProducts.slice(0, 3))
+    : allProducts.slice(0, 3)
   
   const remainingCount = allProducts.length - displayProducts.length
 
   const formatPrice = (price: number | null) => {
-    if (!price) return 'Sur demande'
+    if (!price) return 'Prix sur demande'
     return new Intl.NumberFormat('fr-MG', {
       minimumFractionDigits: 0,
     }).format(price) + ' Ar'
@@ -53,15 +59,13 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
 
       {/* Products Compact Display */}
       {!isExpanded && (
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="grid grid-cols-3 gap-2">
           {displayProducts.map(rp => {
             const product = rp.products
             return (
-              <div
-                key={product.id}
-                className="flex-shrink-0 w-24 group"
-              >
-                <div className="relative aspect-square rounded-lg overflow-hidden bg-neutral-100 dark:bg-neutral-800 mb-1.5 border border-neutral-200 dark:border-neutral-700 group-hover:border-primary/50 transition-all">
+              <div key={product.id} className="group">
+                {/*<div className="relative aspect-square rounded-lg overflow-hidden bg-neutral-100 dark:bg-neutral-800 mb-1.5 border border-neutral-200 dark:border-neutral-700 group-hover:border-primary/50 transition-all">*/}
+                <div className="relative aspect-square rounded-lg overflow-hidden bg-white dark:bg-white mb-1.5 border border-neutral-200 dark:border-neutral-700 group-hover:border-primary/50 transition-all">
                   {product.image_url && (
                     <Image
                       src={product.image_url}
@@ -99,7 +103,8 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
                 className="group relative bg-neutral-50 dark:bg-neutral-800 rounded-lg p-2 border border-neutral-200 dark:border-neutral-700 hover:border-primary/50 dark:hover:border-primary/50 hover:shadow-sm transition-all duration-300"
               >
                 {product.image_url && (
-                  <div className="relative w-full aspect-square mb-2 rounded-md overflow-hidden bg-white dark:bg-neutral-700">
+                  //<div className="relative w-full aspect-square mb-2 rounded-md overflow-hidden bg-white dark:bg-neutral-700">
+                  <div className="relative w-full aspect-square mb-2 rounded-md overflow-hidden bg-white dark:bg-white">
                     <Image
                       src={product.image_url}
                       alt={product.name}
