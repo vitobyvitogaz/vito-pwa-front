@@ -53,7 +53,7 @@ export const Header: React.FC = () => {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                     isActive
                       ? 'bg-primary/10 text-primary dark:bg-primary/20'
                       : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-dark-border/20 hover:text-neutral-900 dark:hover:text-white'
@@ -77,9 +77,9 @@ export const Header: React.FC = () => {
             <div className="hidden sm:block h-6 w-px bg-neutral-300/40 dark:bg-dark-border/40" />
 
             {/* ThemeSwitcher */}
-            <div className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-neutral-100 dark:hover:bg-dark-border/20 transition-colors">
+            {/*<div className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-neutral-100 dark:hover:bg-dark-border/20 transition-colors">*/}
               <ThemeSwitcher />
-            </div>
+            {/*</div>*/}
 
             {/* Bouton Installer - Mobile */}
             <div className="sm:hidden">
@@ -89,7 +89,7 @@ export const Header: React.FC = () => {
             {/* Hamburger - Mobile */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-neutral-100 dark:hover:bg-dark-border/20 transition-colors"
+              className="md:hidden w-9 h-9 flex items-center justify-center rounded-full hover:bg-neutral-100 dark:hover:bg-dark-border/20 transition-colors"
             >
               {menuOpen
                 ? <X className="w-5 h-5 text-neutral-700 dark:text-neutral-300" strokeWidth={1.5} />
@@ -112,7 +112,7 @@ export const Header: React.FC = () => {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
                     isActive
                       ? 'bg-primary/10 text-primary dark:bg-primary/20'
                       : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-dark-border/20 hover:text-neutral-900 dark:hover:text-white'

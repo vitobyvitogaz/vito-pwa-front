@@ -115,7 +115,7 @@ export const InstallButton: React.FC = () => {
   return (
     <button
       onClick={handleInstall}
-      className="install-button group bg-primary text-white rounded-xl px-4 py-2.5 flex items-center gap-2 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 active:scale-95"
+      className="install-button group bg-primary text-white rounded-full px-4 py-2.5 flex items-center gap-2 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 active:scale-95"
       aria-label="Installer l'application VIto"
     >
       <Download className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />

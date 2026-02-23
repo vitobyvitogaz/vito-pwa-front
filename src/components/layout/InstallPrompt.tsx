@@ -35,13 +35,13 @@ export const InstallPrompt: React.FC = () => {
     <div className="fixed bottom-4 left-4 right-4 bg-white dark:bg-dark-surface rounded-xl shadow-xl p-4 z-50 animate-slide-up">
       <button
         onClick={() => setShowPrompt(false)}
-        className="absolute top-2 right-2 p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"
+        className="absolute top-2 right-2 p-1 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800"
       >
         <XMarkIcon className="w-5 h-5" />
       </button>
       
       <div className="flex items-start gap-3">
-        <img src="/icons/icon-96x96.png" alt="Vito" className="w-12 h-12 rounded-lg" />
+        <img src="/icons/icon-96x96.png" alt="Vito" className="w-12 h-12 rounded-full" />
         <div className="flex-1">
           <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">
             Installer Vito
