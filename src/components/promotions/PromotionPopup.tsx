@@ -10,6 +10,8 @@ interface PromotionPopupProps {
   onClose: () => void
 }
 
+const POPUP_COOLDOWN_MINUTES = 0
+
 export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClose }) => {
   const [isVisible, setIsVisible] = useState(false)
   const [timeLeft, setTimeLeft] = useState('')
@@ -17,12 +19,21 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    // Vérifier si c'est la première ouverture
-    const hasPopupBeenShown = localStorage.getItem('promotionPopupShown')
-    
-    if (!hasPopupBeenShown) {
+    const lastShown = localStorage.getItem('promotionPopupShown')
+    const shouldShow = !lastShown ||
+      (Date.now() - parseInt(lastShown)) / (1000 * 60) >= POPUP_COOLDOWN_MINUTES
+
+    console.log('🔔 PromotionPopup useEffect lancé')
+    console.log('lastShown:', lastShown)
+    console.log('shouldShow:', shouldShow)
+    console.log('POPUP_COOLDOWN_MINUTES:', POPUP_COOLDOWN_MINUTES)
+
+    if (shouldShow) {
       setIsVisible(true)
-      localStorage.setItem('promotionPopupShown', 'true')
+      localStorage.setItem('promotionPopupShown', String(Date.now()))
+      console.log('✅ isVisible mis à true')
+    } else {
+      console.log('❌ shouldShow est false, popup bloquée')
     }
   }, [])
 
@@ -86,7 +97,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
-            
+
             {promotion.discount_value > 0 && (
               <div className="absolute top-4 right-4 z-10">
                 <div className="relative">
@@ -139,7 +150,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
 
               {!isExpired && (
                 <div className="h-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
-                  <div 
+                  <div
                     className="h-full bg-primary rounded-full transition-all duration-1000"
                     style={{ width: '75%' }}
                   />
@@ -160,7 +171,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
                     {copied ? 'Copié !' : 'Cliquez pour copier'}
                   </button>
                 </div>
-                
+
                 <button onClick={handleCopyCode} className="w-full">
                   <div className="relative">
                     <div className="absolute inset-0 bg-primary/10 rounded-xl blur-sm group-hover:blur transition-all duration-300" />
