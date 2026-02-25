@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import type { Promotion } from '@/types/promotion'
 import { X, Tag, Clock, Sparkles, ArrowRight, Calendar } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
@@ -15,6 +15,9 @@ const POPUP_COOLDOWN_MINUTES = 0
 
 export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClose }) => {
   const router = useRouter()
+  const params = useParams()
+  const locale = params.locale as string
+
   const [isVisible, setIsVisible] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
   const [timeLeft, setTimeLeft] = useState({ days: '00', hours: '00', minutes: '00', seconds: '00' })
@@ -99,7 +102,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
     setTimeout(() => {
       setIsVisible(false)
       onClose()
-      router.push('/promotions')
+      router.push(`/${locale}/promotions`)
     }, 300)
   }
 
@@ -113,9 +116,10 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
       style={{ backgroundColor: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(6px)' }}
       onClick={(e) => e.target === e.currentTarget && handleClose()}
     >
-      <div className={`relative w-full max-w-sm transition-all duration-300 ${
-        isClosing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
-      }`}
+      <div
+        className={`relative w-full max-w-sm transition-all duration-300 ${
+          isClosing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
+        }`}
         style={{ animation: isClosing ? 'none' : 'slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
       >
         <style>{`
@@ -134,7 +138,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
 
           {/* ── HEADER compact ── */}
           <div className="relative bg-gradient-to-r from-primary to-primary-600 px-5 py-3.5 flex items-center justify-between">
-            
+
             {/* Badges alignés même hauteur */}
             <div className="flex items-center gap-2">
               <div className="h-7 flex items-center gap-1.5 px-3 bg-white/20 rounded-full">

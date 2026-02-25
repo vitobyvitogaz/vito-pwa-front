@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { ProductCard } from '@/components/products/ProductCard'
-import { Filter, ChevronLeft, ChevronRight, Loader2, Package } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Loader2, Package } from 'lucide-react'
 
 const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1';
 const ITEMS_PER_PAGE = 12;
+
+const CATEGORY_ORDER = ['Bouteilles', 'Accessoires', 'Kit', 'Gaz au détail']
 
 interface Product {
   id: string
@@ -35,12 +37,9 @@ export const ProductsList: React.FC = () => {
     try {
       setLoading(true)
       const response = await fetch(`${API_URL}/products`)
-
-      if (!response.ok) {
-        throw new Error('Erreur lors du chargement')
-      }
-
+      if (!response.ok) throw new Error('Erreur lors du chargement')
       const data = await response.json()
+      console.log('Catégories reçues:', data.map((p: Product) => `"${p.category}"`))
       setProducts(data)
       setError(null)
     } catch (err) {
@@ -52,7 +51,16 @@ export const ProductsList: React.FC = () => {
     }
   }
 
-  const categories = ['all', ...Array.from(new Set(products.map(p => p.category).filter(Boolean) as string[]))]
+  // Catégories triées selon CATEGORY_ORDER
+  const categories = ['all', ...Array.from(
+    new Set(products.map(p => p.category).filter(Boolean) as string[])
+  ).sort((a, b) => {
+    const indexA = CATEGORY_ORDER.indexOf(a.trim())
+    const indexB = CATEGORY_ORDER.indexOf(b.trim())
+    const rankA = indexA === -1 ? 999 : indexA
+    const rankB = indexB === -1 ? 999 : indexB
+    return rankA - rankB
+  })]
 
   const filteredProducts = products.filter(product => {
     if (!product.is_active) return false
@@ -60,7 +68,14 @@ export const ProductsList: React.FC = () => {
     return product.category === selectedCategory
   })
 
+  // Tri par catégorie selon CATEGORY_ORDER, puis is_featured, puis order_position
   const sortedProducts = [...filteredProducts].sort((a, b) => {
+    const indexA = CATEGORY_ORDER.indexOf((a.category || '').trim())
+    const indexB = CATEGORY_ORDER.indexOf((b.category || '').trim())
+    const rankA = indexA === -1 ? 999 : indexA
+    const rankB = indexB === -1 ? 999 : indexB
+
+    if (rankA !== rankB) return rankA - rankB
     if (a.is_featured && !b.is_featured) return -1
     if (!a.is_featured && b.is_featured) return 1
     return a.order_position - b.order_position
@@ -157,7 +172,7 @@ export const ProductsList: React.FC = () => {
           <button
             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             disabled={currentPage === 1}
-            className="p-3 rounded-xl bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            className="p-3 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
           </button>
@@ -167,7 +182,7 @@ export const ProductsList: React.FC = () => {
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`w-10 h-10 rounded-xl font-semibold transition-all duration-200 font-sans ${
+                className={`w-10 h-10 rounded-full font-semibold transition-all duration-200 font-sans ${
                   currentPage === page
                     ? 'bg-primary text-white'
                     : 'bg-white dark:bg-dark-surface text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-800 hover:border-primary hover:text-primary'
@@ -181,7 +196,7 @@ export const ProductsList: React.FC = () => {
           <button
             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
             disabled={currentPage === totalPages}
-            className="p-3 rounded-xl bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            className="p-3 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             <ChevronRight className="w-5 h-5" strokeWidth={1.5} />
           </button>

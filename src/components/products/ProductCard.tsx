@@ -44,17 +44,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, delay = 0 }) 
       onClick={handleCardClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative overflow-hidden rounded-2xl transition-all duration-300 animate-slide-up group bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 cursor-pointer"
+      className="relative overflow-hidden rounded-2xl transition-all duration-300 animate-slide-up group bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 cursor-pointer flex flex-col"
       style={{
         animationDelay: `${delay}s`,
-        boxShadow: isHovered 
+        boxShadow: isHovered
           ? '0 20px 40px -20px rgba(0, 139, 127, 0.15), 0 0 0 1px rgba(0, 139, 127, 0.05)'
           : '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03)',
         transform: isHovered ? 'translateY(-4px)' : 'translateY(0)'
       }}
     >
       {/* Image */}
-      <div className="relative h-64 overflow-hidden bg-white">
+      <div className="relative h-64 overflow-hidden bg-white flex-shrink-0">
         {product.image_url ? (
           <img
             src={product.image_url}
@@ -90,9 +90,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, delay = 0 }) 
         )}
       </div>
 
-      {/* Content */}
-      <div className="p-6">
-        <div className="mb-4">
+      {/* Content — flex-col + flex-grow pour pousser le bouton en bas */}
+      <div className="p-6 flex flex-col flex-grow">
+
+        {/* Infos produit — flex-grow pour occuper l'espace disponible */}
+        <div className="flex-grow">
           {/* Product code */}
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -130,7 +132,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, delay = 0 }) 
           </div>
         )}
 
-        {/* Call to action */}
+        {/* Call to action — toujours en bas grâce à mt-4 sur un conteneur flex */}
         <div className="mt-4" onClick={handleSeeResellers}>
           <div className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary/5 border border-primary/20 hover:border-primary/40 hover:bg-primary/10 transition-all duration-300 group/btn">
             <Package className="w-5 h-5 text-primary group-hover/btn:scale-110 transition-transform" strokeWidth={1.5} />

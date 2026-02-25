@@ -3,12 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Truck, Loader2 } from 'lucide-react'
 import { DeliveryCompanyCard } from '@/components/order/DeliveryCompanyCard'
-import { 
-  type DeliveryCompany,
-  filterTypes, 
-  filterCompanies, 
-  sortCompanies 
-} from '@/data/deliveryCompanies'
+import { type DeliveryCompany, sortCompanies } from '@/data/deliveryCompanies'
 
 const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1';
 
@@ -21,9 +16,21 @@ export default function DeliveryPage() {
   const [sortBy, setSortBy] = useState<'rating' | 'deliveryTime' | 'name' | 'reviewCount'>('rating')
   const [filteredCompanies, setFilteredCompanies] = useState<DeliveryCompany[]>([])
 
+  // Génération dynamique des onglets depuis les specialties réelles
+  const dynamicFilters = [
+    { id: 'all', label: 'Tous' },
+    { id: 'verified', label: 'Vérifiées' },
+    ...Array.from(
+      new Set(deliveryCompanies.flatMap(c => c.specialties))
+    ).filter(Boolean).map(specialty => ({
+      id: specialty,
+      label: specialty,
+    }))
+  ]
+
   const stats = {
     totalCompanies: deliveryCompanies.length,
-    averageRating: deliveryCompanies.length > 0 
+    averageRating: deliveryCompanies.length > 0
       ? Number((deliveryCompanies.reduce((acc, c) => acc + c.rating, 0) / deliveryCompanies.length).toFixed(1))
       : 0,
     fastestDelivery: deliveryCompanies.length > 0
@@ -40,7 +47,26 @@ export default function DeliveryPage() {
   }, [])
 
   useEffect(() => {
-    let result = filterCompanies(deliveryCompanies, selectedFilter, searchQuery)
+    let result = [...deliveryCompanies]
+
+    // Filtre par recherche
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase()
+      result = result.filter(company =>
+        company.name.toLowerCase().includes(query) ||
+        (company.description && company.description.toLowerCase().includes(query)) ||
+        company.service_areas.some(area => area.toLowerCase().includes(query)) ||
+        company.features.some(feature => feature.toLowerCase().includes(query))
+      )
+    }
+
+    // Filtre par onglet
+    if (selectedFilter === 'verified') {
+      result = result.filter(c => c.is_verified)
+    } else if (selectedFilter !== 'all') {
+      result = result.filter(c => c.specialties.includes(selectedFilter))
+    }
+
     result = sortCompanies(result, sortBy)
     setFilteredCompanies(result)
   }, [selectedFilter, searchQuery, sortBy, deliveryCompanies])
@@ -49,16 +75,9 @@ export default function DeliveryPage() {
     try {
       setLoading(true)
       const response = await fetch(`${API_URL}/delivery-companies`)
-      
-      if (!response.ok) {
-        throw new Error('Erreur lors du chargement')
-      }
-      
+      if (!response.ok) throw new Error('Erreur lors du chargement')
       const data = await response.json()
-      
-      // Filtrer uniquement les sociétés actives
       const activeCompanies = data.filter((company: DeliveryCompany) => company.is_active)
-      
       setDeliveryCompanies(activeCompanies)
       setError(null)
     } catch (err) {
@@ -88,9 +107,7 @@ export default function DeliveryPage() {
           <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900 dark:to-red-800 flex items-center justify-center">
             <Truck className="w-10 h-10 text-red-500" strokeWidth={1} />
           </div>
-          <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-3 font-sans">
-            {error}
-          </h3>
+          <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-3 font-sans">{error}</h3>
           <button
             onClick={fetchDeliveryCompanies}
             className="px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-600 transition-colors duration-200 font-sans"
@@ -105,16 +122,15 @@ export default function DeliveryPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-neutral-25 via-white to-neutral-25 dark:from-dark-bg dark:via-dark-surface/95 dark:to-dark-bg pt-16 pb-20">
       <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
+
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16 animate-fade-in">
           <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-xl bg-gradient-to-br from-primary to-primary-600 shadow-lg">
             <Truck className="w-10 h-10 text-white" strokeWidth={1.5} />
           </div>
-          
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-neutral-900 dark:text-white mb-4 tracking-tight font-sans">
             Se faire livrer du gaz
           </h1>
-          
           <div className="max-w-2xl mx-auto">
             <p className="text-lg sm:text-xl text-neutral-600 dark:text-neutral-400 leading-relaxed tracking-wide font-sans">
               Comparez et contactez directement les meilleures sociétés de livraison de gaz près de chez vous
@@ -162,7 +178,6 @@ export default function DeliveryPage() {
                 />
               </div>
             </div>
-
             <div className="sm:w-48">
               <select
                 value={sortBy}
@@ -177,9 +192,9 @@ export default function DeliveryPage() {
             </div>
           </div>
 
-          {/* Filters */}
-          <div className="flex gap-2 mb-6 pb-2 justify-center">
-            {filterTypes.map((filter) => (
+          {/* Onglets dynamiques depuis specialties */}
+          <div className="flex gap-2 mb-6 pb-2 justify-center flex-wrap">
+            {dynamicFilters.map((filter) => (
               <button
                 key={filter.id}
                 onClick={() => setSelectedFilter(filter.id)}
@@ -200,16 +215,16 @@ export default function DeliveryPage() {
             ))}
           </div>
 
-          {/* Results */}
+          {/* Results count */}
           <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <p className="text-neutral-600 dark:text-neutral-400 text-sm font-sans">
               {filteredCompanies.length} société{filteredCompanies.length > 1 ? 's' : ''} trouvée{filteredCompanies.length > 1 ? 's' : ''}
-              {selectedFilter !== 'all' && ` • ${filterTypes.find(f => f.id === selectedFilter)?.label}`}
+              {selectedFilter !== 'all' && ` • ${dynamicFilters.find(f => f.id === selectedFilter)?.label}`}
               {searchQuery && ` • Recherche : "${searchQuery}"`}
             </p>
-            {selectedFilter !== 'all' && (
+            {(selectedFilter !== 'all' || searchQuery) && (
               <button
-                onClick={() => setSelectedFilter('all')}
+                onClick={() => { setSelectedFilter('all'); setSearchQuery('') }}
                 className="text-sm font-medium text-primary hover:text-primary-600 transition-colors font-sans"
               >
                 Effacer les filtres
@@ -240,10 +255,7 @@ export default function DeliveryPage() {
                 Essayez de modifier vos critères de recherche ou utilisez des termes différents.
               </p>
               <button
-                onClick={() => {
-                  setSelectedFilter('all')
-                  setSearchQuery('')
-                }}
+                onClick={() => { setSelectedFilter('all'); setSearchQuery('') }}
                 className="px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary-600 transition-colors duration-200 font-sans"
               >
                 Voir toutes les sociétés
@@ -262,9 +274,7 @@ export default function DeliveryPage() {
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4">
                 <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">1</span>
               </div>
-              <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">
-                Choisissez une société
-              </h3>
+              <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">Choisissez une société</h3>
               <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed font-sans">
                 Comparez les services, délais et avis des différentes sociétés de livraison.
               </p>
@@ -273,9 +283,7 @@ export default function DeliveryPage() {
               <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mb-4">
                 <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">2</span>
               </div>
-              <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">
-                Contactez directement
-              </h3>
+              <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">Contactez directement</h3>
               <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed font-sans">
                 Utilisez le moyen de contact de votre choix : téléphone, WhatsApp ou Messenger.
               </p>
@@ -284,15 +292,14 @@ export default function DeliveryPage() {
               <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mb-4">
                 <span className="text-2xl font-bold text-purple-600 dark:text-purple-400">3</span>
               </div>
-              <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">
-                Recevez votre gaz
-              </h3>
+              <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">Recevez votre gaz</h3>
               <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed font-sans">
                 La société vous livre à domicile et peut même installer l'équipement si besoin.
               </p>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   )
