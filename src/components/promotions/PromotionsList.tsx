@@ -26,11 +26,7 @@ export const PromotionsList: React.FC = () => {
     try {
       setLoading(true)
       const response = await fetch(`${API_URL}/promotions`)
-      
-      if (!response.ok) {
-        throw new Error('Erreur lors du chargement')
-      }
-      
+      if (!response.ok) throw new Error('Erreur lors du chargement')
       const data = await response.json()
       setPromotions(data)
       setError(null)
@@ -98,9 +94,7 @@ export const PromotionsList: React.FC = () => {
         <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900 dark:to-red-800 flex items-center justify-center">
           <TagIcon className="w-10 h-10 text-red-500" strokeWidth={1} />
         </div>
-        <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-3 font-sans">
-          {error}
-        </h3>
+        <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-3 font-sans">{error}</h3>
         <button
           onClick={fetchPromotions}
           className="px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-600 transition-colors duration-200 font-sans"
@@ -140,16 +134,11 @@ export const PromotionsList: React.FC = () => {
 
           <select
             value={sortBy}
-            onChange={(e) => {
-              setSortBy(e.target.value)
-              setCurrentPage(1)
-            }}
+            onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1) }}
             className="px-4 py-3 rounded-xl bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors font-sans"
           >
             {sortOptions.map(option => (
-              <option key={option.id} value={option.id}>
-                {option.label}
-              </option>
+              <option key={option.id} value={option.id}>{option.label}</option>
             ))}
           </select>
         </div>
@@ -164,13 +153,11 @@ export const PromotionsList: React.FC = () => {
               <button
                 key={zone.id}
                 onClick={() => handleZoneToggle(zone.value)}
-                className={`
-                  px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 font-sans
-                  ${selectedZones.includes(zone.value)
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 font-sans ${
+                  selectedZones.includes(zone.value)
                     ? 'bg-primary text-white'
                     : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700'
-                  }
-                `}
+                }`}
               >
                 {zone.label}
               </button>
@@ -198,10 +185,9 @@ export const PromotionsList: React.FC = () => {
               after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2
               after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300
               hover:after:w-full font-sans
-              ${
-                activeFilter === filter.id
-                  ? 'text-primary after:w-full'
-                  : 'text-neutral-600 dark:text-neutral-400 hover:text-primary hover:bg-neutral-50 dark:hover:bg-neutral-900'
+              ${activeFilter === filter.id
+                ? 'text-primary after:w-full'
+                : 'text-neutral-600 dark:text-neutral-400 hover:text-primary hover:bg-neutral-50 dark:hover:bg-neutral-900'
               }
             `}
           >
@@ -234,7 +220,7 @@ export const PromotionsList: React.FC = () => {
       )}
 
       {/* Promotions grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
         {paginatedPromos.map((promo, index) => (
           <PromotionCard
             key={promo.id}
@@ -294,11 +280,7 @@ export const PromotionsList: React.FC = () => {
             Essayez de modifier vos filtres ou consultez toutes les promotions
           </p>
           <button
-            onClick={() => {
-              setActiveFilter('all')
-              setSelectedZones([])
-              setSortBy('discount_desc')
-            }}
+            onClick={() => { setActiveFilter('all'); setSelectedZones([]); setSortBy('discount_desc') }}
             className="px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-600 transition-colors duration-200 font-sans"
           >
             Voir toutes les promotions

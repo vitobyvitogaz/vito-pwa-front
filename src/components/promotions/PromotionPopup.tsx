@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import type { Promotion } from '@/types/promotion'
-import { X, Tag, Clock, Sparkles, ArrowRight, Calendar } from 'lucide-react'
+import { X, Tag, Sparkles, ArrowRight, Calendar } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 interface PromotionPopupProps {
@@ -138,8 +138,6 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
 
           {/* ── HEADER compact ── */}
           <div className="relative bg-gradient-to-r from-primary to-primary-600 px-5 py-3.5 flex items-center justify-between">
-
-            {/* Badges alignés même hauteur */}
             <div className="flex items-center gap-2">
               <div className="h-7 flex items-center gap-1.5 px-3 bg-white/20 rounded-full">
                 <span className="pulse-dot w-1.5 h-1.5 bg-white rounded-full" />
@@ -155,8 +153,6 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
                 </div>
               )}
             </div>
-
-            {/* Bouton fermer */}
             <button
               onClick={handleClose}
               className="w-7 h-7 rounded-full bg-white/20 hover:bg-white/35 flex items-center justify-center transition-all duration-200 hover:rotate-90 flex-shrink-0 ml-2"
@@ -166,17 +162,17 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
             </button>
           </div>
 
-          {/* ── IMAGE — object-contain sur fond blanc ── */}
+          {/* ── IMAGE — ratio 4:5 calé sur le format 1080×1350 ── */}
           {promotion.image_url ? (
-            <div className="w-full bg-white flex items-center justify-center" style={{ height: '220px' }}>
+            <div className="w-full aspect-[4/5] overflow-hidden">
               <img
                 src={promotion.image_url}
                 alt={promotion.title}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover"
               />
             </div>
           ) : (
-            <div className="w-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center" style={{ height: '120px' }}>
+            <div className="w-full aspect-[4/5] bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
               <Sparkles className="w-12 h-12 text-primary/30" strokeWidth={1} />
             </div>
           )}
@@ -194,11 +190,10 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
               </p>
             )}
 
-            {/* Countdown redesigné */}
+            {/* Countdown */}
             {!isExpired ? (
               <div className="mb-3">
                 <div className="flex items-center justify-between mb-2">
-                  {/* Blocs temps */}
                   <div className="flex items-center gap-1.5">
                     {[
                       { value: timeLeft.days, label: 'J' },
@@ -219,8 +214,6 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
                       </div>
                     ))}
                   </div>
-
-                  {/* Date */}
                   <div className="flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5 text-neutral-400" strokeWidth={1.5} />
                     <span className="text-xs text-neutral-400 font-sans">
@@ -230,8 +223,6 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
                     </span>
                   </div>
                 </div>
-
-                {/* Barre progression */}
                 <div className="h-1 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-primary to-primary-600 rounded-full transition-all duration-1000"
