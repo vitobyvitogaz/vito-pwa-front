@@ -72,7 +72,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, delay = 0 }) 
           <div className="absolute top-4 right-4 z-10">
             <div className="relative">
               <div className="absolute inset-0 bg-amber-500/30 rounded-xl blur-md" />
-              <div className="relative bg-amber-500 text-white rounded-xl px-3 py-2 flex items-center gap-2">
+              <div className="relative bg-amber-500 text-white rounded-full px-3 py-2 flex items-center gap-2">
                 <Star className="w-4 h-4 fill-white" strokeWidth={1.5} />
                 <span className="text-sm font-bold">Vedette</span>
               </div>
@@ -83,7 +83,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, delay = 0 }) 
         {/* Category badge */}
         {product.category && (
           <div className="absolute top-4 left-4 z-10">
-            <div className="bg-white/90 dark:bg-dark-surface/90 backdrop-blur-sm text-neutral-900 dark:text-white rounded-xl px-3 py-1.5 text-xs font-medium border border-neutral-200 dark:border-neutral-700">
+            <div className="bg-white/90 dark:bg-dark-surface/90 backdrop-blur-sm text-neutral-900 dark:text-white rounded-full px-3 py-1.5 text-xs font-medium border border-neutral-200 dark:border-neutral-700">
               {product.category}
             </div>
           </div>
@@ -97,7 +97,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, delay = 0 }) 
         <div className="flex-grow">
           {/* Product code */}
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
               <Tag className="w-4 h-4 text-primary" strokeWidth={1.5} />
             </div>
             <span className="text-sm font-mono font-semibold text-primary">
@@ -134,7 +134,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, delay = 0 }) 
 
         {/* Call to action — toujours en bas grâce à mt-4 sur un conteneur flex */}
         <div className="mt-4" onClick={handleSeeResellers}>
-          <div className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary/5 border border-primary/20 hover:border-primary/40 hover:bg-primary/10 transition-all duration-300 group/btn">
+          <div className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-full bg-primary/5 border border-primary/20 hover:border-primary/40 hover:bg-primary/10 transition-all duration-300 group/btn">
             <Package className="w-5 h-5 text-primary group-hover/btn:scale-110 transition-transform" strokeWidth={1.5} />
             <span className="font-medium text-primary font-sans">
               Voir revendeurs

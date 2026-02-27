@@ -1,7 +1,17 @@
 'use client'
 
 import { ProductsList } from '@/components/products/ProductsList'
-import { Package } from 'lucide-react'
+
+const GasBottleIcon = ({ className, strokeWidth }: { className?: string, strokeWidth?: number }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M10 2h4" />
+    <path d="M12 2v2" />
+    <path d="M8 6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2z" />
+    <path d="M8 10h8" />
+    <path d="M8 14h8" />
+    <circle cx="12" cy="17" r="1" fill="currentColor" stroke="none" />
+  </svg>
+)
 
 export default function ProduitsPage() {
   return (
@@ -9,8 +19,8 @@ export default function ProduitsPage() {
       <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-primary to-primary-600 shadow-lg">
-            <Package className="w-10 h-10 text-white" strokeWidth={1.5} />
+          <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 shadow-lg">
+            <GasBottleIcon className="w-10 h-10 text-white" strokeWidth={1.5} />
           </div>
           
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-neutral-900 dark:text-white mb-4 tracking-tight font-sans">

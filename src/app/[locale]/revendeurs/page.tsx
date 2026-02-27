@@ -340,14 +340,17 @@ export default function ResellersPage() {
           style={{ top: `${NAVBAR_HEIGHT + 12}px`, zIndex: 1000 }}
         >
           <div className="flex flex-col items-end gap-2 pointer-events-auto">
+
+            {/* Bouton Filtres — même taille que GPS */}
             <button
               onClick={() => setShowMobileFilters(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-neutral-200 dark:border-neutral-700 active:scale-95 transition-transform"
+              className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-neutral-200 dark:border-neutral-700 active:scale-95 transition-transform"
             >
-              <SlidersHorizontal className="w-4 h-4 text-neutral-600 dark:text-neutral-400" strokeWidth={1.5} />
-              <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Filtres</span>
+              <SlidersHorizontal className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-400" strokeWidth={1.5} />
+              <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300">Filtres</span>
             </button>
 
+            {/* GPS */}
             {userLocation ? (
               <div className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-emerald-200 dark:border-emerald-800">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
@@ -531,7 +534,7 @@ export default function ResellersPage() {
             >
               <button
                 onClick={() => setShowMobileFilters(false)}
-                className="w-full py-3.5 bg-primary text-white rounded-2xl font-semibold text-sm"
+                className="w-full py-3.5 bg-primary text-white rounded-full font-semibold text-sm"
               >
                 Voir {filteredResellers.length} revendeur{filteredResellers.length > 1 ? 's' : ''}
               </button>

@@ -134,7 +134,7 @@ export const NotificationToggle: React.FC = () => {
           )}
         </div>
         
-        {/* Toggle */}
+        {/* Toggle*/}
         <button
           onClick={handleToggle}
           disabled={isLoading}
@@ -164,6 +164,7 @@ export const NotificationToggle: React.FC = () => {
       </div>
       
       {/* Test button */}
+      {/*
       <div className="mt-6 pt-6 border-t border-neutral-200 dark:border-neutral-800">
         <button
           onClick={handleTestNotification}
@@ -175,6 +176,7 @@ export const NotificationToggle: React.FC = () => {
           Simule ce qui se passe quand une nouvelle promotion est ajoutée
         </p>
       </div>
+    */}
     </div>
   )
 }

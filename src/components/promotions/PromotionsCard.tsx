@@ -99,15 +99,16 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
       onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)')}
     >
 
-      {/* ── IMAGE pleine largeur ratio 4:5 ── */}
-      <div className="relative w-full aspect-[4/5] overflow-hidden">
+      {/* ── IMAGE — ratio 3:2 mobile, 4:5 desktop ── */}
+      <div className="relative w-full aspect-[3/2] sm:aspect-[4/5] overflow-hidden">
         <img
           src={promotion.image_url || '/images/promotions/default.jpg'}
           alt={promotion.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 
+        {/* Badge remise */}
         {promotion.discount_value > 0 && (
           <div className="absolute top-3 right-3">
             <div className="relative">
@@ -123,6 +124,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
           </div>
         )}
 
+        {/* Badge statut */}
         <div className="absolute top-3 left-3">
           {promotion.is_active && !isExpired ? (
             <div className="flex items-center gap-1.5 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full border border-white/20">
@@ -136,6 +138,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
           )}
         </div>
 
+        {/* Titre sur image */}
         <div className="absolute bottom-0 left-0 right-0 p-4">
           <h3 className="text-base font-bold text-white font-sans leading-tight line-clamp-2 drop-shadow-sm">
             {promotion.title}
@@ -147,6 +150,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
           )}
         </div>
 
+        {/* Barre de progression */}
         <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white/20">
           <div className="h-full bg-primary transition-all duration-1000" style={{ width: `${progressWidth}%` }} />
         </div>
@@ -254,7 +258,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
           </div>
         )}
 
-        {/* Section validité + conditions */}
+        {/* Validité */}
         <div className="bg-neutral-50 dark:bg-neutral-900/50 rounded-xl border border-neutral-100 dark:border-neutral-800 overflow-hidden">
           <div className="p-3.5">
             <div className="flex items-center gap-2 mb-2.5">
@@ -281,6 +285,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
             </div>
           </div>
         </div>
+
       </div>
     </div>
   )

@@ -193,7 +193,7 @@ const getTypeIcon = () => {
         <button
           onClick={handleCall}
           disabled={!reseller.phone}
-          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 ${
+          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-full font-medium text-sm transition-all duration-300 ${
             reseller.phone
               ? 'bg-primary text-white hover:bg-primary/90'
               : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400 cursor-not-allowed'
@@ -206,7 +206,7 @@ const getTypeIcon = () => {
         <button
           onClick={handleWhatsApp}
           disabled={!reseller.whatsapp}
-          className={`flex items-center justify-center w-11 h-11 rounded-xl transition-all duration-300 ${
+          className={`flex items-center justify-center w-11 h-11 rounded-full transition-all duration-300 ${
             reseller.whatsapp
               ? 'bg-emerald-600 text-white hover:bg-emerald-700'
               : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400 cursor-not-allowed'
@@ -218,7 +218,7 @@ const getTypeIcon = () => {
 
         <button
           onClick={handleDirections}
-          className="flex items-center justify-center w-11 h-11 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300"
+          className="flex items-center justify-center w-11 h-11 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300"
           title="Itinéraire"
         >
           <MapPin className="w-5 h-5" strokeWidth={1.5} />

@@ -42,7 +42,7 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+          <div className="w-7 h-7 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
             <Package className="w-3.5 h-3.5 text-primary" strokeWidth={2} />
           </div>
           <span className="text-sm font-semibold text-neutral-900 dark:text-white">

@@ -22,13 +22,20 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
 
   const cities = Array.from(new Set(resellers.map(r => r.city))).sort()
 
-  // Extraction dynamique des segments/types uniques
   const availableSegments = useMemo(() => {
     const segmentsSet = new Set(resellers.map(r => r.type).filter(Boolean))
     return Array.from(segmentsSet).sort()
   }, [resellers])
 
-  // Extraction dynamique des produits uniques depuis reseller_products
+  // Ordre des catégories
+  const CATEGORY_ORDER = ['Bouteille', 'Bouteilles', 'Accessoire', 'Accessoires', 'Kit', 'Autre', 'Autres']
+
+  const getCategoryRank = (category: string) => {
+    const normalized = category?.trim() ?? 'Autre'
+    const index = CATEGORY_ORDER.findIndex(c => c.toLowerCase() === normalized.toLowerCase())
+    return index === -1 ? 99 : index
+  }
+
   const availableProducts = useMemo(() => {
     const productsMap = new Map<string, { id: string; name: string; category: string }>()
     
@@ -46,7 +53,12 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
       }
     })
 
-    return Array.from(productsMap.values()).sort((a, b) => a.name.localeCompare(b.name))
+    return Array.from(productsMap.values()).sort((a, b) => {
+      const rankA = getCategoryRank(a.category)
+      const rankB = getCategoryRank(b.category)
+      if (rankA !== rankB) return rankA - rankB
+      return a.name.localeCompare(b.name)
+    })
   }, [resellers])
 
   const applyFilters = useCallback(() => {
@@ -68,7 +80,6 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
       filtered = filtered.filter(r => r.city === selectedCity)
     }
 
-    console.log('🎯 Filtres appliqués:', filtered.length, 'revendeurs')
     onFilterChange(filtered)
   }, [selectedSegment, selectedProducts, selectedCity, resellers, onFilterChange])
 
@@ -131,12 +142,11 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
       {/* Desktop */}
       <div className="hidden md:flex items-center justify-between">
         <div className="flex flex-wrap gap-3 overflow-x-auto py-2">
-          {/* Segments (Types) */}
           <div className="flex items-center gap-2 shrink-0">
             <select
               value={selectedSegment}
               onChange={(e) => setSelectedSegment(e.target.value)}
-              className="px-4 py-2 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-sm font-medium text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 tracking-tight"
+              className="px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-sm font-medium text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 tracking-tight"
             >
               <option value="all">Tous les segments</option>
               {availableSegments.map(segment => (
@@ -145,13 +155,12 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
             </select>
           </div>
 
-          {/* Ville */}
           {cities.length > 0 && (
             <div className="flex items-center gap-2 shrink-0">
               <select
                 value={selectedCity}
                 onChange={(e) => setSelectedCity(e.target.value)}
-                className="px-4 py-2 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-sm font-medium text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 tracking-tight"
+                className="px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-sm font-medium text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 tracking-tight"
               >
                 <option value="all">Toutes les villes</option>
                 {cities.map(city => (
@@ -161,12 +170,11 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
             </div>
           )}
 
-          {/* Produits dynamiques */}
           {availableProducts.map(product => (
             <button
               key={product.id}
               onClick={() => toggleProduct(product.id)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 border shrink-0 ${
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border shrink-0 ${
                 selectedProducts.includes(product.id)
                   ? 'bg-primary text-white border-primary'
                   : `${getProductCategoryColor(product.category)} hover:opacity-80`
@@ -177,11 +185,10 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
           ))}
         </div>
 
-        {/* Bouton Réinitialiser */}
         {hasActiveFilters && (
           <button
             onClick={resetFilters}
-            className="px-4 py-2 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all duration-300 shrink-0 flex items-center gap-2 hover:border-neutral-300 dark:hover:border-neutral-600"
+            className="px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all duration-300 shrink-0 flex items-center gap-2 hover:border-neutral-300 dark:hover:border-neutral-600"
           >
             <RefreshCw className="w-4 h-4" strokeWidth={1.5} />
             Réinitialiser
@@ -192,12 +199,11 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
       {/* Mobile */}
       <div className="md:hidden space-y-3">
         <div className="flex flex-wrap gap-2">
-          {/* Segments (Types) */}
           <div className="flex-1 min-w-[140px]">
             <select
               value={selectedSegment}
               onChange={(e) => setSelectedSegment(e.target.value)}
-              className="w-full px-4 py-2 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-sm font-medium text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 tracking-tight"
+              className="w-full px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-sm font-medium text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 tracking-tight"
             >
               <option value="all">Tous les segments</option>
               {availableSegments.map(segment => (
@@ -206,13 +212,12 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
             </select>
           </div>
 
-          {/* Ville */}
           {cities.length > 0 && (
             <div className="flex-1 min-w-[140px]">
               <select
                 value={selectedCity}
                 onChange={(e) => setSelectedCity(e.target.value)}
-                className="w-full px-4 py-2 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-sm font-medium text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 tracking-tight"
+                className="w-full px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-sm font-medium text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 tracking-tight"
               >
                 <option value="all">Toutes les villes</option>
                 {cities.map(city => (
@@ -223,13 +228,12 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
           )}
         </div>
 
-        {/* Produits en grille */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {availableProducts.map(product => (
             <button
               key={product.id}
               onClick={() => toggleProduct(product.id)}
-              className={`px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 border ${
+              className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${
                 selectedProducts.includes(product.id)
                   ? 'bg-primary text-white border-primary'
                   : `${getProductCategoryColor(product.category)} hover:opacity-80`
@@ -240,12 +244,11 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
           ))}
         </div>
 
-        {/* Bouton Réinitialiser mobile */}
         {hasActiveFilters && (
           <div className="flex justify-center">
             <button
               onClick={resetFilters}
-              className="px-4 py-2 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all duration-300 flex items-center gap-2 hover:border-neutral-300 dark:hover:border-neutral-600"
+              className="px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all duration-300 flex items-center gap-2 hover:border-neutral-300 dark:hover:border-neutral-600"
             >
               <RefreshCw className="w-4 h-4" strokeWidth={1.5} />
               Réinitialiser

@@ -130,7 +130,7 @@ export const ProductsList: React.FC = () => {
       </div>
 
       {/* Category filters */}
-      <div className="flex gap-2 flex-wrap justify-center">
+      <div className="flex gap-2 flex-wrap justify-start">
         {categories.map((category) => (
           <button
             key={category}
@@ -146,7 +146,7 @@ export const ProductsList: React.FC = () => {
               ${
                 selectedCategory === category
                   ? 'text-primary after:w-full'
-                  : 'text-neutral-600 dark:text-neutral-400 hover:text-primary hover:bg-neutral-50 dark:hover:bg-neutral-900'
+                  : 'text-neutral-600 dark:text-neutral-400 hover:text-primary'
               }
             `}
           >
