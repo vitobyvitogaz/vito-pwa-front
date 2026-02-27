@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 
 const ResellerMap = dynamic(
@@ -23,101 +23,21 @@ import { MapFilters } from '@/components/resellers/MapFilters'
 import { GeolocationButton } from '@/components/resellers/GeolocationButton'
 import { TravelModeSelector } from '@/components/resellers/TravelModeSelector'
 import { GeolocationPrompt } from '@/components/resellers/GeolocationPrompt'
-import { MapPin, List, Grid3x3, Navigation, AlertCircle, CheckCircle, Loader2, SlidersHorizontal, X, ChevronUp } from 'lucide-react'
+import { MapPin, List, Grid3x3, AlertCircle, CheckCircle, Loader2, SlidersHorizontal, X, ChevronUp } from 'lucide-react'
 import type { Reseller } from '@/types/reseller'
 import { useResellerStore } from '@/store/useResellerStore'
 import { useOptimizedDistances, type TravelMode } from '@/lib/hooks/useOptimizedDistances'
 
 const PAGE_SIZE = 10
+type SheetState = 'quarter' | 'half' | 'full'
 
-// ── BOTTOM SHEET MOBILE ──────────────────────────────────────────────────────
-type SheetState = 'closed' | 'half' | 'full'
+const NAVBAR_HEIGHT = 56
+const SHEET_CLOSED_H = 72
 
-interface MobileBottomSheetProps {
-  sheetState: SheetState
-  onSheetStateChange: (state: SheetState) => void
-  children: React.ReactNode
-  count: number
-}
-
-const MobileBottomSheet: React.FC<MobileBottomSheetProps> = ({
-  sheetState,
-  onSheetStateChange,
-  children,
-  count,
-}) => {
-  const dragStartY = useRef<number>(0)
-  const dragDelta = useRef<number>(0)
-
-  const heightMap: Record<SheetState, string> = {
-    closed: '72px',
-    half: '52vh',
-    full: '88vh',
-  }
-
-  const handleDragStart = (e: React.TouchEvent) => {
-    dragStartY.current = e.touches[0].clientY
-  }
-
-  const handleDragEnd = (e: React.TouchEvent) => {
-    dragDelta.current = e.changedTouches[0].clientY - dragStartY.current
-    if (dragDelta.current < -60) {
-      // swipe up
-      if (sheetState === 'closed') onSheetStateChange('half')
-      else if (sheetState === 'half') onSheetStateChange('full')
-    } else if (dragDelta.current > 60) {
-      // swipe down
-      if (sheetState === 'full') onSheetStateChange('half')
-      else if (sheetState === 'half') onSheetStateChange('closed')
-    }
-  }
-
-  return (
-    <div
-      className="absolute bottom-0 left-0 right-0 bg-white dark:bg-dark-surface rounded-t-3xl shadow-2xl z-20 flex flex-col"
-      style={{
-        height: heightMap[sheetState],
-        transition: 'height 0.35s cubic-bezier(0.32, 0.72, 0, 1)',
-      }}
-    >
-      {/* Poignée draggable */}
-      <div
-        className="flex-shrink-0 pt-3 pb-2 px-4 cursor-grab active:cursor-grabbing"
-        onTouchStart={handleDragStart}
-        onTouchEnd={handleDragEnd}
-        onClick={() => onSheetStateChange(sheetState === 'closed' ? 'half' : sheetState === 'half' ? 'full' : 'closed')}
-      >
-        <div className="w-10 h-1 bg-neutral-300 dark:bg-neutral-600 rounded-full mx-auto mb-3" />
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-primary" strokeWidth={1.5} />
-            <span className="text-sm font-semibold text-neutral-900 dark:text-white">
-              {count} revendeur{count > 1 ? 's' : ''}
-            </span>
-          </div>
-          <ChevronUp
-            className={`w-4 h-4 text-neutral-400 transition-transform duration-300 ${
-              sheetState === 'full' ? 'rotate-180' : sheetState === 'half' ? 'rotate-90' : ''
-            }`}
-            strokeWidth={2}
-          />
-        </div>
-      </div>
-
-      {/* Contenu scrollable */}
-      <div className={`flex-1 overflow-y-auto overscroll-contain ${sheetState === 'closed' ? 'hidden' : ''}`}>
-        {children}
-      </div>
-    </div>
-  )
-}
-
-// ── PAGE PRINCIPALE ──────────────────────────────────────────────────────────
 export default function ResellersPage() {
   const { resellers, loading: isLoadingResellers, fetchResellers } = useResellerStore()
   const [view, setView] = useState<'split' | 'list' | 'map'>('split')
-  const [mobileView, setMobileView] = useState<'map' | 'list'>('map')
-  const [sheetState, setSheetState] = useState<SheetState>('half')
+  const [sheetState, setSheetState] = useState<SheetState>('quarter')
   const [showMobileFilters, setShowMobileFilters] = useState(false)
   const [selectedReseller, setSelectedReseller] = useState<Reseller | null>(null)
   const [filteredResellers, setFilteredResellers] = useState<Reseller[]>([])
@@ -204,7 +124,7 @@ export default function ResellersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg">
+    <div className="bg-neutral-50 dark:bg-dark-bg">
 
       {shouldShowPrompt && (
         <GeolocationPrompt
@@ -386,29 +306,40 @@ export default function ResellersPage() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════════
-          MOBILE — carte plein écran + bottom sheet
+          MOBILE — 100dvh exact, zéro scroll
       ═══════════════════════════════════════════════════════════ */}
-      <div className="lg:hidden relative" style={{ height: '100dvh' }}>
-
-        {/* Carte plein écran */}
-        <div className="absolute inset-0">
+      <div
+        className="lg:hidden relative"
+        style={{ height: '100dvh', overflow: 'hidden' }}
+      >
+        {/* ── Carte : se redimensionne selon la hauteur du sheet ── */}
+        <div
+          className="absolute left-0 right-0"
+          style={{
+            top: `${NAVBAR_HEIGHT}px`,
+            bottom: sheetState === 'quarter' ? '25vh' : sheetState === 'half' ? '52vh' : '88vh',
+            zIndex: 1,
+            transition: 'bottom 0.35s cubic-bezier(0.32, 0.72, 0, 1)',
+          }}
+        >
           <ResellerMap
             resellers={filteredResellers}
             selectedReseller={selectedReseller}
             onSelectReseller={(reseller) => {
               setSelectedReseller(reseller)
-              setSheetState('half')
+              setSheetState('quarter')
             }}
             userLocation={userLocation}
           />
           <GeolocationButton onLocationFound={handleLocationFound} />
         </div>
 
-        {/* Barre flottante haut */}
-        <div className="absolute top-0 left-0 right-0 pt-14 px-4 pb-3 z-10 pointer-events-none">
-          <div className="flex items-center gap-2 pointer-events-auto">
-
-            {/* Bouton Filtres */}
+        {/* ── Barre flottante haut droite ── */}
+        <div
+          className="absolute right-0 px-4 pointer-events-none"
+          style={{ top: `${NAVBAR_HEIGHT + 12}px`, zIndex: 1000 }}
+        >
+          <div className="flex flex-col items-end gap-2 pointer-events-auto">
             <button
               onClick={() => setShowMobileFilters(true)}
               className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-neutral-200 dark:border-neutral-700 active:scale-95 transition-transform"
@@ -417,31 +348,28 @@ export default function ResellersPage() {
               <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Filtres</span>
             </button>
 
-            {/* Statut GPS */}
             {userLocation ? (
-              <div className="flex items-center gap-1.5 px-3 py-2.5 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-emerald-200 dark:border-emerald-800">
+              <div className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-emerald-200 dark:border-emerald-800">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">GPS</span>
+                <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">GPS actif</span>
               </div>
             ) : (
               <button
                 onClick={handleEnableGeolocation}
-                className="flex items-center gap-1.5 px-3 py-2.5 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-neutral-200 dark:border-neutral-700 active:scale-95 transition-transform"
+                className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-neutral-200 dark:border-neutral-700 active:scale-95 transition-transform"
               >
-                {isGeolocationLoading ? (
-                  <Loader2 className="w-3.5 h-3.5 text-primary animate-spin" strokeWidth={1.5} />
-                ) : (
-                  <MapPin className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
-                )}
+                {isGeolocationLoading
+                  ? <Loader2 className="w-3.5 h-3.5 text-primary animate-spin" strokeWidth={1.5} />
+                  : <MapPin className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
+                }
                 <span className="text-xs font-medium text-primary">
                   {isGeolocationLoading ? 'Localisation...' : 'Activer GPS'}
                 </span>
               </button>
             )}
 
-            {/* Loading distances */}
             {isLoadingDistances && userLocation && (
-              <div className="flex items-center gap-1.5 px-3 py-2.5 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-neutral-200 dark:border-neutral-700">
+              <div className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-neutral-200 dark:border-neutral-700">
                 <Loader2 className="w-3.5 h-3.5 text-primary animate-spin" strokeWidth={1.5} />
                 <span className="text-xs font-medium text-primary">Calcul...</span>
               </div>
@@ -449,66 +377,143 @@ export default function ResellersPage() {
           </div>
         </div>
 
-        {/* Bottom Sheet */}
-        <MobileBottomSheet
-          sheetState={sheetState}
-          onSheetStateChange={setSheetState}
-          count={sortedResellers.length}
+        {/* ── Bottom Sheet ── */}
+        <div
+          className="absolute left-0 right-0 bg-white dark:bg-dark-surface rounded-t-3xl shadow-2xl flex flex-col"
+          style={{
+            bottom: 0,
+            height: sheetState === 'quarter'
+              ? '25vh'
+              : sheetState === 'half'
+              ? '52vh'
+              : '88vh',
+            transition: 'height 0.35s cubic-bezier(0.32, 0.72, 0, 1)',
+            zIndex: 1000,
+          }}
         >
-          <div className="px-4 pb-4">
+          {/* Poignée + header */}
+          <div
+            className="flex-shrink-0 pt-3 pb-2 px-4"
+            onTouchStart={(e) => { (e.currentTarget as any)._startY = e.touches[0].clientY }}
+            onTouchEnd={(e) => {
+              const startY = (e.currentTarget as any)._startY ?? 0
+              const delta = e.changedTouches[0].clientY - startY
+              if (delta < -60) {
+                if (sheetState === 'quarter') setSheetState('half')
+                else if (sheetState === 'half') setSheetState('full')
+              } else if (delta > 60) {
+                if (sheetState === 'full') setSheetState('half')
+                else if (sheetState === 'half') setSheetState('quarter')
+              }
+            }}
+          >
+            {/* Poignée visuelle */}
+            <div className="w-10 h-1 bg-neutral-300 dark:bg-neutral-600 rounded-full mx-auto mb-3" />
 
-            {/* Travel mode dans le sheet */}
-            <div className="mb-4">
-              <TravelModeSelector mode={travelMode} onChange={handleTravelModeChange} />
-            </div>
-
-            {/* Distances calculées */}
-            {distances && Object.keys(distances).length > 0 && userLocation && (
-              <div className="flex items-center gap-2 px-3 py-2 mb-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
-                <CheckCircle className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" strokeWidth={1.5} />
-                <span className="text-xs text-emerald-700 dark:text-emerald-300">
-                  {Object.keys(distances).length} distances calculées • triés par proximité
+            {/* Header compteur + boutons */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-primary" strokeWidth={1.5} />
+                <span className="text-sm font-semibold text-neutral-900 dark:text-white">
+                  {sortedResellers.length} revendeur{sortedResellers.length > 1 ? 's' : ''}
                 </span>
+                {userLocation && distances && Object.keys(distances).length > 0 && (
+                  <span className="text-xs text-emerald-600 dark:text-emerald-400">• triés par distance</span>
+                )}
               </div>
-            )}
 
-            {/* Liste revendeurs */}
-            <ResellersList
-              resellers={paginatedResellers}
-              selectedReseller={selectedReseller}
-              onSelectReseller={(reseller) => {
-                setSelectedReseller(reseller)
-                setSheetState('closed')
-              }}
-              distances={distances}
-            />
-
-            {/* Pagination mobile */}
-            {sortedResellers.length > PAGE_SIZE && (
-              <div className="flex justify-center gap-2 pt-4">
-                <button
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage(p => p - 1)}
-                  className="px-4 py-2.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 text-sm font-medium transition-all duration-300"
-                >
-                  Précédent
-                </button>
-                <button
-                  disabled={currentPage === Math.ceil(sortedResellers.length / PAGE_SIZE)}
-                  onClick={() => setCurrentPage(p => p + 1)}
-                  className="px-4 py-2.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 text-sm font-medium transition-all duration-300"
-                >
-                  Suivant
-                </button>
+              {/* Boutons flèches */}
+              <div className="flex items-center gap-1">
+                {/* Flèche bas — visible si half ou full */}
+                {(sheetState === 'half' || sheetState === 'full') && (
+                  <button
+                    onClick={() => setSheetState(sheetState === 'full' ? 'half' : 'quarter')}
+                    className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center active:scale-90 transition-transform"
+                  >
+                    <ChevronUp className="w-4 h-4 text-neutral-500 rotate-180" strokeWidth={2} />
+                  </button>
+                )}
+                {/* Flèche haut — visible si quarter ou half */}
+                {(sheetState === 'quarter' || sheetState === 'half') && (
+                  <button
+                    onClick={() => setSheetState(sheetState === 'quarter' ? 'half' : 'full')}
+                    className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center active:scale-90 transition-transform"
+                  >
+                    <ChevronUp className="w-4 h-4 text-neutral-500" strokeWidth={2} />
+                  </button>
+                )}
               </div>
-            )}
+            </div>
           </div>
-        </MobileBottomSheet>
 
-        {/* Drawer Filtres mobile (plein écran) */}
+          {/* Contenu scrollable — toujours visible */}
+          <div className="flex-1 overflow-y-auto overscroll-contain">
+            <div className="px-4 pb-6">
+
+              <div className="mb-4">
+                <TravelModeSelector mode={travelMode} onChange={handleTravelModeChange} />
+              </div>
+
+              {distances && Object.keys(distances).length > 0 && userLocation && (
+                <div className="flex items-center gap-2 px-3 py-2 mb-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
+                  <CheckCircle className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" strokeWidth={1.5} />
+                  <span className="text-xs text-emerald-700 dark:text-emerald-300">
+                    {Object.keys(distances).length} distances calculées
+                  </span>
+                </div>
+              )}
+
+              {!userLocation && hasSkippedGeolocation && (
+                <div className="flex items-center justify-between px-3 py-2.5 mb-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800">
+                  <span className="text-xs text-amber-700 dark:text-amber-300">GPS désactivé — distances non disponibles</span>
+                  <button onClick={handleEnableGeolocation} className="text-xs bg-amber-600 text-white px-2.5 py-1 rounded-lg">
+                    Activer
+                  </button>
+                </div>
+              )}
+
+              <ResellersList
+                resellers={paginatedResellers}
+                selectedReseller={selectedReseller}
+                onSelectReseller={(reseller) => {
+                  setSelectedReseller(reseller)
+                  setSheetState('quarter')
+                }}
+                distances={distances}
+              />
+
+              {sortedResellers.length > PAGE_SIZE && (
+                <div className="flex justify-center gap-2 pt-4">
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(p => p - 1)}
+                    className="px-4 py-2.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 text-sm font-medium"
+                  >
+                    Précédent
+                  </button>
+                  <button
+                    disabled={currentPage === Math.ceil(sortedResellers.length / PAGE_SIZE)}
+                    onClick={() => setCurrentPage(p => p + 1)}
+                    className="px-4 py-2.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 text-sm font-medium"
+                  >
+                    Suivant
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* ── Drawer Filtres plein écran ── */}
         {showMobileFilters && (
-          <div className="absolute inset-0 z-30 bg-white dark:bg-dark-surface flex flex-col">
-            <div className="flex items-center justify-between px-4 py-4 border-b border-neutral-200 dark:border-neutral-800 pt-14">
+          <div
+            className="absolute inset-0 bg-white dark:bg-dark-surface flex flex-col"
+            style={{ zIndex: 1100 }}
+          >
+            <div
+              className="flex items-center justify-between px-4 border-b border-neutral-200 dark:border-neutral-800"
+              style={{ paddingTop: `${NAVBAR_HEIGHT + 12}px`, paddingBottom: '16px' }}
+            >
               <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">Filtres</h2>
               <button
                 onClick={() => setShowMobileFilters(false)}
@@ -520,10 +525,13 @@ export default function ResellersPage() {
             <div className="flex-1 overflow-y-auto p-4">
               <MapFilters resellers={resellers} onFilterChange={handleFilterChange} />
             </div>
-            <div className="p-4 border-t border-neutral-200 dark:border-neutral-800">
+            <div
+              className="p-4 border-t border-neutral-200 dark:border-neutral-800"
+              style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}
+            >
               <button
                 onClick={() => setShowMobileFilters(false)}
-                className="w-full py-3 bg-primary text-white rounded-2xl font-semibold text-sm"
+                className="w-full py-3.5 bg-primary text-white rounded-2xl font-semibold text-sm"
               >
                 Voir {filteredResellers.length} revendeur{filteredResellers.length > 1 ? 's' : ''}
               </button>
