@@ -53,7 +53,7 @@ export const EnterpriseOfferCard: React.FC = () => {
             </div>
           </a>
 
-          
+         {/*
           <a href="mailto:entreprises@vitogaz.mg"
             className="flex-1 flex items-center gap-4 p-4 rounded-xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 hover:border-primary hover:bg-primary/5 transition-all duration-200 group"
           >
@@ -68,15 +68,15 @@ export const EnterpriseOfferCard: React.FC = () => {
               <p className="text-sm font-semibold text-neutral-900 dark:text-white font-sans">entreprises@vitogaz.mg</p>
             </div>
           </a>
+          */}
         </div>
-
         {/* CTA principal */}
         
          <a href="tel:+261320721895"
           className="group w-full flex items-center justify-center gap-3 px-8 py-4 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold text-base transition-all duration-200 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 active:scale-95"
         >
           <Phone className="w-5 h-5 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
-          Contactez-nous
+          Appeler directement
         </a>
 
       </div>
