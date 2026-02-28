@@ -74,10 +74,6 @@ export const EnterpriseOfferCard: React.FC = () => {
         </a>
         */}
         <a href="tel:+261320721895"
-        onClick={(e) => {
-          e.preventDefault()
-          window.open('tel:+261320721895', '_self')
-        }}
         className="group w-full flex items-center justify-center gap-3 px-8 py-4 bg-primary hover:bg-primary/90 text-white rounded-full font-semibold text-base transition-all duration-200 shadow-lg shadow-primary/25 active:scale-95"
       >
         <Phone className="w-5 h-5" strokeWidth={1.5} />
