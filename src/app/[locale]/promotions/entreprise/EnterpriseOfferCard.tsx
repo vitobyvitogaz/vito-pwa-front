@@ -3,6 +3,11 @@
 import { Phone } from 'lucide-react'
 
 export const EnterpriseOfferCard: React.FC = () => {
+  const handleCall = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    window.location.href = 'tel:+261320721895'
+  }
+
   return (
     <div className="relative bg-white dark:bg-dark-surface rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-sm">
 
@@ -39,10 +44,12 @@ export const EnterpriseOfferCard: React.FC = () => {
       <div className="px-8 py-8 flex flex-col items-center gap-6">
 
         {/* Info contact */}
-        <div className="w-full flex flex-col sm:flex-row gap-4">
+        <div className="w-full">
           
-          <a href="tel:+261320721895"
-            className="flex-1 flex items-center gap-4 p-4 rounded-xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 hover:border-primary hover:bg-primary/5 transition-all duration-200 group"
+        <a href="tel:+261320721895"
+            rel="noopener noreferrer"
+            onClick={handleCall}
+            className="flex items-center gap-4 p-4 rounded-xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 hover:border-primary hover:bg-primary/5 transition-all duration-200 group"
           >
             <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
               <Phone className="w-5 h-5 text-white" strokeWidth={1.5} />
@@ -52,27 +59,13 @@ export const EnterpriseOfferCard: React.FC = () => {
               <p className="text-sm font-semibold text-neutral-900 dark:text-white font-sans">032 07 218 95</p>
             </div>
           </a>
-
-         {/*
-          <a href="mailto:entreprises@vitogaz.mg"
-            className="flex-1 flex items-center gap-4 p-4 rounded-xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 hover:border-primary hover:bg-primary/5 transition-all duration-200 group"
-          >
-            <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-              <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-                <rect width="20" height="16" x="2" y="4" rx="2" />
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-xs text-neutral-400 font-sans mb-0.5">Email</p>
-              <p className="text-sm font-semibold text-neutral-900 dark:text-white font-sans">entreprises@vitogaz.mg</p>
-            </div>
-          </a>
-          */}
         </div>
+
         {/* CTA principal */}
         
-         <a href="tel:+261320721895"
+        <a href="tel:+261320721895"
+          rel="noopener noreferrer"
+          onClick={handleCall}
           className="group w-full flex items-center justify-center gap-3 px-8 py-4 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold text-base transition-all duration-200 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 active:scale-95"
         >
           <Phone className="w-5 h-5 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
