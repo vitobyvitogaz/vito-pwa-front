@@ -32,7 +32,6 @@ const PAGE_SIZE = 10
 type SheetState = 'quarter' | 'half' | 'full'
 
 const NAVBAR_HEIGHT = 56
-const SHEET_CLOSED_H = 72
 
 export default function ResellersPage() {
   const { resellers, loading: isLoadingResellers, fetchResellers } = useResellerStore()
@@ -55,27 +54,14 @@ export default function ResellersPage() {
     if (resellers.length > 0) setFilteredResellers(resellers)
   }, [resellers])
 
-  useEffect(() => {
-    try {
-      const savedLocation = localStorage.getItem('userLocation')
-      if (savedLocation) setUserLocation(JSON.parse(savedLocation))
-    } catch (err) {
-      console.error('❌ Erreur chargement position:', err)
-    }
-  }, [])
-
-  const saveUserLocation = useCallback((location: { lat: number; lng: number }) => {
-    try { localStorage.setItem('userLocation', JSON.stringify(location)) }
-    catch (err) { console.error('❌ Erreur sauvegarde position:', err) }
-  }, [])
+  // ── Supprimé : ne plus charger la position depuis localStorage ──
 
   const handleLocationFound = useCallback((location: { lat: number; lng: number }) => {
     setUserLocation(location)
-    saveUserLocation(location)
     setHasGeolocationAttempted(true)
     setIsGeolocationLoading(false)
     setShowGeolocationPrompt(false)
-  }, [saveUserLocation])
+  }, [])
 
   const handleEnableGeolocation = useCallback(() => {
     setIsGeolocationLoading(true)
@@ -135,7 +121,7 @@ export default function ResellersPage() {
       )}
 
       {/* ═══════════════════════════════════════════════════════════
-          DESKTOP — inchangé
+          DESKTOP
       ═══════════════════════════════════════════════════════════ */}
       <div className="hidden lg:block pt-14 sm:pt-16">
         <div className="bg-white dark:bg-dark-surface border-b border-neutral-200 dark:border-neutral-800">
@@ -306,13 +292,13 @@ export default function ResellersPage() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════════
-          MOBILE — 100dvh exact, zéro scroll
+          MOBILE
       ═══════════════════════════════════════════════════════════ */}
       <div
         className="lg:hidden relative"
         style={{ height: '100dvh', overflow: 'hidden' }}
       >
-        {/* ── Carte : se redimensionne selon la hauteur du sheet ── */}
+        {/* Carte */}
         <div
           className="absolute left-0 right-0"
           style={{
@@ -334,14 +320,12 @@ export default function ResellersPage() {
           <GeolocationButton onLocationFound={handleLocationFound} />
         </div>
 
-        {/* ── Barre flottante haut droite ── */}
+        {/* Barre flottante haut droite */}
         <div
           className="absolute right-0 px-4 pointer-events-none"
           style={{ top: `${NAVBAR_HEIGHT + 12}px`, zIndex: 1000 }}
         >
           <div className="flex flex-col items-end gap-2 pointer-events-auto">
-
-            {/* Bouton Filtres — même taille que GPS */}
             <button
               onClick={() => setShowMobileFilters(true)}
               className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-neutral-200 dark:border-neutral-700 active:scale-95 transition-transform"
@@ -350,7 +334,6 @@ export default function ResellersPage() {
               <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300">Filtres</span>
             </button>
 
-            {/* GPS */}
             {userLocation ? (
               <div className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-emerald-200 dark:border-emerald-800">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
@@ -380,16 +363,12 @@ export default function ResellersPage() {
           </div>
         </div>
 
-        {/* ── Bottom Sheet ── */}
+        {/* Bottom Sheet */}
         <div
           className="absolute left-0 right-0 bg-white dark:bg-dark-surface rounded-t-3xl shadow-2xl flex flex-col"
           style={{
             bottom: 0,
-            height: sheetState === 'quarter'
-              ? '25vh'
-              : sheetState === 'half'
-              ? '52vh'
-              : '88vh',
+            height: sheetState === 'quarter' ? '25vh' : sheetState === 'half' ? '52vh' : '88vh',
             transition: 'height 0.35s cubic-bezier(0.32, 0.72, 0, 1)',
             zIndex: 1000,
           }}
@@ -410,10 +389,7 @@ export default function ResellersPage() {
               }
             }}
           >
-            {/* Poignée visuelle */}
             <div className="w-10 h-1 bg-neutral-300 dark:bg-neutral-600 rounded-full mx-auto mb-3" />
-
-            {/* Header compteur + boutons */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-primary" strokeWidth={1.5} />
@@ -424,10 +400,7 @@ export default function ResellersPage() {
                   <span className="text-xs text-emerald-600 dark:text-emerald-400">• triés par distance</span>
                 )}
               </div>
-
-              {/* Boutons flèches */}
               <div className="flex items-center gap-1">
-                {/* Flèche bas — visible si half ou full */}
                 {(sheetState === 'half' || sheetState === 'full') && (
                   <button
                     onClick={() => setSheetState(sheetState === 'full' ? 'half' : 'quarter')}
@@ -436,7 +409,6 @@ export default function ResellersPage() {
                     <ChevronUp className="w-4 h-4 text-neutral-500 rotate-180" strokeWidth={2} />
                   </button>
                 )}
-                {/* Flèche haut — visible si quarter ou half */}
                 {(sheetState === 'quarter' || sheetState === 'half') && (
                   <button
                     onClick={() => setSheetState(sheetState === 'quarter' ? 'half' : 'full')}
@@ -449,10 +421,9 @@ export default function ResellersPage() {
             </div>
           </div>
 
-          {/* Contenu scrollable — toujours visible */}
+          {/* Contenu scrollable */}
           <div className="flex-1 overflow-y-auto overscroll-contain">
             <div className="px-4 pb-6">
-
               <div className="mb-4">
                 <TravelModeSelector mode={travelMode} onChange={handleTravelModeChange} />
               </div>
@@ -507,7 +478,7 @@ export default function ResellersPage() {
           </div>
         </div>
 
-        {/* ── Drawer Filtres plein écran ── */}
+        {/* Drawer Filtres */}
         {showMobileFilters && (
           <div
             className="absolute inset-0 bg-white dark:bg-dark-surface flex flex-col"

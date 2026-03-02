@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { MapPin, X, CheckCircle, TrendingUp, Target, Info } from 'lucide-react'
+import { useState } from 'react'
+import { MapPin, X, CheckCircle, TrendingUp, Target } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 interface GeolocationPromptProps {
@@ -32,12 +32,20 @@ export const GeolocationPrompt: React.FC<GeolocationPromptProps> = ({
   if (!isVisible) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/50 p-4">
       <div className="relative w-full max-w-md animate-fade-up">
-        {/* Contenu principal */}
         <div className="bg-white dark:bg-dark-surface rounded-2xl shadow-sm overflow-hidden border border-neutral-200 dark:border-neutral-800">
-          {/* En-tête avec dégradé subtil */}
-          <div className="bg-gradient-to-br from-primary/10 to-primary/5 p-6 text-center">
+
+          {/* Header — bouton X à l'intérieur */}
+          <div className="relative bg-gradient-to-br from-primary/10 to-primary/5 p-6 text-center">
+            <button
+              onClick={handleSkip}
+              className="absolute top-3 right-3 w-8 h-8 bg-white/80 dark:bg-dark-surface/80 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300 border border-neutral-200 dark:border-neutral-800"
+              aria-label="Fermer"
+            >
+              <X className="w-4 h-4 text-neutral-700 dark:text-neutral-300" strokeWidth={1.5} />
+            </button>
+
             <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-primary/10 flex items-center justify-center">
               <MapPin className="w-8 h-8 text-primary" strokeWidth={1.5} />
             </div>
@@ -52,6 +60,7 @@ export const GeolocationPrompt: React.FC<GeolocationPromptProps> = ({
           {/* Contenu */}
           <div className="p-6">
             <div className="space-y-4">
+
               {/* Avantages */}
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
@@ -59,12 +68,8 @@ export const GeolocationPrompt: React.FC<GeolocationPromptProps> = ({
                     <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
                   </div>
                   <div>
-                    <p className="font-medium text-neutral-900 dark:text-white text-sm">
-                      Distances précises
-                    </p>
-                    <p className="text-neutral-600 dark:text-neutral-400 text-xs">
-                      Calculez les trajets vers les revendeurs
-                    </p>
+                    <p className="font-medium text-neutral-900 dark:text-white text-sm">Distances précises</p>
+                    <p className="text-neutral-600 dark:text-neutral-400 text-xs">Calculez les trajets vers les revendeurs</p>
                   </div>
                 </div>
 
@@ -73,12 +78,8 @@ export const GeolocationPrompt: React.FC<GeolocationPromptProps> = ({
                     <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" strokeWidth={1.5} />
                   </div>
                   <div>
-                    <p className="font-medium text-neutral-900 dark:text-white text-sm">
-                      Tri par proximité
-                    </p>
-                    <p className="text-neutral-600 dark:text-neutral-400 text-xs">
-                      Trouvez les revendeurs les plus proches
-                    </p>
+                    <p className="font-medium text-neutral-900 dark:text-white text-sm">Tri par proximité</p>
+                    <p className="text-neutral-600 dark:text-neutral-400 text-xs">Trouvez les revendeurs les plus proches</p>
                   </div>
                 </div>
 
@@ -87,12 +88,8 @@ export const GeolocationPrompt: React.FC<GeolocationPromptProps> = ({
                     <Target className="w-4 h-4 text-purple-600 dark:text-purple-400" strokeWidth={1.5} />
                   </div>
                   <div>
-                    <p className="font-medium text-neutral-900 dark:text-white text-sm">
-                      Carte centrée
-                    </p>
-                    <p className="text-neutral-600 dark:text-neutral-400 text-xs">
-                      Visualisez votre position sur la carte
-                    </p>
+                    <p className="font-medium text-neutral-900 dark:text-white text-sm">Carte centrée</p>
+                    <p className="text-neutral-600 dark:text-neutral-400 text-xs">Visualisez votre position sur la carte</p>
                   </div>
                 </div>
               </div>
@@ -129,7 +126,7 @@ export const GeolocationPrompt: React.FC<GeolocationPromptProps> = ({
               <button
                 onClick={handleEnable}
                 disabled={isGeolocationLoading}
-                className="w-full py-3 bg-primary text-white font-medium rounded-xl hover:bg-primary/90 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                className="w-full py-3 bg-primary text-white font-medium rounded-full hover:bg-primary/90 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-3"
               >
                 {isGeolocationLoading ? (
                   <>
@@ -146,27 +143,17 @@ export const GeolocationPrompt: React.FC<GeolocationPromptProps> = ({
 
               <button
                 onClick={handleSkip}
-                className="w-full py-2.5 text-neutral-700 dark:text-neutral-300 font-medium rounded-xl border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-all duration-300"
+                className="w-full py-2.5 text-neutral-700 dark:text-neutral-300 font-medium rounded-full border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-all duration-300"
               >
                 Continuer sans géolocalisation
               </button>
             </div>
 
-            {/* Note de confidentialité */}
             <p className="text-xs text-center text-neutral-500 dark:text-neutral-500 mt-4">
               Vous pourrez activer la géolocalisation à tout moment via le bouton en bas à droite de la carte.
             </p>
           </div>
         </div>
-
-        {/* Bouton fermer */}
-        <button
-          onClick={handleSkip}
-          className="absolute -top-2 -right-2 w-8 h-8 bg-white dark:bg-dark-surface rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-800 flex items-center justify-center hover:scale-110 transition-all duration-300"
-          aria-label="Fermer"
-        >
-          <X className="w-4 h-4 text-neutral-700 dark:text-neutral-300" strokeWidth={1.5} />
-        </button>
       </div>
     </div>
   )

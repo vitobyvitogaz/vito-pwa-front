@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 interface GeolocationState {
   latitude: number | null
@@ -19,21 +19,21 @@ export const useGeolocation = () => {
 
   const getCurrentPosition = () => {
     if (!navigator.geolocation) {
-      setState(prev => ({
-        ...prev,
-        error: 'La géolocalisation n\'est pas supportée par votre navigateur',
-      }))
+      setState(prev => ({ ...prev, error: 'La géolocalisation n\'est pas supportée' }))
       return
     }
 
     setState(prev => ({ ...prev, loading: true, error: null }))
 
-    navigator.geolocation.getCurrentPosition(
+    // watchPosition force une position fraîche, on l'arrête dès la première réponse
+    const watchId = navigator.geolocation.watchPosition(
       (position) => {
-        console.log('📍 [useGeolocation] Position obtenue:', {
+        console.log('📍 [useGeolocation] Position fraîche obtenue:', {
           lat: position.coords.latitude,
-          lng: position.coords.longitude
+          lng: position.coords.longitude,
+          accuracy: position.coords.accuracy
         })
+        navigator.geolocation.clearWatch(watchId)
         setState({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
@@ -43,6 +43,7 @@ export const useGeolocation = () => {
       },
       (error) => {
         console.error('📍 [useGeolocation] Erreur:', error.message)
+        navigator.geolocation.clearWatch(watchId)
         setState({
           latitude: null,
           longitude: null,
@@ -52,14 +53,11 @@ export const useGeolocation = () => {
       },
       {
         enableHighAccuracy: true,
-        timeout: 10000, // Augmenté à 10s
+        timeout: 15000,
         maximumAge: 0,
       }
     )
   }
 
-  return {
-    ...state,
-    getCurrentPosition,
-  }
+  return { ...state, getCurrentPosition }
 }
