@@ -124,6 +124,17 @@ export default function ResellersPage() {
           DESKTOP
       ═══════════════════════════════════════════════════════════ */}
       <div className="hidden lg:block pt-14 sm:pt-16">
+          {userLocation && (
+            <div className="bg-primary/5 border-b border-primary/10 px-4 py-2">
+              <div className="container mx-auto flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                <MapPin className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
+                <span className="text-xs text-primary font-medium">
+                  Position détectée : {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
+                </span>
+              </div>
+            </div>
+          )}
         <div className="bg-white dark:bg-dark-surface border-b border-neutral-200 dark:border-neutral-800">
           <div className="container mx-auto px-4 py-6 sm:py-8">
             <div className="flex items-center justify-between mb-4">
@@ -142,13 +153,13 @@ export default function ResellersPage() {
                 )}
               </div>
               <div className="flex gap-2">
-                <button onClick={() => setView('split')} className={`p-2 rounded-xl transition-all duration-300 ${view === 'split' ? 'bg-primary text-white' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'}`} title="Vue partagée">
+                <button onClick={() => setView('split')} className={`p-2 rounded-full transition-all duration-300 ${view === 'split' ? 'bg-primary text-white' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'}`} title="Vue partagée">
                   <Grid3x3 className="w-5 h-5" strokeWidth={1.5} />
                 </button>
-                <button onClick={() => setView('list')} className={`p-2 rounded-xl transition-all duration-300 ${view === 'list' ? 'bg-primary text-white' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'}`} title="Liste seule">
+                <button onClick={() => setView('list')} className={`p-2 rounded-full transition-all duration-300 ${view === 'list' ? 'bg-primary text-white' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'}`} title="Liste seule">
                   <List className="w-5 h-5" strokeWidth={1.5} />
                 </button>
-                <button onClick={() => setView('map')} className={`p-2 rounded-xl transition-all duration-300 ${view === 'map' ? 'bg-primary text-white' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'}`} title="Carte seule">
+                <button onClick={() => setView('map')} className={`p-2 rounded-full transition-all duration-300 ${view === 'map' ? 'bg-primary text-white' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'}`} title="Carte seule">
                   <MapPin className="w-5 h-5" strokeWidth={1.5} />
                 </button>
               </div>
