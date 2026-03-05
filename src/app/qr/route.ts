@@ -1,14 +1,21 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
-  console.log('🔍 QR scan - API URL:', apiUrl);
+
+  const userAgent = request.headers.get('user-agent') || 'unknown';
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ||
+              request.headers.get('x-real-ip') ||
+              'unknown';
 
   try {
-    const response = await fetch(`${apiUrl}/qr/scan`, {
+    await fetch(`${apiUrl}/qr/scan`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userAgent, ip }),
     });
-    console.log('✅ QR scan recorded - status:', response.status);
   } catch (error) {
     console.error('❌ QR scan error:', error);
   }
