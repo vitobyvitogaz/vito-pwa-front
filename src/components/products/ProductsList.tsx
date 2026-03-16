@@ -36,7 +36,8 @@ export const ProductsList: React.FC = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`${API_URL}/products`)
+      //const response = await fetch(`${API_URL}/products`)
+      const response = await fetch(`${API_URL}/products/active`)
       if (!response.ok) throw new Error('Erreur lors du chargement')
       const data = await response.json()
       console.log('Catégories reçues:', data.map((p: Product) => `"${p.category}"`))

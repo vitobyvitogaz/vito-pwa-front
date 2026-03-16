@@ -64,7 +64,8 @@ export const useResellerStore = create<ResellerState>((set) => ({
     set({ loading: true, error: null })
     try {
       const response = await fetchWithRetry(
-        'https://vito-backend-supabase.onrender.com/api/v1/resellers',
+        //'https://vito-backend-supabase.onrender.com/api/v1/resellers',
+        'https://vito-backend-supabase.onrender.com/api/v1/resellers/active',
         {},
         3, // 3 retries max (= 4 tentatives au total)
         1000 // 1 seconde de base
