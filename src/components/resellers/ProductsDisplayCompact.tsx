@@ -16,7 +16,8 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
     return null
   }
 
-  const allProducts = reseller.reseller_products
+  //const allProducts = reseller.reseller_products
+  const allProducts = reseller.reseller_products.filter(rp => rp.products.is_active)
   const featuredProducts = allProducts.filter(rp => rp.products.is_featured)
   // Remplace
   //const displayProducts = isExpanded 
