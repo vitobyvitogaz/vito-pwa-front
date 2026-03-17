@@ -74,11 +74,19 @@ export const useResellerStore = create<ResellerState>((set) => ({
       const data = await response.json()
       
       // Mapper les données du backend vers le format frontend
-      const mappedResellers = data.map((r: any) => ({
-        ...r,
-        lat: r.latitude,
-        lng: r.longitude
-      }))
+      // Et filtrer les revendeurs sans aucun produit actif
+      const mappedResellers = data
+        .map((r: any) => ({
+          ...r,
+          lat: r.latitude,
+          lng: r.longitude
+        }))
+        .filter((r: any) => {
+          const activeProducts = (r.reseller_products || []).filter(
+            (rp: any) => rp.products?.is_active === true
+          )
+          return activeProducts.length > 0
+        })
       
       console.log('✅ Resellers chargés depuis l API:', mappedResellers.length)
       set({ resellers: mappedResellers, loading: false })
