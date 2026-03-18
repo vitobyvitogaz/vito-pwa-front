@@ -2,8 +2,9 @@ export interface Document {
   id: string;
   title: string;
   description: string | null;
-  category: 'pamf' | 'security' | 'guides';
+  category: 'pamf' | 'security' | 'guides' | 'video';
   file_url: string;
+  video_url?: string | null;
   file_size: number | string | null;
   page_count: number | null;
   is_offline: boolean;

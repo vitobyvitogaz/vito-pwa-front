@@ -10,6 +10,7 @@ const categories = [
   { id: 'pamf', label: 'PAMF' },
   { id: 'security', label: 'Sécurité' },
   { id: 'guides', label: 'Guides' },
+  { id: 'video', label: 'Vidéos' },
 ]
 
 // ✅ TEMPORAIRE : URL hardcodée pour débug
@@ -26,8 +27,8 @@ export const DocumentsList: React.FC = () => {
     const fetchDocuments = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`${API_URL}/documents`)  // ✅ CHANGÉ
-        
+        const response = await fetch(`${API_URL}/documents`)
+
         if (!response.ok) {
           throw new Error('Erreur lors du chargement des documents')
         }
@@ -51,10 +52,16 @@ export const DocumentsList: React.FC = () => {
     (doc) => doc.category === activeCategory && doc.is_active
   )
 
+  // Masquer l'onglet Vidéos s'il n'y a aucun document vidéo
+  const hasVideos = documents.some((doc) => doc.category === 'video' && doc.is_active)
+  const visibleCategories = categories.filter(
+    (cat) => cat.id !== 'video' || hasVideos
+  )
+
   return (
     <div className="animate-slide-up">
-      <div className="flex gap-2 mb-8 sm:mb-12 pb-2 justify-center">
-        {categories.map((category) => (
+      <div className="flex gap-2 mb-8 sm:mb-12 pb-2 justify-center flex-wrap">
+        {visibleCategories.map((category) => (
           <button
             key={category.id}
             onClick={() => setActiveCategory(category.id)}
@@ -89,9 +96,7 @@ export const DocumentsList: React.FC = () => {
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
             <FileText className="w-8 h-8 text-red-500" strokeWidth={1} />
           </div>
-          <p className="text-red-500 dark:text-red-400 text-lg font-sans">
-            {error}
-          </p>
+          <p className="text-red-500 dark:text-red-400 text-lg font-sans">{error}</p>
         </div>
       )}
 
@@ -119,7 +124,8 @@ export const DocumentsList: React.FC = () => {
         </div>
       )}
 
-      {selectedDoc && (
+      {/* PDFViewer uniquement pour les documents non-vidéo */}
+      {selectedDoc && selectedDoc.category !== 'video' && (
         <PDFViewer
           document={selectedDoc}
           onClose={() => setSelectedDoc(null)}
