@@ -11,6 +11,8 @@ interface DocumentCardProps {
   delay?: number
 }
 
+const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
+
 // Icône YouTube SVG
 const YoutubeIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -27,6 +29,8 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
   const handleDownload = (e: React.MouseEvent) => {
     e.stopPropagation()
     hapticFeedback('medium')
+    // Incrémenter le compteur de téléchargements
+    fetch(`${API_URL}/documents/${document.id}/download`, { method: 'POST' }).catch(() => {})
     const link = window.document.createElement('a')
     link.href = document.file_url
     link.download = `${document.title}.pdf`
@@ -36,6 +40,8 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
   const handleView = () => {
     hapticFeedback('light')
     if (isVideo && videoUrl) {
+      // Incrémenter le compteur de vues
+      fetch(`${API_URL}/documents/${document.id}/view`, { method: 'POST' }).catch(() => {})
       window.open(videoUrl, '_blank')
     } else {
       onClick()
@@ -70,8 +76,8 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
 
       <div className="relative z-10">
         <div className="flex items-start justify-between mb-5">
-          {/* Icône : YouTube rouge pour les vidéos, FileText pour les PDFs */}
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3 ${
+          {/* Icône — rounded-full */}
+          <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3 ${
             isVideo
               ? 'bg-red-50 dark:bg-red-950/30'
               : 'bg-gradient-to-br from-primary/10 to-primary/5'
@@ -121,9 +127,10 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
         {isVideo && <div className="mb-6" />}
 
         <div className="flex gap-3">
+          {/* Bouton Consulter/Regarder — rounded-full */}
           <button
             onClick={handleView}
-            className={`flex-1 flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 font-sans text-white ${
+            className={`flex-1 flex items-center justify-center gap-2.5 px-4 py-3 rounded-full font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 font-sans text-white ${
               isVideo
                 ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
                 : 'bg-gradient-to-r from-primary to-primary-600 hover:from-primary-600 hover:to-primary-700'
@@ -135,11 +142,11 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
             }
           </button>
 
-          {/* Bouton télécharger — uniquement pour les PDFs */}
+          {/* Bouton télécharger — rounded-full */}
           {!isVideo && (
             <button
               onClick={handleDownload}
-              className="flex items-center justify-center w-12 h-12 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 hover:border-primary/50 hover:text-primary hover:bg-primary/5 transition-all duration-200 active:scale-95"
+              className="flex items-center justify-center w-12 h-12 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 hover:border-primary/50 hover:text-primary hover:bg-primary/5 transition-all duration-200 active:scale-95"
             >
               <Download className="w-5 h-5" strokeWidth={1.5} />
             </button>

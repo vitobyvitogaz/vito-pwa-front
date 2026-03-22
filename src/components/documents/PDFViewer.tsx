@@ -9,16 +9,19 @@ interface PDFViewerProps {
   onClose: () => void
 }
 
+const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
+
 export const PDFViewer: React.FC<PDFViewerProps> = ({ document: doc, onClose }) => {
   useEffect(() => {
     document.body.style.overflow = 'hidden'
-    
     return () => {
       document.body.style.overflow = 'unset'
     }
   }, [])
 
   const handleDownload = () => {
+    // Incrémenter le compteur de téléchargements
+    fetch(`${API_URL}/documents/${doc.id}/download`, { method: 'POST' }).catch(() => {})
     const link = document.createElement('a')
     link.href = doc.file_url
     link.download = `${doc.title}.pdf`
@@ -27,11 +30,7 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({ document: doc, onClose }) 
 
   const formatFileSize = (size: number | string | null): string => {
     if (!size) return 'N/A'
-    
-    // Si c'est déjà un string formaté (ex: "1.8 MB")
     if (typeof size === 'string') return size
-    
-    // Si c'est un number en bytes
     const mb = size / (1024 * 1024)
     return `${mb.toFixed(1)} MB`
   }
@@ -41,7 +40,8 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({ document: doc, onClose }) 
       <div className="relative w-full h-full max-w-6xl max-h-[90vh] m-4 bg-white dark:bg-dark-surface rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-slide-up">
         <div className="flex items-center justify-between p-6 border-b border-neutral-100 dark:border-neutral-800 bg-gradient-to-r from-white to-neutral-50 dark:from-dark-surface dark:to-neutral-900/50">
           <div className="flex items-center gap-4 flex-1 min-w-0">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+            {/* Icône — rounded-full */}
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
               <FileText className="w-6 h-6 text-primary" strokeWidth={1.5} />
             </div>
             <div className="flex-1 min-w-0">
@@ -55,19 +55,21 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({ document: doc, onClose }) 
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2 ml-4">
+            {/* Bouton Download — rounded-full */}
             <button
               onClick={handleDownload}
-              className="p-3 rounded-xl border border-primary bg-primary text-white hover:bg-primary-600 transition-all duration-200 hover:scale-105 active:scale-95"
+              className="p-3 rounded-full border border-primary bg-primary text-white hover:bg-primary-600 transition-all duration-200 hover:scale-105 active:scale-95"
               title="Télécharger"
             >
               <Download className="w-5 h-5" strokeWidth={2} />
             </button>
-            
+
+            {/* Bouton Fermer — rounded-full */}
             <button
               onClick={onClose}
-              className="p-3 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all duration-200 hover:scale-105 active:scale-95"
+              className="p-3 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all duration-200 hover:scale-105 active:scale-95"
               title="Fermer"
             >
               <X className="w-5 h-5" strokeWidth={2} />
