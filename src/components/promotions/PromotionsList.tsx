@@ -43,7 +43,9 @@ export const PromotionsList: React.FC = () => {
     if (activeFilter === 'active' && !promo.is_active) return false
     if (activeFilter === 'expired' && promo.is_active) return false
     if (selectedZones.length > 0) {
-      const hasMatchingZone = selectedZones.some(zone => promo.zones.includes(zone))
+      // ── Fix : promo.zones peut être null/undefined ──
+      const promoZones = promo.zones ?? []
+      const hasMatchingZone = selectedZones.some(zone => promoZones.includes(zone))
       if (!hasMatchingZone) return false
     }
     return true
@@ -97,7 +99,7 @@ export const PromotionsList: React.FC = () => {
         <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-3 font-sans">{error}</h3>
         <button
           onClick={fetchPromotions}
-          className="px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-600 transition-colors duration-200 font-sans"
+          className="px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-colors duration-200 font-sans"
         >
           Réessayer
         </button>
@@ -121,12 +123,16 @@ export const PromotionsList: React.FC = () => {
         <div className="flex gap-3">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:border-primary transition-colors duration-200 font-sans"
+            className={`flex items-center gap-2 px-4 py-3 rounded-full border transition-colors duration-200 font-sans ${
+              showFilters
+                ? 'bg-primary text-white border-primary'
+                : 'bg-white dark:bg-dark-surface border-neutral-200 dark:border-neutral-800 hover:border-primary'
+            }`}
           >
             <Filter className="w-4 h-4" strokeWidth={1.5} />
             <span className="text-sm font-medium">Filtres</span>
             {selectedZones.length > 0 && (
-              <span className="w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center">
+              <span className="w-5 h-5 bg-white text-primary text-xs rounded-full flex items-center justify-center font-bold">
                 {selectedZones.length}
               </span>
             )}
@@ -135,7 +141,7 @@ export const PromotionsList: React.FC = () => {
           <select
             value={sortBy}
             onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1) }}
-            className="px-4 py-3 rounded-xl bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors font-sans"
+            className="px-4 py-3 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors font-sans"
           >
             {sortOptions.map(option => (
               <option key={option.id} value={option.id}>{option.label}</option>
@@ -153,7 +159,7 @@ export const PromotionsList: React.FC = () => {
               <button
                 key={zone.id}
                 onClick={() => handleZoneToggle(zone.value)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 font-sans ${
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 font-sans ${
                   selectedZones.includes(zone.value)
                     ? 'bg-primary text-white'
                     : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700'
@@ -165,7 +171,7 @@ export const PromotionsList: React.FC = () => {
             {selectedZones.length > 0 && (
               <button
                 onClick={() => setSelectedZones([])}
-                className="px-4 py-2 rounded-xl text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 font-sans transition-colors"
+                className="px-4 py-2 rounded-full text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 font-sans transition-colors"
               >
                 Effacer
               </button>
@@ -174,23 +180,19 @@ export const PromotionsList: React.FC = () => {
         </div>
       )}
 
-      {/* Quick filters */}
-      <div className="flex gap-2 mb-6 pb-2 justify-center">
+      {/* Quick filters — pills rounded-full avec couleur visible */}
+      <div className="flex gap-2 mb-6 pb-2 justify-center flex-wrap">
         {filters.map((filter) => (
           <button
             key={filter.id}
             onClick={() => handleFilterChange(filter.id)}
-            className={`
-              relative px-6 py-3 rounded-xl font-medium text-sm transition-all duration-300
-              after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2
-              after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300
-              hover:after:w-full font-sans
-              ${activeFilter === filter.id
-                ? 'text-primary after:w-full'
-                : 'text-neutral-600 dark:text-neutral-400 hover:text-primary hover:bg-neutral-50 dark:hover:bg-neutral-900'
-              }
-            `}
+            className={`flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 font-sans ${
+              activeFilter === filter.id
+                ? 'bg-primary text-white shadow-sm shadow-primary/25'
+                : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:text-neutral-900 dark:hover:text-white'
+            }`}
           >
+            <span>{filter.icon}</span>
             {filter.label}
           </button>
         ))}
@@ -200,7 +202,7 @@ export const PromotionsList: React.FC = () => {
       {(selectedZones.length > 0 || sortBy !== 'discount_desc') && (
         <div className="flex flex-wrap gap-2 mb-4">
           {selectedZones.length > 0 && (
-            <div className="px-3 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-xl text-sm flex items-center gap-2 border border-blue-200 dark:border-blue-800">
+            <div className="px-3 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm flex items-center gap-2 border border-blue-200 dark:border-blue-800">
               <MapPin className="w-4 h-4" strokeWidth={1.5} />
               <span>Zones: {selectedZones.length}</span>
               <button onClick={() => setSelectedZones([])} className="text-blue-500 hover:text-blue-700">
@@ -209,7 +211,7 @@ export const PromotionsList: React.FC = () => {
             </div>
           )}
           {sortBy !== 'discount_desc' && (
-            <div className="px-3 py-2 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-xl text-sm flex items-center gap-2 border border-purple-200 dark:border-purple-800">
+            <div className="px-3 py-2 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm flex items-center gap-2 border border-purple-200 dark:border-purple-800">
               <span>Tri: {sortOptions.find(s => s.id === sortBy)?.label}</span>
               <button onClick={() => setSortBy('discount_desc')} className="text-purple-500 hover:text-purple-700">
                 <X className="w-3 h-3" strokeWidth={2} />
@@ -236,7 +238,7 @@ export const PromotionsList: React.FC = () => {
           <button
             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             disabled={currentPage === 1}
-            className="p-3 rounded-xl bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            className="p-3 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
           </button>
@@ -246,7 +248,7 @@ export const PromotionsList: React.FC = () => {
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`w-10 h-10 rounded-xl font-semibold transition-all duration-200 font-sans ${
+                className={`w-10 h-10 rounded-full font-semibold transition-all duration-200 font-sans ${
                   currentPage === page
                     ? 'bg-primary text-white'
                     : 'bg-white dark:bg-dark-surface text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-800 hover:border-primary hover:text-primary'
@@ -260,7 +262,7 @@ export const PromotionsList: React.FC = () => {
           <button
             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
             disabled={currentPage === totalPages}
-            className="p-3 rounded-xl bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            className="p-3 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             <ChevronRight className="w-5 h-5" strokeWidth={1.5} />
           </button>
@@ -281,10 +283,9 @@ export const PromotionsList: React.FC = () => {
           </p>
           <button
             onClick={() => { setActiveFilter('all'); setSelectedZones([]); setSortBy('discount_desc') }}
-            className="px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-600 transition-colors duration-200 font-sans"
+            className="px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-colors duration-200 font-sans"
           >
-            Voir toutes les promotions 
-
+            Voir toutes les promotions
           </button>
         </div>
       )}

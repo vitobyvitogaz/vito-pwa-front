@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import type { Promotion } from '@/types/promotion'
-import { Tag, Check, CalendarDays, Share, MapPin, Zap } from 'lucide-react'
+import { Tag, Check, CalendarDays, Share, MapPin, Zap, Clock, AlertTriangle, CheckCircle } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 interface PromotionCardProps {
@@ -79,7 +79,8 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
       text: 'text-neutral-500',
       dot: 'bg-neutral-400',
       border: 'border-neutral-200 dark:border-neutral-700',
-      label: 'Expirée'
+      label: 'Expirée',
+      icon: Clock,
     }
     const diff = new Date(promotion.valid_until).getTime() - Date.now()
     const days = Math.floor(diff / (1000 * 60 * 60 * 24))
@@ -88,25 +89,29 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
       text: 'text-emerald-700 dark:text-emerald-400',
       dot: 'bg-emerald-500',
       border: 'border-emerald-200 dark:border-emerald-800',
-      label: `${days}j restants`
+      label: `${days}j restants`,
+      icon: CheckCircle,
     }
     if (days > 3) return {
       bg: 'bg-amber-50 dark:bg-amber-900/20',
       text: 'text-amber-700 dark:text-amber-400',
       dot: 'bg-amber-500',
       border: 'border-amber-200 dark:border-amber-800',
-      label: `Plus que ${days}j !`
+      label: `Plus que ${days}j !`,
+      icon: Clock,
     }
     return {
       bg: 'bg-red-50 dark:bg-red-900/20',
       text: 'text-red-700 dark:text-red-400',
       dot: 'bg-red-500',
       border: 'border-red-200 dark:border-red-800',
-      label: `Expire bientôt !`
+      label: `Expire bientôt !`,
+      icon: AlertTriangle,
     }
   }
 
   const urgency = getUrgency()
+  const UrgencyIcon = urgency.icon
 
   const formatDate = (dateString: Date) => {
     return new Date(dateString).toLocaleDateString('fr-FR', {
@@ -153,7 +158,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
           </div>
         )}
 
-        {/* Badge statut + urgence */}
+        {/* Badge statut + urgence — rounded-full avec icône */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5">
           {promotion.is_active && !isExpired ? (
             <div className="flex items-center gap-1.5 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full border border-white/20">
@@ -167,7 +172,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
           )}
           {!isExpired && promotion.is_active && (
             <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border backdrop-blur-sm ${urgency.bg} ${urgency.border}`}>
-              <div className={`w-1.5 h-1.5 rounded-full ${urgency.dot}`} />
+              <UrgencyIcon className={`w-3 h-3 ${urgency.text}`} strokeWidth={2} />
               <span className={`text-xs font-semibold ${urgency.text}`}>{urgency.label}</span>
             </div>
           )}
@@ -199,42 +204,38 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
 
         {/* Countdown */}
         {!isExpired && promotion.is_active ? (
-          <div className={`rounded-xl p-3 border ${urgency.bg} ${urgency.border}`}>
+          <div className={`rounded-full px-4 py-3 border ${urgency.bg} ${urgency.border}`}>
             <div className="flex items-center justify-between">
-              <div className="grid grid-cols-4 gap-1.5">
+              <div className="flex items-center gap-3">
                 {[
-                  { value: timeLeft.days, label: 'Jours' },
-                  { value: timeLeft.hours, label: 'Heures' },
-                  { value: timeLeft.minutes, label: 'Min' },
-                  { value: timeLeft.seconds, label: 'Sec' },
+                  { value: timeLeft.days, label: 'J' },
+                  { value: timeLeft.hours, label: 'H' },
+                  { value: timeLeft.minutes, label: 'M' },
+                  { value: timeLeft.seconds, label: 'S' },
                 ].map((unit, i) => (
-                  <div key={i} className="flex flex-col items-center">
-                    <div className="min-w-[2rem] text-center">
-                      <span className={`text-base font-bold tabular-nums font-sans ${urgency.text}`}>
-                        {unit.value}
-                      </span>
-                    </div>
-                    <span className={`text-[10px] mt-1 font-medium font-sans ${urgency.text} opacity-60`}>
+                  <div key={i} className="flex items-baseline gap-0.5">
+                    <span className={`text-base font-bold tabular-nums font-sans ${urgency.text}`}>
+                      {unit.value}
+                    </span>
+                    <span className={`text-[10px] font-medium font-sans ${urgency.text} opacity-60`}>
                       {unit.label}
                     </span>
+                    {i < 3 && <span className={`text-xs font-bold mx-0.5 ${urgency.text} opacity-40`}>:</span>}
                   </div>
                 ))}
               </div>
 
               {/* Date fin */}
-              <div className={`flex flex-col items-end gap-0.5 pl-3 border-l ${urgency.border}`}>
-                <CalendarDays className={`w-4 h-4 ${urgency.text} opacity-70`} strokeWidth={1.5} />
-                <span className={`text-xs font-semibold font-sans ${urgency.text} text-right`}>
+              <div className={`flex items-center gap-1.5 pl-3 border-l ${urgency.border}`}>
+                <CalendarDays className={`w-3.5 h-3.5 ${urgency.text} opacity-70`} strokeWidth={1.5} />
+                <span className={`text-xs font-semibold font-sans ${urgency.text}`}>
                   {new Date(promotion.valid_until).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
-                </span>
-                <span className={`text-[10px] font-sans ${urgency.text} opacity-60`}>
-                  {new Date(promotion.valid_until).getFullYear()}
                 </span>
               </div>
             </div>
           </div>
         ) : (
-          <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700">
+          <div className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700">
             <CalendarDays className="w-4 h-4 text-neutral-400 flex-shrink-0" strokeWidth={1.5} />
             <div>
               <p className="text-xs text-neutral-400 font-sans">Offre expirée le</p>
@@ -286,7 +287,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
           </div>
         )}
 
-        {/* Code promo — style ticket avec bordure dashed */}
+        {/* Code promo — style ticket bordure dashed */}
         {promotion.promo_code && promotion.is_active && !isExpired && (
           <div className="rounded-xl border border-dashed border-primary/40 bg-primary/5 dark:bg-primary/10 overflow-hidden">
             <div className="flex items-center justify-between px-4 py-2 border-b border-dashed border-primary/20">

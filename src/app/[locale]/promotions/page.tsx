@@ -16,6 +16,10 @@ export default function PromotionsPage() {
   const pathname = usePathname()
   const locale = pathname.split('/')[1]
 
+  // Détection de l'onglet actif basée sur le pathname
+  const isEntreprise = pathname.includes('/entreprise')
+  const isGrandPublic = !isEntreprise
+
   useEffect(() => {
     const fetchAndInitPopup = async () => {
       try {
@@ -54,19 +58,28 @@ export default function PromotionsPage() {
             <div className="h-px w-24 mx-auto mt-6 bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent" />
           </div>
         </div>
-        {/* Onglets niveau 1 */}
+
+        {/* Onglets niveau 1 — actif basé sur pathname */}
         <div className="flex justify-center mb-10 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-          <div className="inline-flex bg-neutral-100 dark:bg-neutral-800 rounded-full p-1 gap-0">
+          <div className="inline-flex bg-neutral-100 dark:bg-neutral-800 rounded-full p-1 gap-1">
             <button
               onClick={() => router.push(`/${locale}/promotions`)}
-              className="flex items-center gap-2 px-6 py-3 rounded-l-full rounded-r-none text-sm font-semibold text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-all duration-300"
+              className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300 ${
+                isGrandPublic
+                  ? 'bg-white dark:bg-dark-surface text-primary shadow-sm'
+                  : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
+              }`}
             >
               <Sparkles className="w-4 h-4" strokeWidth={1.5} />
               Promos Grand Public
             </button>
             <button
               onClick={() => router.push(`/${locale}/promotions/entreprise`)}
-              className="flex items-center gap-2 px-6 py-3 rounded-r-full rounded-l-none text-sm font-semibold bg-white dark:bg-dark-surface text-primary shadow-sm transition-all duration-300"
+              className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300 ${
+                isEntreprise
+                  ? 'bg-white dark:bg-dark-surface text-primary shadow-sm'
+                  : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
+              }`}
             >
               <Building2 className="w-4 h-4" strokeWidth={1.5} />
               Offres Entreprise
