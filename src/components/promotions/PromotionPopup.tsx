@@ -79,6 +79,17 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
     }
   }, [promotion.valid_until, isVisible])
 
+  const getUrgencyColor = () => {
+    if (isExpired) return { text: 'text-neutral-500', bg: 'bg-neutral-100 dark:bg-neutral-800' }
+    const diff = new Date(promotion.valid_until).getTime() - Date.now()
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+    if (days > 7) return { text: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20' }
+    if (days > 3) return { text: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20' }
+    return { text: 'text-red-600 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-900/20' }
+  }
+
+  const urgency = getUrgencyColor()
+
   const handleCopyCode = () => {
     if (!promotion.promo_code) return
     hapticFeedback('medium')
@@ -136,85 +147,103 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
 
         <div className="bg-white dark:bg-dark-surface rounded-3xl shadow-2xl overflow-hidden">
 
-          {/* ── HEADER compact ── */}
-          <div className="relative bg-gradient-to-r from-primary to-primary-600 px-5 py-3.5 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="h-7 flex items-center gap-1.5 px-3 bg-white/20 rounded-full">
-                <span className="pulse-dot w-1.5 h-1.5 bg-white rounded-full" />
-                <span className="text-xs font-semibold text-white tracking-wide">Promotion en cours</span>
-              </div>
-              {promotion.discount_value > 0 && (
-                <div className="h-7 flex items-center px-3 bg-white rounded-full">
-                  <span className="text-xs font-bold text-primary">
-                    {promotion.discount_type === 'percentage'
-                      ? `-${promotion.discount_value}%`
-                      : `-${promotion.discount_value} Ar`}
-                  </span>
-                </div>
-              )}
-            </div>
-            <button
-              onClick={handleClose}
-              className="w-7 h-7 rounded-full bg-white/20 hover:bg-white/35 flex items-center justify-center transition-all duration-200 hover:rotate-90 flex-shrink-0 ml-2"
-              aria-label="Fermer"
-            >
-              <X className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
-            </button>
-          </div>
-
-          {/* ── IMAGE — ratio 4:5 calé sur le format 1080×1350 ── */}
-          {promotion.image_url ? (
-            <div className="w-full aspect-[4/5] overflow-hidden">
+          {/* ── IMAGE avec badges flottants — cohérent avec PromotionCard ── */}
+          <div className="relative w-full aspect-[4/5] overflow-hidden">
+            {promotion.image_url ? (
               <img
                 src={promotion.image_url}
                 alt={promotion.title}
                 className="w-full h-full object-cover"
               />
-            </div>
-          ) : (
-            <div className="w-full aspect-[4/5] bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-              <Sparkles className="w-12 h-12 text-primary/30" strokeWidth={1} />
-            </div>
-          )}
-
-          {/* ── CORPS compact ── */}
-          <div className="px-5 py-4">
-
-            {/* Titre + description */}
-            <h2 className="text-base font-bold text-neutral-900 dark:text-white font-sans leading-tight mb-1">
-              {promotion.title}
-            </h2>
-            {promotion.description && (
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans line-clamp-2 mb-3">
-                {promotion.description}
-              </p>
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+                <Sparkles className="w-12 h-12 text-primary/30" strokeWidth={1} />
+              </div>
             )}
 
-            {/* Countdown */}
+            {/* Gradient bas */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+
+            {/* Bouton fermer — cohérent avec homepage */}
+            <button
+              onClick={handleClose}
+              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 hover:bg-white/35 backdrop-blur-sm border border-white/30 flex items-center justify-center transition-all duration-200 hover:rotate-90"
+              aria-label="Fermer"
+            >
+              <X className="w-4 h-4 text-white" strokeWidth={2} />
+            </button>
+
+            {/* Badge remise */}
+            {promotion.discount_value > 0 && (
+              <div className="absolute top-3 left-3">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-primary/40 rounded-xl blur-sm" />
+                  <div className="relative bg-primary text-white rounded-xl px-3 py-1.5 shadow-lg">
+                    <span className="text-base font-bold font-sans leading-none">
+                      {promotion.discount_type === 'percentage'
+                        ? `-${promotion.discount_value}%`
+                        : `-${promotion.discount_value} Ar`}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Badge En cours */}
+            <div className="absolute top-3 right-12">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full border border-white/20">
+                <span className="pulse-dot w-1.5 h-1.5 bg-emerald-400 rounded-full" />
+                <span className="text-xs font-semibold text-white">En cours</span>
+              </div>
+            </div>
+
+            {/* Titre + description sur image */}
+            <div className="absolute bottom-0 left-0 right-0 p-4">
+              <h2 className="text-lg font-bold text-white font-sans leading-tight line-clamp-2 drop-shadow-sm mb-1">
+                {promotion.title}
+              </h2>
+              {promotion.description && (
+                <p className="text-sm text-white/75 font-sans line-clamp-1 drop-shadow-sm">
+                  {promotion.description}
+                </p>
+              )}
+              {/* Barre de progression */}
+              <div className="mt-3 h-1 bg-white/20 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-primary transition-all duration-1000 rounded-full"
+                  style={{ width: `${progressWidth}%` }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* ── CORPS ── */}
+          <div className="px-5 py-4 space-y-3">
+
+            {/* Countdown — cohérent avec PromotionCard */}
             {!isExpired ? (
-              <div className="mb-3">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-1.5">
+              <div className={`rounded-xl p-3 border ${urgency.bg} border-transparent`}>
+                <div className="flex items-center justify-between">
+                  <div className="grid grid-cols-4 gap-1.5">
                     {[
-                      { value: timeLeft.days, label: 'J' },
-                      { value: timeLeft.hours, label: 'H' },
-                      { value: timeLeft.minutes, label: 'M' },
-                      { value: timeLeft.seconds, label: 'S' },
+                      { value: timeLeft.days, label: 'Jours' },
+                      { value: timeLeft.hours, label: 'Heures' },
+                      { value: timeLeft.minutes, label: 'Min' },
+                      { value: timeLeft.seconds, label: 'Sec' },
                     ].map((unit, i) => (
-                      <div key={i} className="flex items-center gap-1.5">
-                        <div className="flex flex-col items-center">
-                          <div className="bg-neutral-900 dark:bg-white rounded-lg px-2.5 py-1 min-w-[2rem] text-center">
-                            <span className="text-sm font-bold text-white dark:text-neutral-900 font-sans tabular-nums">
-                              {unit.value}
-                            </span>
-                          </div>
-                          <span className="text-[9px] text-neutral-400 font-sans mt-0.5">{unit.label}</span>
+                      <div key={i} className="flex flex-col items-center">
+                        <div className="min-w-[2rem] text-center">
+                          <span className={`text-base font-bold tabular-nums font-sans ${urgency.text}`}>
+                            {unit.value}
+                          </span>
                         </div>
-                        {i < 3 && <span className="text-neutral-400 font-bold text-sm mb-3">:</span>}
+                        <span className={`text-[10px] mt-0.5 font-medium font-sans ${urgency.text} opacity-60`}>
+                          {unit.label}
+                        </span>
                       </div>
                     ))}
                   </div>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 pl-3 border-l border-neutral-200 dark:border-neutral-700">
                     <Calendar className="w-3.5 h-3.5 text-neutral-400" strokeWidth={1.5} />
                     <span className="text-xs text-neutral-400 font-sans">
                       {new Date(promotion.valid_until).toLocaleDateString('fr-FR', {
@@ -223,45 +252,52 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
                     </span>
                   </div>
                 </div>
-                <div className="h-1 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-primary to-primary-600 rounded-full transition-all duration-1000"
-                    style={{ width: `${progressWidth}%` }}
-                  />
-                </div>
               </div>
             ) : (
-              <div className="mb-3 px-3 py-2 bg-red-50 dark:bg-red-900/20 rounded-xl">
+              <div className="px-3 py-2 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-100 dark:border-red-900">
                 <span className="text-xs text-red-600 dark:text-red-400 font-sans">Cette offre a expiré</span>
               </div>
             )}
 
-            {/* Code promo */}
+            {/* Code promo — cohérent avec PromotionCard */}
             {promotion.promo_code && promotion.is_active && !isExpired && (
-              <button
-                onClick={handleCopyCode}
-                className="w-full mb-3 flex items-center justify-between px-3 py-2.5 bg-primary/5 hover:bg-primary/10 rounded-2xl border border-primary/20 hover:border-primary/40 transition-all duration-200 group"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <div className="rounded-xl border border-primary/20 bg-primary/5 dark:bg-primary/10 overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-2 border-b border-primary/10">
+                  <div className="flex items-center gap-1.5">
                     <Tag className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
-                  </div>
-                  <div className="text-left">
-                    <div className="text-sm font-bold text-primary font-mono">{promotion.promo_code}</div>
-                    <div className="text-[10px] text-neutral-400 font-sans">Code promotionnel</div>
+                    <span className="text-xs font-semibold text-primary/70 uppercase tracking-wider font-sans">
+                      Code promo
+                    </span>
                   </div>
                 </div>
-                <span className={`text-xs font-semibold font-sans transition-colors ${copied ? 'text-emerald-600' : 'text-primary'}`}>
-                  {copied ? '✓ Copié' : 'Copier'}
-                </span>
-              </button>
+                <button
+                  onClick={handleCopyCode}
+                  className="w-full flex items-center justify-between px-4 py-3 hover:bg-primary/10 transition-all duration-200 group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Tag className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
+                    </div>
+                    <span className="text-lg font-black text-primary font-mono tracking-widest">
+                      {promotion.promo_code}
+                    </span>
+                  </div>
+                  <span className={`text-xs font-semibold font-sans transition-colors px-2.5 py-1 rounded-lg ${
+                    copied
+                      ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600'
+                      : 'bg-primary/10 text-primary'
+                  }`}>
+                    {copied ? '✓ Copié' : 'Copier'}
+                  </span>
+                </button>
+              </div>
             )}
 
-            {/* CTA */}
+            {/* CTA — rounded-full cohérent avec ResellerCard */}
             {!isExpired && (
               <button
                 onClick={handleCTA}
-                className="w-full flex items-center justify-center gap-2 py-3 bg-primary hover:bg-primary-600 text-white rounded-2xl font-semibold text-sm transition-all duration-200 hover:shadow-lg hover:shadow-primary/25 font-sans group"
+                className="w-full flex items-center justify-center gap-2 py-3 bg-primary hover:bg-primary/90 text-white rounded-full font-semibold text-sm transition-all duration-200 hover:shadow-lg hover:shadow-primary/25 font-sans group active:scale-95"
               >
                 <Sparkles className="w-4 h-4" strokeWidth={1.5} />
                 Voir toutes les promos

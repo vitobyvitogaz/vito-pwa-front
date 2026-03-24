@@ -52,7 +52,8 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
     return () => clearInterval(interval)
   }, [promotion.valid_until])
 
-  const handleCopyCode = () => {
+  const handleCopyCode = (e: React.MouseEvent) => {
+    e.stopPropagation()
     if (!promotion.promo_code) return
     hapticFeedback('medium')
     navigator.clipboard.writeText(promotion.promo_code)
@@ -60,7 +61,8 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const handleShare = () => {
+  const handleShare = (e: React.MouseEvent) => {
+    e.stopPropagation()
     hapticFeedback('medium')
     if (navigator.share) {
       navigator.share({
@@ -114,7 +116,8 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
 
   return (
     <div
-      className="group relative bg-white dark:bg-dark-surface rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:-translate-y-1 animate-slide-up"
+      onClick={() => hapticFeedback('light')}
+      className="group relative bg-white dark:bg-dark-surface rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:-translate-y-1 animate-slide-up cursor-pointer"
       style={{
         animationDelay: `${delay}s`,
         boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
@@ -123,7 +126,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
       onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)')}
     >
 
-      {/* ── IMAGE — carré sur mobile, 4:5 sur desktop ── */}
+      {/* ── IMAGE ── */}
       <div className="relative w-full aspect-square sm:aspect-[4/5] overflow-hidden">
         <img
           src={promotion.image_url || '/images/promotions/default.jpg'}
@@ -198,7 +201,6 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
         {!isExpired && promotion.is_active ? (
           <div className={`rounded-xl p-3 border ${urgency.bg} ${urgency.border}`}>
             <div className="flex items-center justify-between">
-              {/* Chiffres countdown */}
               <div className="grid grid-cols-4 gap-1.5">
                 {[
                   { value: timeLeft.days, label: 'Jours' },
@@ -207,7 +209,6 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
                   { value: timeLeft.seconds, label: 'Sec' },
                 ].map((unit, i) => (
                   <div key={i} className="flex flex-col items-center">
-                    {/*<div className="bg-white dark:bg-neutral-800 rounded-lg px-2.5 py-1.5 min-w-[2.75rem] text-center shadow-sm">*/}
                     <div className="min-w-[2rem] text-center">
                       <span className={`text-base font-bold tabular-nums font-sans ${urgency.text}`}>
                         {unit.value}
@@ -267,7 +268,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
         {/* Conditions */}
         {promotion.conditions && promotion.conditions.length > 0 && (
           <div className="space-y-2">
-            {promotion.conditions.slice(0, 3).map((condition, idx) => (
+            {promotion.conditions.slice(0, 2).map((condition, idx) => (
               <div key={idx} className="flex items-start gap-2.5">
                 <div className="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Check className="w-2.5 h-2.5 text-emerald-600 dark:text-emerald-400" strokeWidth={2.5} />
@@ -277,13 +278,18 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
                 </span>
               </div>
             ))}
+            {promotion.conditions.length > 2 && (
+              <p className="text-xs text-neutral-400 font-sans pl-6">
+                +{promotion.conditions.length - 2} condition{promotion.conditions.length - 2 > 1 ? 's' : ''}
+              </p>
+            )}
           </div>
         )}
 
-        {/* Code promo */}
+        {/* Code promo — style ticket avec bordure dashed */}
         {promotion.promo_code && promotion.is_active && !isExpired && (
-          <div className="rounded-xl border border-primary/20 bg-primary/5 dark:bg-primary/10 overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-2 border-b border-primary/10">
+          <div className="rounded-xl border border-dashed border-primary/40 bg-primary/5 dark:bg-primary/10 overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-2 border-b border-dashed border-primary/20">
               <div className="flex items-center gap-1.5">
                 <Zap className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
                 <span className="text-xs font-semibold text-primary/70 uppercase tracking-wider font-sans">
@@ -303,14 +309,14 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
               className="w-full flex items-center justify-between px-4 py-3 hover:bg-primary/10 transition-all duration-200 group/btn"
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center group-hover/btn:scale-110 transition-transform">
+                <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center group-hover/btn:scale-110 transition-transform">
                   <Tag className="w-4 h-4 text-primary" strokeWidth={1.5} />
                 </div>
                 <span className="text-xl font-black text-primary font-mono tracking-widest">
                   {promotion.promo_code}
                 </span>
               </div>
-              <span className={`text-sm font-semibold font-sans transition-colors px-3 py-1.5 rounded-lg ${
+              <span className={`text-sm font-semibold font-sans transition-colors px-3 py-1.5 rounded-full ${
                 copied
                   ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
                   : 'bg-primary/10 text-primary'
