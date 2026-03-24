@@ -28,18 +28,31 @@ export default function PromotionsPage() {
         if (!response.ok) return
         const promotions = await response.json()
 
-        // ── Géolocalisation : détecter la ville de l'utilisateur ──
+        // ── Géolocalisation : localStorage GPS en priorité, ip-api en fallback ──
         let userCity: string | null = null
         try {
-          const geoResponse = await fetch(IP_API_URL)
-          if (geoResponse.ok) {
-            const geoData = await geoResponse.json()
-            if (geoData.status === 'success' && geoData.city) {
-              userCity = geoData.city
+          // Priorité 1 : ville déjà détectée par le NotificationToggle (GPS précis)
+          const savedLocation = localStorage.getItem('user-location')
+          if (
+            savedLocation &&
+            savedLocation !== 'Localisation non disponible' &&
+            savedLocation !== 'Géolocalisation non supportée' &&
+            savedLocation !== 'Localisation indisponible'
+          ) {
+            // Extraire la ville du format "Ville, Région" ou "Ville"
+            userCity = savedLocation.split(',')[0].trim()
+          } else {
+            // Priorité 2 : fallback sur ip-api.com
+            const geoResponse = await fetch(IP_API_URL)
+            if (geoResponse.ok) {
+              const geoData = await geoResponse.json()
+              if (geoData.status === 'success' && geoData.city) {
+                userCity = geoData.city
+              }
             }
           }
         } catch {
-          // Géolocalisation échouée — on ignore et on montre toutes les promos
+          // Géolocalisation échouée — on montre toutes les promos
         }
 
         // ── Filtrer les promotions par zone si ville détectée ──
