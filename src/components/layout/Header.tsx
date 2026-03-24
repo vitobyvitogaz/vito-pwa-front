@@ -1,10 +1,9 @@
 'use client'
 
-import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { MapPin, ShoppingCart, Sparkles, FileText, Menu, X } from 'lucide-react'
+import { MapPin, ShoppingCart, Sparkles, FileText } from 'lucide-react'
 import { ThemeSwitcher } from '@/components/shared/ThemeSwitcher'
 import { InstallButton } from '@/components/shared/InstallButton'
 
@@ -17,10 +16,9 @@ const navItems = [
 
 export const Header: React.FC = () => {
   const pathname = usePathname()
-  const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-dark-surface/95 backdrop-blur-xl backdrop-saturate-150 border-b border-neutral-200/60 dark:border-dark-border/60 shadow-sm">
+    <header className="fixed top-0 left-0 right-0 z-[1001] bg-white/95 dark:bg-dark-surface/95 backdrop-blur-xl backdrop-saturate-150 border-b border-neutral-200/60 dark:border-dark-border/60 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-[70px]">
 
@@ -44,7 +42,7 @@ export const Header: React.FC = () => {
             />
           </Link>
 
-          {/* Nav Desktop */}
+          {/* Nav Desktop uniquement */}
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
               const Icon = item.icon
@@ -68,64 +66,17 @@ export const Header: React.FC = () => {
 
           {/* Actions droite */}
           <div className="flex items-center gap-2">
-
-            {/* Bouton Installer - Desktop */}
-            <div className="hidden sm:block">
+            {/* Bouton Installer — Desktop uniquement */}
+            <div className="hidden md:block">
               <InstallButton />
             </div>
-
-            <div className="hidden sm:block h-6 w-px bg-neutral-300/40 dark:bg-dark-border/40" />
-
-            {/* ThemeSwitcher */}
-            {/*<div className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-neutral-100 dark:hover:bg-dark-border/20 transition-colors">*/}
-              <ThemeSwitcher />
-            {/*</div>*/}
-
-            {/* Bouton Installer - Mobile */}
-            <div className="sm:hidden">
-              <InstallButton />
-            </div>
-
-            {/* Hamburger - Mobile */}
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden w-9 h-9 flex items-center justify-center rounded-full hover:bg-neutral-100 dark:hover:bg-dark-border/20 transition-colors"
-            >
-              {menuOpen
-                ? <X className="w-5 h-5 text-neutral-700 dark:text-neutral-300" strokeWidth={1.5} />
-                : <Menu className="w-5 h-5 text-neutral-700 dark:text-neutral-300" strokeWidth={1.5} />
-              }
-            </button>
+            <div className="hidden md:block h-6 w-px bg-neutral-300/40 dark:bg-dark-border/40" />
+            {/* ThemeSwitcher — toujours visible */}
+            <ThemeSwitcher />
           </div>
+
         </div>
       </div>
-
-      {/* Menu Mobile */}
-      {menuOpen && (
-        <div className="md:hidden border-t border-neutral-200/60 dark:border-dark-border/60 bg-white/95 dark:bg-dark-surface/95 backdrop-blur-xl">
-          <div className="container mx-auto px-4 py-3 flex flex-col gap-1">
-            {navItems.map((item) => {
-              const Icon = item.icon
-              const isActive = pathname.startsWith(item.href)
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? 'bg-primary/10 text-primary dark:bg-primary/20'
-                      : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-dark-border/20 hover:text-neutral-900 dark:hover:text-white'
-                  }`}
-                >
-                  <Icon className="w-5 h-5" strokeWidth={1.5} />
-                  {item.label}
-                </Link>
-              )
-            })}
-          </div>
-        </div>
-      )}
     </header>
   )
 }

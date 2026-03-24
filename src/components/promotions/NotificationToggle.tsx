@@ -126,7 +126,7 @@ export const NotificationToggle: React.FC = () => {
       <div className="flex items-start justify-between gap-6">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-4 mb-4">
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
               isEnabled
                 ? 'bg-emerald-100 dark:bg-emerald-900/30'
                 : 'bg-neutral-100 dark:bg-neutral-800'
