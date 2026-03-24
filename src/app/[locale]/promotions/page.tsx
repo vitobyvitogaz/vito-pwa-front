@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { PromotionsList } from '@/components/promotions/PromotionsList'
 import { NotificationToggle } from '@/components/promotions/NotificationToggle'
@@ -9,6 +9,7 @@ import { usePromotionPopup } from '@/lib/hooks/usePromotionPopup'
 import { Sparkles, Building2 } from 'lucide-react'
 
 const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
+const IP_API_URL = 'https://ip-api.com/json/'
 
 export default function PromotionsPage() {
   const { showPopup, selectedPromotion, initializePopup, closePopup } = usePromotionPopup()
@@ -26,7 +27,39 @@ export default function PromotionsPage() {
         const response = await fetch(`${API_URL}/promotions`)
         if (!response.ok) return
         const promotions = await response.json()
-        initializePopup(promotions)
+
+        // ── Géolocalisation : détecter la ville de l'utilisateur ──
+        let userCity: string | null = null
+        try {
+          const geoResponse = await fetch(IP_API_URL)
+          if (geoResponse.ok) {
+            const geoData = await geoResponse.json()
+            if (geoData.status === 'success' && geoData.city) {
+              userCity = geoData.city
+            }
+          }
+        } catch {
+          // Géolocalisation échouée — on ignore et on montre toutes les promos
+        }
+
+        // ── Filtrer les promotions par zone si ville détectée ──
+        let filteredPromotions = promotions
+        if (userCity) {
+          const localPromos = promotions.filter((p: any) => {
+            const zones: string[] = p.zones ?? []
+            // Match si la zone contient le nom de la ville (insensible à la casse)
+            return zones.some((z: string) =>
+              z.toLowerCase().includes(userCity!.toLowerCase()) ||
+              userCity!.toLowerCase().includes(z.toLowerCase())
+            )
+          })
+          // Si des promos locales existent, on les privilégie — sinon on montre tout
+          if (localPromos.length > 0) {
+            filteredPromotions = localPromos
+          }
+        }
+
+        initializePopup(filteredPromotions)
       } catch (err) {
         console.error('❌ Erreur popup promotions:', err)
       }
@@ -59,15 +92,15 @@ export default function PromotionsPage() {
           </div>
         </div>
 
-        {/* Onglets niveau 1 — actif basé sur pathname */}
+        {/* Onglets niveau 1 — bordures carrées côté intérieur */}
         <div className="flex justify-center mb-10 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-          <div className="inline-flex bg-neutral-100 dark:bg-neutral-800 rounded-full p-1 gap-1">
+          <div className="inline-flex bg-neutral-100 dark:bg-neutral-800 rounded-full p-1 gap-0">
             <button
               onClick={() => router.push(`/${locale}/promotions`)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300 ${
+              className={`flex items-center gap-2 px-6 py-3 rounded-l-full text-sm font-semibold transition-all duration-300 ${
                 isGrandPublic
                   ? 'bg-white dark:bg-dark-surface text-primary shadow-sm'
-                  : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
+                  : 'text-neutral-500 dark:text-neutral-200 hover:text-neutral-700 dark:hover:text-white'
               }`}
             >
               <Sparkles className="w-4 h-4" strokeWidth={1.5} />
@@ -75,10 +108,10 @@ export default function PromotionsPage() {
             </button>
             <button
               onClick={() => router.push(`/${locale}/promotions/entreprise`)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300 ${
+              className={`flex items-center gap-2 px-6 py-3 rounded-r-full text-sm font-semibold transition-all duration-300 ${
                 isEntreprise
                   ? 'bg-white dark:bg-dark-surface text-primary shadow-sm'
-                  : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
+                  : 'text-neutral-500 dark:text-neutral-200 hover:text-neutral-700 dark:hover:text-white'
               }`}
             >
               <Building2 className="w-4 h-4" strokeWidth={1.5} />
