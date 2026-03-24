@@ -220,7 +220,7 @@ export const PromotionsList: React.FC = () => {
       )}
 
       {/* Promotions grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
         {paginatedPromos.map((promo, index) => (
           <PromotionCard
             key={promo.id}
@@ -283,7 +283,8 @@ export const PromotionsList: React.FC = () => {
             onClick={() => { setActiveFilter('all'); setSelectedZones([]); setSortBy('discount_desc') }}
             className="px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-600 transition-colors duration-200 font-sans"
           >
-            Voir toutes les promotions
+            Voir toutes les promotions 
+
           </button>
         </div>
       )}
