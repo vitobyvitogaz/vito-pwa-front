@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { Bell, BellOff, MapPin, ChevronRight, Zap, LocateFixed } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
+const LOCATION_TTL_MS = 24 * 60 * 60 * 1000 // 24h
+
 const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
   try {
     const response = await fetch(
@@ -13,13 +15,14 @@ const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
     const data = await response.json()
     const address = data.address
 
-    // Priorité : suburb > city_district > city > town > village > county
+    // Priorité : city > town > village > suburb > city_district > county
+    // On veut une ville principale qui correspond aux zones de la base
     const locality =
-      address.suburb ||
-      address.city_district ||
       address.city ||
       address.town ||
       address.village ||
+      address.suburb ||
+      address.city_district ||
       address.county ||
       null
 
@@ -46,11 +49,18 @@ export const NotificationToggle: React.FC = () => {
   useEffect(() => {
     const savedPreference = localStorage.getItem('promo-notifications')
     const savedLocation = localStorage.getItem('user-location')
+    const savedTimestamp = localStorage.getItem('user-location-timestamp')
 
-    if (savedLocation) {
+    // Vérifier si le cache est encore valide (< 24h)
+    const isExpired =
+      !savedTimestamp ||
+      Date.now() - parseInt(savedTimestamp) > LOCATION_TTL_MS
+
+    if (savedLocation && !isExpired) {
       setLocation(savedLocation)
       setIsLoading(false)
     } else {
+      // Cache absent ou expiré — re-détecter
       detectLocation()
     }
 
@@ -72,7 +82,9 @@ export const NotificationToggle: React.FC = () => {
         const { latitude, longitude } = position.coords
         const label = await reverseGeocode(latitude, longitude)
         setLocation(label)
+        // Sauvegarder avec timestamp pour TTL
         localStorage.setItem('user-location', label)
+        localStorage.setItem('user-location-timestamp', String(Date.now()))
         localStorage.setItem('user-coords', JSON.stringify({ lat: latitude, lng: longitude }))
         setIsLocating(false)
         setIsLoading(false)
@@ -135,10 +147,15 @@ export const NotificationToggle: React.FC = () => {
                 <span className="text-sm text-neutral-600 dark:text-neutral-400 font-sans truncate">
                   {isLocating ? 'Détection en cours...' : location ?? 'Localisation inconnue'}
                 </span>
-                {/* Bouton relancer la détection */}
+                {/* Bouton relancer la détection — efface le cache et re-détecte */}
                 {!isLocating && (
                   <button
-                    onClick={detectLocation}
+                    onClick={() => {
+                      localStorage.removeItem('user-location')
+                      localStorage.removeItem('user-location-timestamp')
+                      localStorage.removeItem('user-coords')
+                      detectLocation()
+                    }}
                     className="flex-shrink-0 p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
                     title="Relancer la détection"
                   >
