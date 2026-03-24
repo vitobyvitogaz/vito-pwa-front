@@ -127,7 +127,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
     >
 
       {/* ── IMAGE ── */}
-      <div className="relative w-full aspect-square sm:aspect-[4/5] overflow-hidden">
+      <div className="relative w-full aspect-[4/5] overflow-hidden">
         <img
           src={promotion.image_url || '/images/promotions/default.jpg'}
           alt={promotion.title}
