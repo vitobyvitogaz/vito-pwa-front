@@ -9,6 +9,10 @@ export default function EntrepriseOffresPage() {
   const pathname = usePathname()
   const locale = pathname.split('/')[1]
 
+  // Détection de l'onglet actif basée sur le pathname
+  const isEntreprise = pathname.includes('/entreprise')
+  const isGrandPublic = !isEntreprise
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-neutral-25 via-white to-neutral-25 dark:from-dark-bg dark:via-dark-surface/95 dark:to-dark-bg pt-16 pb-20">
       <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
@@ -29,24 +33,35 @@ export default function EntrepriseOffresPage() {
           </div>
         </div>
 
-        {/* Onglets niveau 1 */}
+        {/* Onglets niveau 1 — actif basé sur pathname */}
         <div className="flex justify-center mb-10 animate-slide-up" style={{ animationDelay: '0.1s' }}>
           <div className="inline-flex bg-neutral-100 dark:bg-neutral-800 rounded-full p-1 gap-0">
             <button
               onClick={() => router.push(`/${locale}/promotions`)}
-              className="flex items-center gap-2 px-6 py-3 rounded-l-full rounded-r-none text-sm font-semibold text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-all duration-300"
+              className={`flex items-center gap-2 px-6 py-3 rounded-l-full text-sm font-semibold transition-all duration-300 ${
+                isGrandPublic
+                  ? 'bg-white dark:bg-dark-surface text-primary shadow-sm'
+                  : 'text-neutral-500 dark:text-neutral-200 hover:text-neutral-700 dark:hover:text-white'
+              }`}
             >
               <Sparkles className="w-4 h-4" strokeWidth={1.5} />
               Promos Grand Public
             </button>
-            <button className="flex items-center gap-2 px-6 py-3 rounded-r-full rounded-l-none text-sm font-semibold bg-white dark:bg-dark-surface text-primary shadow-sm transition-all duration-300">
+            <button
+              onClick={() => router.push(`/${locale}/promotions/entreprise`)}
+              className={`flex items-center gap-2 px-6 py-3 rounded-r-full text-sm font-semibold transition-all duration-300 ${
+                isEntreprise
+                  ? 'bg-white dark:bg-dark-surface text-primary shadow-sm'
+                  : 'text-neutral-500 dark:text-neutral-200 hover:text-neutral-700 dark:hover:text-white'
+              }`}
+            >
               <Building2 className="w-4 h-4" strokeWidth={1.5} />
               Offres Entreprise
             </button>
           </div>
         </div>
 
-        {/* Carte unique */}
+        {/* Contenu entreprise */}
         <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
           <EnterpriseOffersList />
         </div>

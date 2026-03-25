@@ -41,7 +41,8 @@ export default function HomePage() {
   )
 
   return (
-    <main className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16">
+    // ── pb-20 md:pb-0 : espace pour la bottom nav sur mobile ──
+    <main className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16 pb-20 md:pb-0">
       <OfflineBanner />
       <InstallPrompt />
 

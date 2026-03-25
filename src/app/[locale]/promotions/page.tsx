@@ -91,7 +91,7 @@ export default function PromotionsPage() {
 
         {/* Header */}
         <div className="text-center mb-10 sm:mb-12 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-primary to-primary-600 shadow-lg">
+          <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-full bg-gradient-to-br from-primary to-primary-600 shadow-lg">
             <Sparkles className="w-10 h-10 text-white" strokeWidth={1.5} />
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-neutral-900 dark:text-white mb-4 tracking-tight font-sans">
@@ -140,7 +140,6 @@ export default function PromotionsPage() {
           </div>
           <PromotionsList />
         </div>
-
       </div>
     </div>
   )

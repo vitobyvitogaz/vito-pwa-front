@@ -96,7 +96,8 @@ export default function AssistancePage() {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16 flex items-center justify-center p-4">
+      // ── pb-20 md:pb-0 : espace pour la bottom nav sur mobile ──
+      <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16 pb-20 md:pb-0 flex items-center justify-center p-4">
         <div className="w-full max-w-md text-center">
           <div className="w-20 h-20 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
@@ -119,7 +120,8 @@ export default function AssistancePage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16">
+    // ── pb-20 md:pb-0 : espace pour la bottom nav sur mobile ──
+    <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16 pb-20 md:pb-0">
 
       {/* Header teal */}
       <div style={{ backgroundColor: '#008B7F' }} className="px-4 py-8">
