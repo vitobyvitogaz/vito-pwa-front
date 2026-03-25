@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { PromotionCard } from '@/components/promotions/PromotionsCard'
-import { Filter, ChevronLeft, ChevronRight, MapPin, X, Loader2, Tag as TagIcon } from 'lucide-react'
+import { Filter, ChevronLeft, ChevronRight, MapPin, X, Loader2, Tag as TagIcon, WifiOff } from 'lucide-react'
 import type { Promotion } from '@/types/promotion'
 import { filters, zones, sortOptions, ITEMS_PER_PAGE } from '@/data/promotions'
 
@@ -23,14 +23,18 @@ export const PromotionsList: React.FC = () => {
   const fetchPromotions = async () => {
     try {
       setLoading(true)
+      setError(null)
       const response = await fetch(`${API_URL}/promotions`)
-      if (!response.ok) throw new Error('Erreur lors du chargement')
+      if (!response.ok) throw new Error('server')
       const data = await response.json()
       setPromotions(data)
-      setError(null)
-    } catch (err) {
-      console.error('Erreur fetch promotions:', err)
-      setError('Impossible de charger les promotions')
+    } catch (err: any) {
+      // ── Message simple selon le type d'erreur ──
+      if (!navigator.onLine) {
+        setError('Pas de connexion internet. Vérifiez votre réseau et réessayez.')
+      } else {
+        setError('Les promotions ne sont pas disponibles pour le moment. Réessayez dans quelques instants.')
+      }
       setPromotions([])
     } finally {
       setLoading(false)
@@ -89,9 +93,14 @@ export const PromotionsList: React.FC = () => {
     return (
       <div className="text-center py-16">
         <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900 dark:to-red-800 flex items-center justify-center">
-          <TagIcon className="w-10 h-10 text-red-500" strokeWidth={1} />
+          <WifiOff className="w-10 h-10 text-red-500" strokeWidth={1} />
         </div>
-        <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-3 font-sans">{error}</h3>
+        <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2 font-sans">
+          Oups, une erreur est survenue
+        </h3>
+        <p className="text-neutral-500 dark:text-neutral-400 mb-6 max-w-sm mx-auto font-sans">
+          {error}
+        </p>
         <button
           onClick={fetchPromotions}
           className="px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-colors duration-200 font-sans"
@@ -171,7 +180,7 @@ export const PromotionsList: React.FC = () => {
         </div>
       )}
 
-      {/* Quick filters — style souligné */}
+      {/* Quick filters */}
       <div className="flex gap-2 mb-6 pb-2 justify-center flex-wrap">
         {filters.map((filter) => (
           <button
@@ -193,14 +202,13 @@ export const PromotionsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Active filters indicators — boutons X agrandis à 44px ✅ */}
+      {/* Active filters indicators */}
       {(selectedZones.length > 0 || sortBy !== 'discount_desc') && (
         <div className="flex flex-wrap gap-2 mb-4">
           {selectedZones.length > 0 && (
             <div className="flex items-center gap-1 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm border border-blue-200 dark:border-blue-800">
               <MapPin className="w-4 h-4" strokeWidth={1.5} />
-              <span>Zones: {selectedZones.length}</span>
-              {/* Bouton X — w-11 h-11 = 44px ✅ */}
+              <span>Zones : {selectedZones.length}</span>
               <button
                 onClick={() => setSelectedZones([])}
                 className="w-11 h-11 flex items-center justify-center text-blue-500 hover:text-blue-700 active:scale-90 transition-all"
@@ -212,8 +220,7 @@ export const PromotionsList: React.FC = () => {
           )}
           {sortBy !== 'discount_desc' && (
             <div className="flex items-center gap-1 px-3 py-2 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm border border-purple-200 dark:border-purple-800">
-              <span>Tri: {sortOptions.find(s => s.id === sortBy)?.label}</span>
-              {/* Bouton X — w-11 h-11 = 44px ✅ */}
+              <span>Tri : {sortOptions.find(s => s.id === sortBy)?.label}</span>
               <button
                 onClick={() => setSortBy('discount_desc')}
                 className="w-11 h-11 flex items-center justify-center text-purple-500 hover:text-purple-700 active:scale-90 transition-all"
@@ -240,7 +247,6 @@ export const PromotionsList: React.FC = () => {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-4">
-          {/* Boutons pagination — w-11 h-11 = 44px ✅ */}
           <button
             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             disabled={currentPage === 1}
@@ -281,11 +287,11 @@ export const PromotionsList: React.FC = () => {
           <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-900 dark:to-neutral-800 flex items-center justify-center">
             <TagIcon className="w-10 h-10 text-neutral-400" strokeWidth={1} />
           </div>
-          <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-3 font-sans">
-            Aucune promotion ne correspond à vos critères
+          <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2 font-sans">
+            Aucune promotion trouvée
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 mb-6 font-sans">
-            Essayez de modifier vos filtres ou consultez toutes les promotions
+          <p className="text-neutral-500 dark:text-neutral-400 mb-6 max-w-sm mx-auto font-sans">
+            Aucune offre ne correspond à vos filtres actuels. Essayez de les modifier.
           </p>
           <button
             onClick={() => { setActiveFilter('all'); setSelectedZones([]); setSortBy('discount_desc') }}

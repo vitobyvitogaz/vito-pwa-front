@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Truck, Loader2 } from 'lucide-react'
+import { Truck, Loader2, WifiOff } from 'lucide-react'
 import { DeliveryCompanyCard } from '@/components/order/DeliveryCompanyCard'
 import { type DeliveryCompany, sortCompanies } from '@/data/deliveryCompanies'
 
@@ -16,7 +16,6 @@ export default function DeliveryPage() {
   const [sortBy, setSortBy] = useState<'rating' | 'deliveryTime' | 'name' | 'reviewCount'>('rating')
   const [filteredCompanies, setFilteredCompanies] = useState<DeliveryCompany[]>([])
 
-  // Génération dynamique des onglets depuis les specialties réelles
   const dynamicFilters = [
     { id: 'all', label: 'Tous' },
     { id: 'verified', label: 'Vérifiées' },
@@ -42,14 +41,11 @@ export default function DeliveryPage() {
     verifiedCount: deliveryCompanies.filter(c => c.is_verified).length
   }
 
-  useEffect(() => {
-    fetchDeliveryCompanies()
-  }, [])
+  useEffect(() => { fetchDeliveryCompanies() }, [])
 
   useEffect(() => {
     let result = [...deliveryCompanies]
 
-    // Filtre par recherche
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
       result = result.filter(company =>
@@ -60,7 +56,6 @@ export default function DeliveryPage() {
       )
     }
 
-    // Filtre par onglet
     if (selectedFilter === 'verified') {
       result = result.filter(c => c.is_verified)
     } else if (selectedFilter !== 'all') {
@@ -74,15 +69,19 @@ export default function DeliveryPage() {
   const fetchDeliveryCompanies = async () => {
     try {
       setLoading(true)
+      setError(null)
       const response = await fetch(`${API_URL}/delivery-companies`)
-      if (!response.ok) throw new Error('Erreur lors du chargement')
+      if (!response.ok) throw new Error('server')
       const data = await response.json()
       const activeCompanies = data.filter((company: DeliveryCompany) => company.is_active)
       setDeliveryCompanies(activeCompanies)
-      setError(null)
-    } catch (err) {
-      console.error('Erreur fetch delivery companies:', err)
-      setError('Impossible de charger les sociétés de livraison')
+    } catch (err: any) {
+      // ── Message simple selon le contexte réseau ──
+      if (!navigator.onLine) {
+        setError('Pas de connexion internet. Vérifiez votre réseau et réessayez.')
+      } else {
+        setError('Les sociétés de livraison ne sont pas disponibles pour le moment. Réessayez dans quelques instants.')
+      }
       setDeliveryCompanies([])
     } finally {
       setLoading(false)
@@ -103,14 +102,19 @@ export default function DeliveryPage() {
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-neutral-25 via-white to-neutral-25 dark:from-dark-bg dark:via-dark-surface/95 dark:to-dark-bg pt-16 pb-20 flex items-center justify-center">
-        <div className="text-center">
+        <div className="text-center px-4">
           <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900 dark:to-red-800 flex items-center justify-center">
-            <Truck className="w-10 h-10 text-red-500" strokeWidth={1} />
+            <WifiOff className="w-10 h-10 text-red-500" strokeWidth={1} />
           </div>
-          <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-3 font-sans">{error}</h3>
+          <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2 font-sans">
+            Oups, une erreur est survenue
+          </h3>
+          <p className="text-neutral-500 dark:text-neutral-400 mb-6 max-w-sm mx-auto font-sans">
+            {error}
+          </p>
           <button
             onClick={fetchDeliveryCompanies}
-            className="px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-600 transition-colors duration-200 font-sans"
+            className="px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-colors duration-200 font-sans"
           >
             Réessayer
           </button>
@@ -192,7 +196,7 @@ export default function DeliveryPage() {
             </div>
           </div>
 
-          {/* Onglets dynamiques depuis specialties */}
+          {/* Onglets dynamiques */}
           <div className="flex gap-2 mb-6 pb-2 justify-center flex-wrap">
             {dynamicFilters.map((filter) => (
               <button
@@ -225,7 +229,7 @@ export default function DeliveryPage() {
             {(selectedFilter !== 'all' || searchQuery) && (
               <button
                 onClick={() => { setSelectedFilter('all'); setSearchQuery('') }}
-                className="text-sm font-medium text-primary hover:text-primary-600 transition-colors font-sans"
+                className="text-sm font-medium text-primary hover:text-primary/80 transition-colors font-sans"
               >
                 Effacer les filtres
               </button>
@@ -248,15 +252,15 @@ export default function DeliveryPage() {
               <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-900 dark:to-neutral-800 flex items-center justify-center">
                 <Truck className="w-10 h-10 text-neutral-400" strokeWidth={1} />
               </div>
-              <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-3 font-sans">
-                Aucune société ne correspond à votre recherche
+              <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2 font-sans">
+                Aucune société trouvée
               </h3>
-              <p className="text-neutral-600 dark:text-neutral-400 mb-6 font-sans max-w-md mx-auto">
-                Essayez de modifier vos critères de recherche ou utilisez des termes différents.
+              <p className="text-neutral-500 dark:text-neutral-400 mb-6 max-w-sm mx-auto font-sans">
+                Aucune société ne correspond à votre recherche. Essayez avec des mots différents.
               </p>
               <button
                 onClick={() => { setSelectedFilter('all'); setSearchQuery('') }}
-                className="px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary-600 transition-colors duration-200 font-sans"
+                className="px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-colors duration-200 font-sans"
               >
                 Voir toutes les sociétés
               </button>
