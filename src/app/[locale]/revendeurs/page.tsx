@@ -32,6 +32,8 @@ const PAGE_SIZE = 10
 type SheetState = 'quarter' | 'half' | 'full'
 
 const NAVBAR_HEIGHT = 56
+// ── Hauteur de la bottom nav mobile ─────────────────────────────────────────
+const BOTTOM_NAV_HEIGHT = 64
 
 export default function ResellersPage() {
   const { resellers, loading: isLoadingResellers, fetchResellers } = useResellerStore()
@@ -53,8 +55,6 @@ export default function ResellersPage() {
   useEffect(() => {
     if (resellers.length > 0) setFilteredResellers(resellers)
   }, [resellers])
-
-  // ── Supprimé : ne plus charger la position depuis localStorage ──
 
   const handleLocationFound = useCallback((location: { lat: number; lng: number }) => {
     setUserLocation(location)
@@ -98,6 +98,20 @@ export default function ResellersPage() {
 
   const shouldShowPrompt = showGeolocationPrompt && !userLocation && !hasSkippedGeolocation
 
+  // ── Hauteurs du bottom sheet tenant compte de la bottom nav ─────────────
+  const sheetHeights = {
+    quarter: `calc(25vh + ${BOTTOM_NAV_HEIGHT}px)`,
+    half:    `calc(52vh + ${BOTTOM_NAV_HEIGHT}px)`,
+    full:    `calc(88vh + ${BOTTOM_NAV_HEIGHT}px)`,
+  }
+
+  // ── Bottom de la carte tenant compte du bottom sheet + bottom nav ────────
+  const mapBottoms = {
+    quarter: `calc(25vh + ${BOTTOM_NAV_HEIGHT}px)`,
+    half:    `calc(52vh + ${BOTTOM_NAV_HEIGHT}px)`,
+    full:    `calc(88vh + ${BOTTOM_NAV_HEIGHT}px)`,
+  }
+
   if (isLoadingResellers) {
     return (
       <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16 flex items-center justify-center">
@@ -124,17 +138,17 @@ export default function ResellersPage() {
           DESKTOP
       ═══════════════════════════════════════════════════════════ */}
       <div className="hidden lg:block pt-14 sm:pt-16">
-          {userLocation && (
-            <div className="bg-primary/5 border-b border-primary/10 px-4 py-2">
-              <div className="container mx-auto flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                <MapPin className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
-                <span className="text-xs text-primary font-medium">
-                  Position détectée : {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
-                </span>
-              </div>
+        {userLocation && (
+          <div className="bg-primary/5 border-b border-primary/10 px-4 py-2">
+            <div className="container mx-auto flex items-center gap-2">
+              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+              <MapPin className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
+              <span className="text-xs text-primary font-medium">
+                Position détectée : {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
+              </span>
             </div>
-          )}
+          </div>
+        )}
         <div className="bg-white dark:bg-dark-surface border-b border-neutral-200 dark:border-neutral-800">
           <div className="container mx-auto px-4 py-6 sm:py-8">
             <div className="flex items-center justify-between mb-4">
@@ -309,12 +323,12 @@ export default function ResellersPage() {
         className="lg:hidden relative"
         style={{ height: '100dvh', overflow: 'hidden' }}
       >
-        {/* Carte */}
+        {/* Carte — bottom ajusté pour bottom nav + bottom sheet ── */}
         <div
           className="absolute left-0 right-0"
           style={{
             top: `${NAVBAR_HEIGHT}px`,
-            bottom: sheetState === 'quarter' ? '25vh' : sheetState === 'half' ? '52vh' : '88vh',
+            bottom: mapBottoms[sheetState],
             zIndex: 1,
             transition: 'bottom 0.35s cubic-bezier(0.32, 0.72, 0, 1)',
           }}
@@ -374,12 +388,12 @@ export default function ResellersPage() {
           </div>
         </div>
 
-        {/* Bottom Sheet */}
+        {/* Bottom Sheet — bottom offset pour la bottom nav ── */}
         <div
           className="absolute left-0 right-0 bg-white dark:bg-dark-surface rounded-t-3xl shadow-2xl flex flex-col"
           style={{
-            bottom: 0,
-            height: sheetState === 'quarter' ? '25vh' : sheetState === 'half' ? '52vh' : '88vh',
+            bottom: `${BOTTOM_NAV_HEIGHT}px`,
+            height: sheetHeights[sheetState],
             transition: 'height 0.35s cubic-bezier(0.32, 0.72, 0, 1)',
             zIndex: 1000,
           }}
@@ -411,21 +425,22 @@ export default function ResellersPage() {
                   <span className="text-xs text-emerald-600 dark:text-emerald-400">• triés par distance</span>
                 )}
               </div>
+              {/* Chevrons — w-11 h-11 = 44px minimum ✅ */}
               <div className="flex items-center gap-1">
                 {(sheetState === 'half' || sheetState === 'full') && (
                   <button
                     onClick={() => setSheetState(sheetState === 'full' ? 'half' : 'quarter')}
-                    className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center active:scale-90 transition-transform"
+                    className="w-11 h-11 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center active:scale-90 transition-transform"
                   >
-                    <ChevronUp className="w-4 h-4 text-neutral-500 rotate-180" strokeWidth={2} />
+                    <ChevronUp className="w-5 h-5 text-neutral-500 rotate-180" strokeWidth={2} />
                   </button>
                 )}
                 {(sheetState === 'quarter' || sheetState === 'half') && (
                   <button
                     onClick={() => setSheetState(sheetState === 'quarter' ? 'half' : 'full')}
-                    className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center active:scale-90 transition-transform"
+                    className="w-11 h-11 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center active:scale-90 transition-transform"
                   >
-                    <ChevronUp className="w-4 h-4 text-neutral-500" strokeWidth={2} />
+                    <ChevronUp className="w-5 h-5 text-neutral-500" strokeWidth={2} />
                   </button>
                 )}
               </div>
@@ -500,9 +515,10 @@ export default function ResellersPage() {
               style={{ paddingTop: `${NAVBAR_HEIGHT + 12}px`, paddingBottom: '16px' }}
             >
               <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">Filtres</h2>
+              {/* Bouton fermer — w-11 h-11 = 44px minimum ✅ */}
               <button
                 onClick={() => setShowMobileFilters(false)}
-                className="w-9 h-9 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center"
+                className="w-11 h-11 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center active:scale-90 transition-transform"
               >
                 <X className="w-5 h-5 text-neutral-600 dark:text-neutral-400" strokeWidth={1.5} />
               </button>
@@ -512,7 +528,7 @@ export default function ResellersPage() {
             </div>
             <div
               className="p-4 border-t border-neutral-200 dark:border-neutral-800"
-              style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}
+              style={{ paddingBottom: `calc(${BOTTOM_NAV_HEIGHT}px + env(safe-area-inset-bottom) + 16px)` }}
             >
               <button
                 onClick={() => setShowMobileFilters(false)}

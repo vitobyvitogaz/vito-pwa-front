@@ -18,9 +18,7 @@ export const PromotionsList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [showFilters, setShowFilters] = useState(false)
 
-  useEffect(() => {
-    fetchPromotions()
-  }, [])
+  useEffect(() => { fetchPromotions() }, [])
 
   const fetchPromotions = async () => {
     try {
@@ -71,9 +69,7 @@ export const PromotionsList: React.FC = () => {
 
   const handleZoneToggle = (zoneId: string) => {
     setSelectedZones(prev =>
-      prev.includes(zoneId)
-        ? prev.filter(z => z !== zoneId)
-        : [...prev, zoneId]
+      prev.includes(zoneId) ? prev.filter(z => z !== zoneId) : [...prev, zoneId]
     )
     setCurrentPage(1)
   }
@@ -120,12 +116,10 @@ export const PromotionsList: React.FC = () => {
         </div>
 
         <div className="flex gap-3">
-          {/* 1. Bouton Filtres — rounded-full, icône même couleur que texte */}
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="flex items-center gap-2 px-4 py-3 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:border-primary transition-colors duration-200 font-sans"
           >
-            {/* 3. Icône entonnoir même couleur que le texte */}
             <Filter className="w-4 h-4 text-neutral-700 dark:text-neutral-200" strokeWidth={1.5} />
             <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Filtres</span>
             {selectedZones.length > 0 && (
@@ -135,7 +129,6 @@ export const PromotionsList: React.FC = () => {
             )}
           </button>
 
-          {/* 1. Select tri — rounded-full */}
           <select
             value={sortBy}
             onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1) }}
@@ -153,7 +146,6 @@ export const PromotionsList: React.FC = () => {
         <div className="bg-white dark:bg-dark-surface rounded-2xl p-6 shadow-lg border border-neutral-200 dark:border-neutral-800 animate-fade-in">
           <h3 className="font-semibold text-neutral-800 dark:text-white mb-4 font-sans">Filtrer par zone</h3>
           <div className="flex flex-wrap gap-2">
-            {/* 2. Zones — rounded-full */}
             {zones.map(zone => (
               <button
                 key={zone.id}
@@ -179,7 +171,7 @@ export const PromotionsList: React.FC = () => {
         </div>
       )}
 
-      {/* Quick filters — style souligné, sans icônes */}
+      {/* Quick filters — style souligné */}
       <div className="flex gap-2 mb-6 pb-2 justify-center flex-wrap">
         {filters.map((filter) => (
           <button
@@ -196,29 +188,38 @@ export const PromotionsList: React.FC = () => {
               }
             `}
           >
-            {/* 4. Icônes supprimées — texte seul */}
             {filter.label}
           </button>
         ))}
       </div>
 
-      {/* Active filters indicators */}
+      {/* Active filters indicators — boutons X agrandis à 44px ✅ */}
       {(selectedZones.length > 0 || sortBy !== 'discount_desc') && (
         <div className="flex flex-wrap gap-2 mb-4">
           {selectedZones.length > 0 && (
-            <div className="px-3 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm flex items-center gap-2 border border-blue-200 dark:border-blue-800">
+            <div className="flex items-center gap-1 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm border border-blue-200 dark:border-blue-800">
               <MapPin className="w-4 h-4" strokeWidth={1.5} />
               <span>Zones: {selectedZones.length}</span>
-              <button onClick={() => setSelectedZones([])} className="text-blue-500 hover:text-blue-700">
-                <X className="w-3 h-3" strokeWidth={2} />
+              {/* Bouton X — w-11 h-11 = 44px ✅ */}
+              <button
+                onClick={() => setSelectedZones([])}
+                className="w-11 h-11 flex items-center justify-center text-blue-500 hover:text-blue-700 active:scale-90 transition-all"
+                aria-label="Effacer le filtre zones"
+              >
+                <X className="w-4 h-4" strokeWidth={2} />
               </button>
             </div>
           )}
           {sortBy !== 'discount_desc' && (
-            <div className="px-3 py-2 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm flex items-center gap-2 border border-purple-200 dark:border-purple-800">
+            <div className="flex items-center gap-1 px-3 py-2 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm border border-purple-200 dark:border-purple-800">
               <span>Tri: {sortOptions.find(s => s.id === sortBy)?.label}</span>
-              <button onClick={() => setSortBy('discount_desc')} className="text-purple-500 hover:text-purple-700">
-                <X className="w-3 h-3" strokeWidth={2} />
+              {/* Bouton X — w-11 h-11 = 44px ✅ */}
+              <button
+                onClick={() => setSortBy('discount_desc')}
+                className="w-11 h-11 flex items-center justify-center text-purple-500 hover:text-purple-700 active:scale-90 transition-all"
+                aria-label="Effacer le tri"
+              >
+                <X className="w-4 h-4" strokeWidth={2} />
               </button>
             </div>
           )}
@@ -239,10 +240,11 @@ export const PromotionsList: React.FC = () => {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-4">
+          {/* Boutons pagination — w-11 h-11 = 44px ✅ */}
           <button
             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             disabled={currentPage === 1}
-            className="p-3 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            className="w-11 h-11 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 flex items-center justify-center hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
           </button>
@@ -252,7 +254,7 @@ export const PromotionsList: React.FC = () => {
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`w-10 h-10 rounded-full font-semibold transition-all duration-200 font-sans ${
+                className={`w-11 h-11 rounded-full font-semibold transition-all duration-200 font-sans ${
                   currentPage === page
                     ? 'bg-primary text-white'
                     : 'bg-white dark:bg-dark-surface text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-800 hover:border-primary hover:text-primary'
@@ -266,7 +268,7 @@ export const PromotionsList: React.FC = () => {
           <button
             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
             disabled={currentPage === totalPages}
-            className="p-3 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            className="w-11 h-11 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 flex items-center justify-center hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             <ChevronRight className="w-5 h-5" strokeWidth={1.5} />
           </button>

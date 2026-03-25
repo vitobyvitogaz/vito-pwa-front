@@ -147,7 +147,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
 
         <div className="bg-white dark:bg-dark-surface rounded-3xl shadow-2xl overflow-hidden">
 
-          {/* ── IMAGE avec badges flottants — cohérent avec PromotionCard ── */}
+          {/* ── IMAGE avec badges flottants ── */}
           <div className="relative w-full aspect-[4/5] overflow-hidden">
             {promotion.image_url ? (
               <img
@@ -164,13 +164,13 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
             {/* Gradient bas */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
 
-            {/* Bouton fermer — cohérent avec homepage */}
+            {/* Bouton fermer — w-11 h-11 = 44px minimum ✅ */}
             <button
               onClick={handleClose}
-              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 hover:bg-white/35 backdrop-blur-sm border border-white/30 flex items-center justify-center transition-all duration-200 hover:rotate-90"
+              className="absolute top-3 right-3 w-11 h-11 rounded-full bg-white/20 hover:bg-white/35 backdrop-blur-sm border border-white/30 flex items-center justify-center transition-all duration-200 hover:rotate-90 active:scale-90"
               aria-label="Fermer"
             >
-              <X className="w-4 h-4 text-white" strokeWidth={2} />
+              <X className="w-5 h-5 text-white" strokeWidth={2} />
             </button>
 
             {/* Badge remise */}
@@ -190,7 +190,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
             )}
 
             {/* Badge En cours */}
-            <div className="absolute top-3 right-12">
+            <div className="absolute top-3 right-16">
               <div className="flex items-center gap-1.5 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full border border-white/20">
                 <span className="pulse-dot w-1.5 h-1.5 bg-emerald-400 rounded-full" />
                 <span className="text-xs font-semibold text-white">En cours</span>
@@ -220,7 +220,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
           {/* ── CORPS ── */}
           <div className="px-5 py-4 space-y-3">
 
-            {/* Countdown — cohérent avec PromotionCard */}
+            {/* Countdown */}
             {!isExpired ? (
               <div className={`rounded-xl p-3 border ${urgency.bg} border-transparent`}>
                 <div className="flex items-center justify-between">
@@ -259,7 +259,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
               </div>
             )}
 
-            {/* Code promo — cohérent avec PromotionCard */}
+            {/* Code promo */}
             {promotion.promo_code && promotion.is_active && !isExpired && (
               <div className="rounded-xl border border-primary/20 bg-primary/5 dark:bg-primary/10 overflow-hidden">
                 <div className="flex items-center justify-between px-4 py-2 border-b border-primary/10">
@@ -293,7 +293,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
               </div>
             )}
 
-            {/* CTA — rounded-full cohérent avec ResellerCard */}
+            {/* CTA */}
             {!isExpired && (
               <button
                 onClick={handleCTA}

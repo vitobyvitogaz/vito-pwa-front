@@ -16,7 +16,6 @@ const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
     const address = data.address
 
     // Priorité : city > town > village > suburb > city_district > county
-    // On veut une ville principale qui correspond aux zones de la base
     const locality =
       address.city ||
       address.town ||
@@ -51,7 +50,6 @@ export const NotificationToggle: React.FC = () => {
     const savedLocation = localStorage.getItem('user-location')
     const savedTimestamp = localStorage.getItem('user-location-timestamp')
 
-    // Vérifier si le cache est encore valide (< 24h)
     const isExpired =
       !savedTimestamp ||
       Date.now() - parseInt(savedTimestamp) > LOCATION_TTL_MS
@@ -60,7 +58,6 @@ export const NotificationToggle: React.FC = () => {
       setLocation(savedLocation)
       setIsLoading(false)
     } else {
-      // Cache absent ou expiré — re-détecter
       detectLocation()
     }
 
@@ -82,7 +79,6 @@ export const NotificationToggle: React.FC = () => {
         const { latitude, longitude } = position.coords
         const label = await reverseGeocode(latitude, longitude)
         setLocation(label)
-        // Sauvegarder avec timestamp pour TTL
         localStorage.setItem('user-location', label)
         localStorage.setItem('user-location-timestamp', String(Date.now()))
         localStorage.setItem('user-coords', JSON.stringify({ lat: latitude, lng: longitude }))
@@ -121,12 +117,20 @@ export const NotificationToggle: React.FC = () => {
     }))
   }
 
+  const handleRelancer = () => {
+    hapticFeedback('light')
+    localStorage.removeItem('user-location')
+    localStorage.removeItem('user-location-timestamp')
+    localStorage.removeItem('user-coords')
+    detectLocation()
+  }
+
   return (
     <div className="bg-white dark:bg-dark-surface rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
       <div className="flex items-start justify-between gap-6">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-4 mb-4">
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
               isEnabled
                 ? 'bg-emerald-100 dark:bg-emerald-900/30'
                 : 'bg-neutral-100 dark:bg-neutral-800'
@@ -147,19 +151,14 @@ export const NotificationToggle: React.FC = () => {
                 <span className="text-sm text-neutral-600 dark:text-neutral-400 font-sans truncate">
                   {isLocating ? 'Détection en cours...' : location ?? 'Localisation inconnue'}
                 </span>
-                {/* Bouton relancer la détection — efface le cache et re-détecte */}
+                {/* Bouton relancer — w-11 h-11 = 44px minimum ✅ */}
                 {!isLocating && (
                   <button
-                    onClick={() => {
-                      localStorage.removeItem('user-location')
-                      localStorage.removeItem('user-location-timestamp')
-                      localStorage.removeItem('user-coords')
-                      detectLocation()
-                    }}
-                    className="flex-shrink-0 p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                    onClick={handleRelancer}
+                    className="flex-shrink-0 w-11 h-11 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700 flex items-center justify-center transition-colors active:scale-90"
                     title="Relancer la détection"
                   >
-                    <LocateFixed className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
+                    <LocateFixed className="w-4 h-4 text-primary" strokeWidth={1.5} />
                   </button>
                 )}
               </div>
