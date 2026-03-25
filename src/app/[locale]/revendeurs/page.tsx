@@ -96,17 +96,12 @@ export default function ResellersPage() {
 
   const shouldShowPrompt = showGeolocationPrompt && !userLocation && !hasSkippedGeolocation
 
-  // ── Hauteurs du bottom sheet — sans BOTTOM_NAV_HEIGHT
-  // Le bottom sheet part de bottom:0, la bottom nav (z-[1002]) le couvre
-  // Le contenu a un paddingBottom pour compenser
   const sheetHeights = {
     quarter: '25vh',
     half:    '52vh',
     full:    '88vh',
   }
 
-  // ── La carte s'arrête là où commence le bottom sheet visible
-  // On ajoute BOTTOM_NAV_HEIGHT car la bottom nav couvre le bas du bottom sheet
   const mapBottoms = {
     quarter: `calc(25vh + ${BOTTOM_NAV_HEIGHT}px)`,
     half:    `calc(52vh + ${BOTTOM_NAV_HEIGHT}px)`,
@@ -136,7 +131,7 @@ export default function ResellersPage() {
       )}
 
       {/* ═══════════════════════════════════════════════════════════
-          DESKTOP — inchangé
+          DESKTOP
       ═══════════════════════════════════════════════════════════ */}
       <div className="hidden lg:block pt-14 sm:pt-16">
         {userLocation && (
@@ -242,7 +237,7 @@ export default function ResellersPage() {
                         </div>
                         <div className="flex-1">
                           <p className="text-sm font-medium text-amber-800 dark:text-amber-300">Géolocalisation désactivée</p>
-                          <p className="text-sm text-amber-700/80 dark:text-amber-400/80 mb-2">Les distances ne seront pas calculées</p>
+                          <p className="text-sm text-amber-700/80 dark:text-amber-400/80 mb-2">Utilisez le filtre par zone pour trouver les revendeurs de votre ville</p>
                           <button onClick={handleEnableGeolocation} className="text-xs bg-amber-600 text-white px-3 py-1.5 rounded-xl hover:bg-amber-700 transition-all duration-300">
                             Activer maintenant
                           </button>
@@ -273,7 +268,14 @@ export default function ResellersPage() {
           {view === 'split' && (
             <div className="flex h-full">
               <div className="w-2/5 overflow-y-auto">
-                <ResellersList resellers={sortedResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} distances={distances} />
+                <ResellersList
+                  resellers={sortedResellers}
+                  selectedReseller={selectedReseller}
+                  onSelectReseller={setSelectedReseller}
+                  distances={distances}
+                  hasGps={!!userLocation}
+                  isLoading={isLoadingResellers}
+                />
               </div>
               <div className="w-3/5 relative">
                 <ResellerMap resellers={filteredResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} userLocation={userLocation} />
@@ -290,7 +292,14 @@ export default function ResellersPage() {
                 </div>
               </div>
               <div className="flex-1 overflow-y-auto">
-                <ResellersList resellers={paginatedResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} distances={distances} />
+                <ResellersList
+                  resellers={paginatedResellers}
+                  selectedReseller={selectedReseller}
+                  onSelectReseller={setSelectedReseller}
+                  distances={distances}
+                  hasGps={!!userLocation}
+                  isLoading={isLoadingResellers}
+                />
               </div>
               {sortedResellers.length > PAGE_SIZE && (
                 <div className="flex justify-center gap-2 p-4 bg-white dark:bg-dark-surface border-t border-neutral-200 dark:border-neutral-800">
@@ -314,14 +323,10 @@ export default function ResellersPage() {
       ═══════════════════════════════════════════════════════════ */}
       <div className="lg:hidden relative" style={{ height: '100dvh', overflow: 'hidden' }}>
 
-        {/* Carte — occupe tout l'espace au-dessus du bottom sheet visible */}
         <div
           className="absolute left-0 right-0"
           style={{
             top: `${NAVBAR_HEIGHT}px`,
-            // ── La carte s'arrête au haut du bottom sheet visible
-            // bottom sheet commence à 0 mais la bottom nav (64px) le couvre en bas
-            // donc le haut visible du bottom sheet est à sheetHeight du bas de l'écran
             bottom: mapBottoms[sheetState],
             zIndex: 1,
             transition: 'bottom 0.35s cubic-bezier(0.32, 0.72, 0, 1)',
@@ -339,7 +344,7 @@ export default function ResellersPage() {
           <GeolocationButton onLocationFound={handleLocationFound} />
         </div>
 
-        {/* Barre flottante haut droite — Filtres + statut GPS */}
+        {/* Barre flottante haut droite */}
         <div
           className="absolute right-0 px-4 pointer-events-none"
           style={{ top: `${NAVBAR_HEIGHT + 12}px`, zIndex: 1000 }}
@@ -369,8 +374,7 @@ export default function ResellersPage() {
           </div>
         </div>
 
-        {/* Bottom Sheet — bottom:0, la bottom nav le couvre en bas
-            Le contenu a un paddingBottom pour compenser */}
+        {/* Bottom Sheet */}
         <div
           className="absolute left-0 right-0 bg-white dark:bg-dark-surface rounded-t-3xl shadow-2xl flex flex-col"
           style={{
@@ -445,11 +449,9 @@ export default function ResellersPage() {
             </div>
           </div>
 
-          {/* Contenu scrollable — paddingBottom pour compenser la bottom nav */}
+          {/* Contenu scrollable */}
           <div className="flex-1 overflow-y-auto overscroll-contain">
             <div className="px-4" style={{ paddingBottom: `calc(${BOTTOM_NAV_HEIGHT}px + 16px)` }}>
-
-              {/* TravelModeSelector compact */}
               <div className="py-3 border-b border-neutral-100 dark:border-neutral-800 mb-3">
                 <TravelModeSelector mode={travelMode} onChange={handleTravelModeChange} />
               </div>
@@ -465,8 +467,8 @@ export default function ResellersPage() {
 
               {!userLocation && hasSkippedGeolocation && (
                 <div className="flex items-center justify-between px-3 py-2.5 mb-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800">
-                  <span className="text-xs text-amber-700 dark:text-amber-300">GPS désactivé — distances non disponibles</span>
-                  <button onClick={handleEnableGeolocation} className="text-xs bg-amber-600 text-white px-2.5 py-1 rounded-lg">
+                  <span className="text-xs text-amber-700 dark:text-amber-300">GPS désactivé — filtrez par zone ci-dessus</span>
+                  <button onClick={handleEnableGeolocation} className="text-xs bg-amber-600 text-white px-2.5 py-1 rounded-lg flex-shrink-0 ml-2">
                     Activer
                   </button>
                 </div>
@@ -480,6 +482,8 @@ export default function ResellersPage() {
                   setSheetState('quarter')
                 }}
                 distances={distances}
+                hasGps={!!userLocation}
+                isLoading={isLoadingResellers}
               />
 
               {sortedResellers.length > PAGE_SIZE && (
@@ -504,7 +508,7 @@ export default function ResellersPage() {
           </div>
         </div>
 
-        {/* Drawer Filtres */}
+        {/* Drawer Filtres mobile */}
         {showMobileFilters && (
           <div
             className="absolute inset-0 bg-white dark:bg-dark-surface flex flex-col"
