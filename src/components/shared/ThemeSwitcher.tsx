@@ -4,26 +4,34 @@ import { useState, useEffect } from 'react'
 import { Moon, Sun } from 'lucide-react'
 
 export const ThemeSwitcher: React.FC = () => {
-  const [isDark, setIsDark] = useState(false)
+  const [isDark, setIsDark] = useState(true) // ── dark par défaut côté rendu
 
   useEffect(() => {
     const theme = localStorage.getItem('theme')
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    
-    if (theme === 'dark' || (!theme && prefersDark)) {
+
+    if (theme === 'light') {
+      // ── L'utilisateur a explicitement choisi le mode clair ──
+      setIsDark(false)
+      document.documentElement.classList.remove('dark')
+    } else {
+      // ── Pas de préférence sauvegardée OU préférence dark → dark par défaut ──
       setIsDark(true)
       document.documentElement.classList.add('dark')
+      if (!theme) {
+        localStorage.setItem('theme', 'dark')
+      }
     }
   }, [])
 
   const toggleTheme = () => {
-    setIsDark(!isDark)
-    if (isDark) {
-      document.documentElement.classList.remove('dark')
-      localStorage.setItem('theme', 'light')
-    } else {
+    const newIsDark = !isDark
+    setIsDark(newIsDark)
+    if (newIsDark) {
       document.documentElement.classList.add('dark')
       localStorage.setItem('theme', 'dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+      localStorage.setItem('theme', 'light')
     }
   }
 
