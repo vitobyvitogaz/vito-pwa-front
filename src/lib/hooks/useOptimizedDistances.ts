@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import type { Reseller } from '@/types/reseller'
 
 export type TravelMode = 'DRIVING' | 'WALKING'
@@ -15,11 +15,8 @@ export interface DistanceResult {
 
 const CACHE_DURATION = 24 * 60 * 60 * 1000
 const PRECISE_LIMIT = 15
-const PARALLEL_REQUESTS = 5
-
-// ============================================
-// HAVERSINE
-// ============================================
+// Augmente de 5 a 8 : 15 revendeurs en 2 lots au lieu de 3
+const PARALLEL_REQUESTS = 8
 
 function calculateHaversine(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371
@@ -42,10 +39,6 @@ function estimateDuration(km: number, mode: TravelMode): number {
   return (km / avgSpeed) * 3600
 }
 
-// ============================================
-// FORMATAGE
-// ============================================
-
 function formatDistance(meters: number): string {
   if (meters < 1000) return `${Math.round(meters)} m`
   return `${(meters / 1000).toFixed(1)} km`
@@ -57,10 +50,6 @@ function formatDuration(seconds: number): string {
   if (hours > 0) return `${hours}h ${minutes}min`
   return `${minutes} min`
 }
-
-// ============================================
-// CACHE
-// ============================================
 
 function getCacheKey(userLat: number, userLng: number, resellerId: string, travelMode: TravelMode): string {
   return `dist_${userLat.toFixed(3)}_${userLng.toFixed(3)}_${resellerId}_${travelMode}`
@@ -87,10 +76,6 @@ function saveToCache(cacheKey: string, data: DistanceResult) {
   }
 }
 
-// ============================================
-// OSRM
-// ============================================
-
 async function calculateWithOSRM(
   origin: { lat: number; lng: number },
   destination: { lat: number; lng: number },
@@ -115,10 +100,6 @@ async function calculateWithOSRM(
   }
 }
 
-// ============================================
-// HOOK
-// ============================================
-
 export function useOptimizedDistances(
   userLocation: { lat: number; lng: number } | null,
   resellers: Reseller[],
@@ -129,15 +110,28 @@ export function useOptimizedDistances(
   const [isLoading, setIsLoading] = useState(false)
   const isCalculatingRef = useRef(false)
 
-  // ── Réinitialiser le verrou quand position ou mode change ──
+  // Cle stable basee sur les IDs — evite les recalculs sur reference instable
+  // 620 revendeurs avec memes IDs = meme cle = pas de recalcul parasite
+  const resellersKey = useMemo(
+    () => resellers.map(r => r.id).join(','),
+    [resellers]
+  )
+
+  // Reference stable vers le tableau courant sans le mettre en dependance
+  const resellersRef = useRef(resellers)
+  useEffect(() => { resellersRef.current = resellers }, [resellers])
+
+  // Reinitialiser le verrou quand position ou mode change
   useEffect(() => {
     isCalculatingRef.current = false
   }, [userLocation, travelMode])
 
   const calculateDistances = useCallback(async () => {
-    if (!userLocation || resellers.length === 0) {
+    const currentResellers = resellersRef.current
+
+    if (!userLocation || currentResellers.length === 0) {
       setDistances({})
-      setSortedResellers(resellers)
+      setSortedResellers(currentResellers)
       return
     }
 
@@ -145,13 +139,13 @@ export function useOptimizedDistances(
     isCalculatingRef.current = true
     setIsLoading(true)
 
-    console.log(`🚀 Calcul optimisé pour ${resellers.length} revendeurs`)
+    console.log(`Calcul optimise pour ${currentResellers.length} revendeurs`)
 
     try {
       const result: Record<string, DistanceResult> = {}
 
-      // ÉTAPE 1 : Haversine pour TOUS (instantané)
-      const withHaversine = resellers.map(reseller => {
+      // ETAPE 1 : Haversine pour TOUS (instantane)
+      const withHaversine = currentResellers.map(reseller => {
         const haversineKm = calculateHaversine(
           userLocation.lat,
           userLocation.lng,
@@ -161,14 +155,14 @@ export function useOptimizedDistances(
         return { reseller, haversineKm, haversineMeters: haversineKm * 1000 }
       })
 
-      // ÉTAPE 2 : Trier par Haversine
+      // ETAPE 2 : Trier par Haversine
       withHaversine.sort((a, b) => a.haversineKm - b.haversineKm)
 
-      // ÉTAPE 3 : Revendeurs triés
+      // ETAPE 3 : Revendeurs tries
       const sorted = withHaversine.map(item => item.reseller)
       setSortedResellers(sorted)
 
-      // ÉTAPE 4 : Estimations pour TOUS
+      // ETAPE 4 : Estimations pour TOUS
       withHaversine.forEach(({ reseller, haversineMeters }) => {
         const estimatedDurationSec = estimateDuration(haversineMeters / 1000, travelMode)
         result[reseller.id] = {
@@ -181,11 +175,9 @@ export function useOptimizedDistances(
       })
 
       setDistances({ ...result })
-      console.log(`⚡ ${resellers.length} estimations Haversine affichées`)
 
-      // ÉTAPE 5 : OSRM précis pour les N plus proches
+      // ETAPE 5 : OSRM precis pour les N plus proches (2 lots de 8 au lieu de 3 lots de 5)
       const closestResellers = withHaversine.slice(0, PRECISE_LIMIT)
-      console.log(`🎯 Calcul OSRM précis pour ${closestResellers.length} revendeurs proches`)
 
       for (let i = 0; i < closestResellers.length; i += PARALLEL_REQUESTS) {
         const batch = closestResellers.slice(i, i + PARALLEL_REQUESTS)
@@ -213,10 +205,9 @@ export function useOptimizedDistances(
         const batchResults = await Promise.all(promises)
         batchResults.forEach(r => { if (r) result[r.resellerId] = r.distance })
         setDistances({ ...result })
-        console.log(`✅ Lot ${Math.floor(i / PARALLEL_REQUESTS) + 1} terminé`)
       }
 
-      // Re-trier avec distances OSRM précises
+      // Re-trier avec distances OSRM precises
       const resellersWithFinalDistances = sorted.map(reseller => ({
         reseller,
         distanceValue: result[reseller.id]?.distanceValue ?? Infinity
@@ -224,16 +215,15 @@ export function useOptimizedDistances(
       resellersWithFinalDistances.sort((a, b) => a.distanceValue - b.distanceValue)
       setSortedResellers(resellersWithFinalDistances.map(r => r.reseller))
 
-      console.log(`🎉 Calcul terminé : ${closestResellers.length} distances OSRM précises`)
-
     } catch (err) {
-      console.error('❌ Erreur calcul distances:', err)
-      setSortedResellers(resellers)
+      console.error('Erreur calcul distances:', err)
+      setSortedResellers(resellersRef.current)
     } finally {
       setIsLoading(false)
       isCalculatingRef.current = false
     }
-  }, [userLocation, resellers, travelMode])
+  // resellersKey au lieu de resellers : stable si memes IDs, pas de recalcul parasite
+  }, [userLocation, resellersKey, travelMode])
 
   useEffect(() => {
     const timer = setTimeout(calculateDistances, 300)
