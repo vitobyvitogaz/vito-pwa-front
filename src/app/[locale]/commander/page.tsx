@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Truck, Loader2, WifiOff } from 'lucide-react'
+import { Truck, Loader2, WifiOff, Phone, MessageCircle } from 'lucide-react'
 import { DeliveryCompanyCard } from '@/components/order/DeliveryCompanyCard'
 import { type DeliveryCompany, sortCompanies } from '@/data/deliveryCompanies'
 
@@ -76,7 +76,6 @@ export default function DeliveryPage() {
       const activeCompanies = data.filter((company: DeliveryCompany) => company.is_active)
       setDeliveryCompanies(activeCompanies)
     } catch (err: any) {
-      // ── Message simple selon le contexte réseau ──
       if (!navigator.onLine) {
         setError('Pas de connexion internet. Vérifiez votre réseau et réessayez.')
       } else {
@@ -94,6 +93,10 @@ export default function DeliveryPage() {
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-12 h-12 text-primary animate-spin" />
           <p className="text-neutral-600 dark:text-neutral-400">Chargement des sociétés de livraison...</p>
+          {/* ── Message cold start : affiché après 2s ── */}
+          <p className="text-sm text-neutral-400 dark:text-neutral-500 animate-fade-in font-sans text-center max-w-xs" style={{ animationDelay: '2s', opacity: 0, animationFillMode: 'forwards' }}>
+            Démarrage du serveur en cours… Merci de patienter quelques secondes.
+          </p>
         </div>
       </div>
     )
@@ -127,17 +130,19 @@ export default function DeliveryPage() {
     <div className="min-h-screen bg-gradient-to-b from-neutral-25 via-white to-neutral-25 dark:from-dark-bg dark:via-dark-surface/95 dark:to-dark-bg pt-16 pb-20">
       <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
 
-        {/* Header */}
+        {/* Header — wording corrigé */}
         <div className="text-center mb-12 sm:mb-16 animate-fade-in">
           <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-xl bg-gradient-to-br from-primary to-primary-600 shadow-lg">
             <Truck className="w-10 h-10 text-white" strokeWidth={1.5} />
           </div>
+          {/* ── Titre corrigé ── */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-neutral-900 dark:text-white mb-4 tracking-tight font-sans">
-            Se faire livrer du gaz
+            Livraison à domicile
           </h1>
           <div className="max-w-2xl mx-auto">
+            {/* ── Sous-titre corrigé : explique clairement le mécanisme ── */}
             <p className="text-lg sm:text-xl text-neutral-600 dark:text-neutral-400 leading-relaxed tracking-wide font-sans">
-              Comparez et contactez directement les meilleures sociétés de livraison de gaz près de chez vous
+              Choisissez une société de livraison et contactez-la directement pour recevoir votre gaz à domicile
             </p>
             <div className="h-px w-24 mx-auto mt-6 bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent"></div>
           </div>
@@ -207,10 +212,9 @@ export default function DeliveryPage() {
                   after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2
                   after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300
                   hover:after:w-full font-sans
-                  ${
-                    selectedFilter === filter.id
-                      ? 'text-primary after:w-full'
-                      : 'text-neutral-600 dark:text-neutral-400 hover:text-primary hover:bg-neutral-50 dark:hover:bg-neutral-900'
+                  ${selectedFilter === filter.id
+                    ? 'text-primary after:w-full'
+                    : 'text-neutral-600 dark:text-neutral-400 hover:text-primary hover:bg-neutral-50 dark:hover:bg-neutral-900'
                   }
                 `}
               >
@@ -268,35 +272,42 @@ export default function DeliveryPage() {
           )}
         </div>
 
-        {/* How it works */}
+        {/* Comment ça marche — wording corrigé */}
         <div className="mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-white mb-6 text-center font-sans">
-            Comment se faire livrer ?
+            Comment ça marche ?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white dark:bg-dark-surface rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4">
                 <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">1</span>
               </div>
-              <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">Choisissez une société</h3>
+              <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">
+                Choisissez une société
+              </h3>
               <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed font-sans">
-                Comparez les services, délais et avis des différentes sociétés de livraison.
+                Comparez les notes, délais de livraison et zones de couverture des sociétés disponibles.
               </p>
             </div>
             <div className="bg-white dark:bg-dark-surface rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
               <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mb-4">
                 <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">2</span>
               </div>
-              <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">Contactez directement</h3>
+              <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">
+                {/* ── Étape 2 corrigée : plus concret pour le public malgache ── */}
+                Appelez ou écrivez sur WhatsApp
+              </h3>
               <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed font-sans">
-                Utilisez le moyen de contact de votre choix : téléphone, WhatsApp ou Messenger.
+                Contactez directement la société par téléphone ou WhatsApp pour passer votre commande.
               </p>
             </div>
             <div className="bg-white dark:bg-dark-surface rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
               <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mb-4">
                 <span className="text-2xl font-bold text-purple-600 dark:text-purple-400">3</span>
               </div>
-              <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">Recevez votre gaz</h3>
+              <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">
+                Recevez votre gaz
+              </h3>
               <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed font-sans">
                 La société vous livre à domicile et peut même installer l'équipement si besoin.
               </p>

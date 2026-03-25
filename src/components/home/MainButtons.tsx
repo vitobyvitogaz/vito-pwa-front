@@ -20,20 +20,20 @@ export const MainButtons: React.FC = () => {
       bg: 'bg-primary/10',
       border: 'border-primary/20',
       hover: 'hover:bg-primary/20 dark:hover:bg-primary/20',
-      // ── Étape 13 : pas d'animation sur Revendeurs ──
       pulse: false,
     },
     {
       id: 'order',
       title: 'Commander',
-      description: 'Livré chez vous',
+      // ── Corrigé : "Livré chez vous" → "Livraison à domicile" ──
+      // Plus précis sur ce que la page propose réellement
+      description: 'Livraison à domicile',
       icon: ShoppingCart,
       href: '/fr/commander',
       color: 'text-blue-600 dark:text-blue-400',
       bg: 'bg-blue-50 dark:bg-blue-900/20',
       border: 'border-blue-200 dark:border-blue-800',
       hover: 'hover:bg-blue-100 dark:hover:bg-blue-900/30',
-      // ── Étape 13 : Commander = action principale → micro-animation pulse ──
       pulse: true,
     },
     {
@@ -64,7 +64,6 @@ export const MainButtons: React.FC = () => {
 
   return (
     <>
-      {/* ── Animation pulse déclarée inline pour ne pas modifier globals.css ── */}
       <style>{`
         @keyframes vito-pulse-ring {
           0% { transform: scale(1); opacity: 0.6; }
@@ -95,10 +94,7 @@ export const MainButtons: React.FC = () => {
               className={`
                 group relative
                 bg-white dark:bg-dark-surface
-                rounded-xl
-                p-5
-                text-left
-                aspect-square
+                rounded-xl p-5 text-left aspect-square
                 transition-all duration-300
                 border border-neutral-200 dark:border-neutral-800
                 hover:border-primary/50
@@ -109,41 +105,27 @@ export const MainButtons: React.FC = () => {
               style={{ animationDelay: `${index * 0.05}s` }}
             >
               <div className="flex flex-col h-full justify-between">
-
-                {/* Icône avec anneau pulse conditionnel */}
                 <div className="relative w-14 h-14">
-                  {/* ── Anneau pulse — visible uniquement sur Commander au repos ── */}
                   {button.pulse && activeId !== button.id && (
-                    <div
-                      className={`vito-pulse-ring absolute inset-0 rounded-xl ${button.bg} border ${button.border}`}
-                    />
+                    <div className={`vito-pulse-ring absolute inset-0 rounded-xl ${button.bg} border ${button.border}`} />
                   )}
                   <div className={`
-                    w-14 h-14
-                    rounded-xl
-                    ${button.bg}
-                    ${button.border}
+                    w-14 h-14 rounded-xl ${button.bg} ${button.border}
                     flex items-center justify-center
                     transition-all duration-300 relative z-10
                     ${activeId === button.id ? 'scale-95' : ''}
                   `}>
-                    <Icon
-                      className={`w-7 h-7 ${button.color}`}
-                      strokeWidth={2}
-                    />
+                    <Icon className={`w-7 h-7 ${button.color}`} strokeWidth={2} />
                   </div>
                 </div>
 
-                {/* Texte */}
                 <div className="space-y-3 p-3 max-w-full overflow-hidden">
                   <h3 className="text-lg font-sans text-neutral-900 dark:text-white leading-snug tracking-tight truncate">
                     {button.title}
                   </h3>
-
                   <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-snug line-clamp-2">
                     {button.description}
                   </p>
-
                   <div className="flex items-center gap-2 pt-1">
                     <span className={`text-sm font-sans ${button.pulse ? 'text-blue-600 dark:text-blue-400 font-semibold' : 'text-primary'}`}>
                       Découvrir
@@ -154,7 +136,6 @@ export const MainButtons: React.FC = () => {
                     />
                   </div>
                 </div>
-
               </div>
             </button>
           )
