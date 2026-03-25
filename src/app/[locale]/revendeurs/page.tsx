@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic'
 
 const ResellerMap = dynamic(
   () => import('@/components/resellers/ResellerMap').then(mod => ({ default: mod.ResellerMap })),
-  { 
+  {
     ssr: false,
     loading: () => (
       <div className="h-full flex items-center justify-center bg-neutral-100 dark:bg-neutral-900">
@@ -23,7 +23,10 @@ import { MapFilters } from '@/components/resellers/MapFilters'
 import { GeolocationButton } from '@/components/resellers/GeolocationButton'
 import { TravelModeSelector } from '@/components/resellers/TravelModeSelector'
 import { GeolocationPrompt } from '@/components/resellers/GeolocationPrompt'
-import { MapPin, List, Grid3x3, AlertCircle, CheckCircle, Loader2, SlidersHorizontal, X, ChevronUp, Navigation } from 'lucide-react'
+import {
+  MapPin, List, Grid3x3, AlertCircle, CheckCircle, Loader2,
+  SlidersHorizontal, X, ChevronUp, Navigation, Search
+} from 'lucide-react'
 import type { Reseller } from '@/types/reseller'
 import { useResellerStore } from '@/store/useResellerStore'
 import { useOptimizedDistances, type TravelMode } from '@/lib/hooks/useOptimizedDistances'
@@ -33,6 +36,10 @@ type SheetState = 'quarter' | 'half' | 'full'
 
 const NAVBAR_HEIGHT = 56
 const BOTTOM_NAV_HEIGHT = 64
+
+// ── Normalisation pour recherche insensible aux accents ──────────────────────
+const normalize = (str: string) =>
+  str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 
 export default function ResellersPage() {
   const { resellers, loading: isLoadingResellers, fetchResellers } = useResellerStore()
@@ -48,6 +55,8 @@ export default function ResellersPage() {
   const [isGeolocationLoading, setIsGeolocationLoading] = useState(false)
   const [showGeolocationPrompt, setShowGeolocationPrompt] = useState(true)
   const [hasSkippedGeolocation, setHasSkippedGeolocation] = useState(false)
+  // ── État de recherche textuelle ──────────────────────────────────────────
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => { fetchResellers() }, [fetchResellers])
   useEffect(() => {
@@ -76,12 +85,29 @@ export default function ResellersPage() {
     setIsGeolocationLoading(false)
   }, [])
 
+  // ── Revendeurs filtrés par recherche textuelle ────────────────────────────
+  const searchFilteredResellers = useMemo(() => {
+    if (!searchQuery.trim()) return filteredResellers
+    const q = normalize(searchQuery.trim())
+    return filteredResellers.filter(r =>
+      normalize(r.name || '').includes(q) ||
+      normalize(r.address || '').includes(q) ||
+      normalize(r.type || '').includes(q)
+    )
+  }, [filteredResellers, searchQuery])
+
   const { distances, sortedResellers, isLoading: isLoadingDistances } = useOptimizedDistances(
-    userLocation, filteredResellers, travelMode
+    userLocation, searchFilteredResellers, travelMode
   )
 
   const handleFilterChange = useCallback((filtered: Reseller[]) => {
     setFilteredResellers(filtered)
+    setCurrentPage(1)
+  }, [])
+
+  // ── Réinitialiser la page quand la recherche change ───────────────────────
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchQuery(value)
     setCurrentPage(1)
   }, [])
 
@@ -98,14 +124,14 @@ export default function ResellersPage() {
 
   const sheetHeights = {
     quarter: '25vh',
-    half:    '52vh',
-    full:    '88vh',
+    half: '52vh',
+    full: '88vh',
   }
 
   const mapBottoms = {
     quarter: `calc(25vh + ${BOTTOM_NAV_HEIGHT}px)`,
-    half:    `calc(52vh + ${BOTTOM_NAV_HEIGHT}px)`,
-    full:    `calc(88vh + ${BOTTOM_NAV_HEIGHT}px)`,
+    half: `calc(52vh + ${BOTTOM_NAV_HEIGHT}px)`,
+    full: `calc(88vh + ${BOTTOM_NAV_HEIGHT}px)`,
   }
 
   if (isLoadingResellers) {
@@ -153,7 +179,8 @@ export default function ResellersPage() {
                   Trouver un revendeur
                 </h1>
                 <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                  {filteredResellers.length} point{filteredResellers.length > 1 ? 's' : ''} de vente à proximité
+                  {sortedResellers.length} point{sortedResellers.length > 1 ? 's' : ''} de vente
+                  {searchQuery && ` · "${searchQuery}"`}
                 </p>
               </div>
               <div className="flex gap-2">
@@ -168,9 +195,33 @@ export default function ResellersPage() {
                 </button>
               </div>
             </div>
+
+            {/* ── Champ de recherche desktop ── */}
+            <div className="relative mb-4">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2">
+                <Search className="w-4 h-4 text-neutral-400" strokeWidth={1.5} />
+              </div>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                placeholder="Rechercher un revendeur, une adresse, un quartier..."
+                className="w-full pl-11 pr-10 py-3 rounded-full border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-dark-surface text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all font-sans text-sm"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => handleSearchChange('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+                >
+                  <X className="w-3.5 h-3.5 text-neutral-500" strokeWidth={2} />
+                </button>
+              )}
+            </div>
+
             <div className="mb-4">
               <MapFilters resellers={resellers} onFilterChange={handleFilterChange} />
             </div>
+
             <div className="bg-white dark:bg-dark-surface rounded-xl p-4 border border-neutral-200 dark:border-neutral-800 shadow-sm">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -237,7 +288,7 @@ export default function ResellersPage() {
                         </div>
                         <div className="flex-1">
                           <p className="text-sm font-medium text-amber-800 dark:text-amber-300">Géolocalisation désactivée</p>
-                          <p className="text-sm text-amber-700/80 dark:text-amber-400/80 mb-2">Utilisez le filtre par zone pour trouver les revendeurs de votre ville</p>
+                          <p className="text-sm text-amber-700/80 dark:text-amber-400/80 mb-2">Utilisez la recherche ou le filtre par zone pour trouver les revendeurs de votre ville</p>
                           <button onClick={handleEnableGeolocation} className="text-xs bg-amber-600 text-white px-3 py-1.5 rounded-xl hover:bg-amber-700 transition-all duration-300">
                             Activer maintenant
                           </button>
@@ -278,7 +329,7 @@ export default function ResellersPage() {
                 />
               </div>
               <div className="w-3/5 relative">
-                <ResellerMap resellers={filteredResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} userLocation={userLocation} />
+                <ResellerMap resellers={searchFilteredResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} userLocation={userLocation} />
                 <GeolocationButton onLocationFound={handleLocationFound} />
               </div>
             </div>
@@ -311,7 +362,7 @@ export default function ResellersPage() {
           )}
           {view === 'map' && (
             <div className="relative h-full">
-              <ResellerMap resellers={filteredResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} userLocation={userLocation} />
+              <ResellerMap resellers={searchFilteredResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} userLocation={userLocation} />
               <GeolocationButton onLocationFound={handleLocationFound} />
             </div>
           )}
@@ -333,7 +384,7 @@ export default function ResellersPage() {
           }}
         >
           <ResellerMap
-            resellers={filteredResellers}
+            resellers={searchFilteredResellers}
             selectedReseller={selectedReseller}
             onSelectReseller={(reseller) => {
               setSelectedReseller(reseller)
@@ -410,6 +461,9 @@ export default function ResellersPage() {
                 {userLocation && distances && Object.keys(distances).length > 0 && (
                   <span className="text-xs text-emerald-600 dark:text-emerald-400">• triés par distance</span>
                 )}
+                {searchQuery && (
+                  <span className="text-xs text-primary font-medium">• "{searchQuery}"</span>
+                )}
               </div>
 
               <div className="flex items-center gap-1">
@@ -447,6 +501,30 @@ export default function ResellersPage() {
                 )}
               </div>
             </div>
+
+            {/* ── Champ de recherche mobile — visible en half/full uniquement ── */}
+            {(sheetState === 'half' || sheetState === 'full') && (
+              <div className="relative mt-3">
+                <div className="absolute left-3.5 top-1/2 -translate-y-1/2">
+                  <Search className="w-4 h-4 text-neutral-400" strokeWidth={1.5} />
+                </div>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  placeholder="Quartier, ville, nom du revendeur..."
+                  className="w-full pl-10 pr-9 py-2.5 rounded-full border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all font-sans text-sm"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => handleSearchChange('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center"
+                  >
+                    <X className="w-3 h-3 text-neutral-500" strokeWidth={2} />
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Contenu scrollable */}
@@ -467,7 +545,7 @@ export default function ResellersPage() {
 
               {!userLocation && hasSkippedGeolocation && (
                 <div className="flex items-center justify-between px-3 py-2.5 mb-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800">
-                  <span className="text-xs text-amber-700 dark:text-amber-300">GPS désactivé — filtrez par zone ci-dessus</span>
+                  <span className="text-xs text-amber-700 dark:text-amber-300">GPS désactivé — recherchez par ville ci-dessus</span>
                   <button onClick={handleEnableGeolocation} className="text-xs bg-amber-600 text-white px-2.5 py-1 rounded-lg flex-shrink-0 ml-2">
                     Activer
                   </button>
@@ -508,7 +586,7 @@ export default function ResellersPage() {
           </div>
         </div>
 
-        {/* Drawer Filtres mobile */}
+        {/* Drawer Filtres */}
         {showMobileFilters && (
           <div
             className="absolute inset-0 bg-white dark:bg-dark-surface flex flex-col"
@@ -537,7 +615,7 @@ export default function ResellersPage() {
                 onClick={() => setShowMobileFilters(false)}
                 className="w-full py-3.5 bg-primary text-white rounded-full font-semibold text-sm"
               >
-                Voir {filteredResellers.length} revendeur{filteredResellers.length > 1 ? 's' : ''}
+                Voir {sortedResellers.length} revendeur{sortedResellers.length > 1 ? 's' : ''}
               </button>
             </div>
           </div>
