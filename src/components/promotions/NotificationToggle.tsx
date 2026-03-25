@@ -1,8 +1,15 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Bell, BellOff, MapPin, ChevronRight, Zap, LocateFixed } from 'lucide-react'
+import { Bell, BellOff, MapPin, ChevronRight, Zap, LocateFixed, Loader2 } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
+import {
+  isPushSupported,
+  isPushSubscribed,
+  subscribeToPush,
+  unsubscribeFromPush,
+  updatePushZones,
+} from '@/lib/webpush'
 
 const LOCATION_TTL_MS = 24 * 60 * 60 * 1000 // 24h
 
@@ -15,7 +22,6 @@ const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
     const data = await response.json()
     const address = data.address
 
-    // Priorité : city > town > village > suburb > city_district > county
     const locality =
       address.city ||
       address.town ||
@@ -25,10 +31,7 @@ const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
       address.county ||
       null
 
-    const region =
-      address.state ||
-      address.region ||
-      null
+    const region = address.state || address.region || null
 
     if (locality && region) return `${locality}, ${region}`
     if (locality) return locality
@@ -39,40 +42,55 @@ const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
   }
 }
 
+// Extraire la ville depuis le label "Ville, Région"
+const extractCity = (label: string): string => label.split(',')[0].trim()
+
 export const NotificationToggle: React.FC = () => {
   const [isEnabled, setIsEnabled] = useState(false)
   const [location, setLocation] = useState<string | null>(null)
   const [isLocating, setIsLocating] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [isToggling, setIsToggling] = useState(false)
+  const [pushSupported, setPushSupported] = useState(true)
 
   useEffect(() => {
-    const savedPreference = localStorage.getItem('promo-notifications')
+    initializeState()
+  }, [])
+
+  const initializeState = async () => {
+    setIsLoading(true)
+
+    // Vérifier support push
+    const supported = isPushSupported()
+    setPushSupported(supported)
+
+    // Vérifier si déjà abonné
+    if (supported) {
+      const subscribed = await isPushSubscribed()
+      setIsEnabled(subscribed)
+    }
+
+    // Charger la localisation
     const savedLocation = localStorage.getItem('user-location')
     const savedTimestamp = localStorage.getItem('user-location-timestamp')
-
-    const isExpired =
-      !savedTimestamp ||
-      Date.now() - parseInt(savedTimestamp) > LOCATION_TTL_MS
+    const isExpired = !savedTimestamp || Date.now() - parseInt(savedTimestamp) > LOCATION_TTL_MS
 
     if (savedLocation && !isExpired) {
       setLocation(savedLocation)
-      setIsLoading(false)
     } else {
       detectLocation()
     }
 
-    checkNotificationPermission(savedPreference === 'true')
-  }, [])
+    setIsLoading(false)
+  }
 
   const detectLocation = async () => {
     if (!navigator.geolocation) {
       setLocation('Géolocalisation non supportée')
-      setIsLoading(false)
       return
     }
 
     setIsLocating(true)
-    setIsLoading(true)
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -83,38 +101,18 @@ export const NotificationToggle: React.FC = () => {
         localStorage.setItem('user-location-timestamp', String(Date.now()))
         localStorage.setItem('user-coords', JSON.stringify({ lat: latitude, lng: longitude }))
         setIsLocating(false)
-        setIsLoading(false)
+
+        // Si déjà abonné, mettre à jour les zones
+        if (isEnabled) {
+          await updatePushZones([extractCity(label)])
+        }
       },
       () => {
         setLocation('Localisation non disponible')
         setIsLocating(false)
-        setIsLoading(false)
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     )
-  }
-
-  const checkNotificationPermission = (savedState: boolean) => {
-    if (savedState && Notification.permission === 'granted') {
-      setIsEnabled(true)
-    } else if (Notification.permission === 'denied') {
-      setIsEnabled(false)
-      localStorage.setItem('promo-notifications', 'false')
-    }
-  }
-
-  const handleToggle = async () => {
-    hapticFeedback('medium')
-    if (!isEnabled) {
-      const permission = await Notification.requestPermission()
-      if (permission !== 'granted') return
-    }
-    const newState = !isEnabled
-    setIsEnabled(newState)
-    localStorage.setItem('promo-notifications', String(newState))
-    window.dispatchEvent(new CustomEvent('notification-preference-changed', {
-      detail: { enabled: newState }
-    }))
   }
 
   const handleRelancer = () => {
@@ -123,6 +121,37 @@ export const NotificationToggle: React.FC = () => {
     localStorage.removeItem('user-location-timestamp')
     localStorage.removeItem('user-coords')
     detectLocation()
+  }
+
+  const handleToggle = async () => {
+    if (!pushSupported) return
+    hapticFeedback('medium')
+    setIsToggling(true)
+
+    try {
+      if (isEnabled) {
+        // ── Désabonner ──
+        const success = await unsubscribeFromPush()
+        if (success) setIsEnabled(false)
+      } else {
+        // ── S'abonner avec les zones détectées ──
+        const zones = location && location !== 'Localisation non disponible'
+          ? [extractCity(location)]
+          : []
+
+        const success = await subscribeToPush(zones)
+        if (success) {
+          setIsEnabled(true)
+        } else {
+          // Permission refusée ou erreur
+          alert('Pour activer les alertes, autorisez les notifications dans les paramètres de votre navigateur.')
+        }
+      }
+    } catch (err) {
+      console.error('Erreur toggle notifications:', err)
+    } finally {
+      setIsToggling(false)
+    }
   }
 
   return (
@@ -151,7 +180,6 @@ export const NotificationToggle: React.FC = () => {
                 <span className="text-sm text-neutral-600 dark:text-neutral-400 font-sans truncate">
                   {isLocating ? 'Détection en cours...' : location ?? 'Localisation inconnue'}
                 </span>
-                {/* Bouton relancer — w-11 h-11 = 44px minimum ✅ */}
                 {!isLocating && (
                   <button
                     onClick={handleRelancer}
@@ -166,16 +194,20 @@ export const NotificationToggle: React.FC = () => {
           </div>
 
           <p className="text-sm text-neutral-500 dark:text-neutral-500 mb-3 font-sans">
-            {isEnabled
-              ? 'Vous serez alerté des nouvelles promotions dans votre zone'
-              : 'Activez pour être notifié des offres près de chez vous'
+            {!pushSupported
+              ? 'Les notifications ne sont pas supportées sur ce navigateur'
+              : isEnabled
+                ? 'Vous serez alerté des nouvelles promotions dans votre zone'
+                : 'Activez pour être notifié des offres près de chez vous'
             }
           </p>
 
           {isEnabled && (
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-              <span className="text-xs text-emerald-700 dark:text-emerald-400 font-sans">Prêt à recevoir les alertes</span>
+              <span className="text-xs text-emerald-700 dark:text-emerald-400 font-sans">
+                Alertes activées · {location ? extractCity(location) : 'toutes zones'}
+              </span>
             </div>
           )}
         </div>
@@ -183,16 +215,20 @@ export const NotificationToggle: React.FC = () => {
         {/* Toggle */}
         <button
           onClick={handleToggle}
-          disabled={isLoading}
+          disabled={isLoading || isToggling || !pushSupported}
           className={`relative w-14 h-8 rounded-full transition-all duration-300 flex items-center flex-shrink-0 ${
             isEnabled
               ? 'bg-emerald-500'
               : 'bg-neutral-300 dark:bg-neutral-700'
-          } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          } ${(isLoading || isToggling || !pushSupported) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          <div className={`w-6 h-6 bg-white rounded-full shadow-lg transition-transform duration-300 ${
-            isEnabled ? 'translate-x-7' : 'translate-x-1'
-          }`} />
+          {isToggling ? (
+            <Loader2 className="w-4 h-4 text-white animate-spin mx-auto" strokeWidth={2} />
+          ) : (
+            <div className={`w-6 h-6 bg-white rounded-full shadow-lg transition-transform duration-300 ${
+              isEnabled ? 'translate-x-7' : 'translate-x-1'
+            }`} />
+          )}
         </button>
       </div>
 
@@ -202,7 +238,7 @@ export const NotificationToggle: React.FC = () => {
           <Zap className="w-4 h-4 text-primary" strokeWidth={1.5} />
         </div>
         <p className="text-xs text-neutral-500 dark:text-neutral-500 flex-1 font-sans">
-          Alertes en temps réel • Basées sur votre localisation • Notification push & in-app
+          Alertes en temps réel • Basées sur votre localisation • Notification push native
         </p>
         <ChevronRight className="w-4 h-4 text-neutral-300 dark:text-neutral-600" strokeWidth={1.5} />
       </div>
