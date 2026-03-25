@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
+import Image from 'next/image'
 import type { Promotion } from '@/types/promotion'
 import { X, Tag, Sparkles, ArrowRight, Calendar } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
@@ -147,13 +148,17 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
 
         <div className="bg-white dark:bg-dark-surface rounded-3xl shadow-2xl overflow-hidden">
 
-          {/* ── IMAGE avec badges flottants ── */}
+          {/* ── IMAGE — Next.js Image quality=72 priority (popup = above fold) ── */}
           <div className="relative w-full aspect-[4/5] overflow-hidden">
             {promotion.image_url ? (
-              <img
+              <Image
                 src={promotion.image_url}
                 alt={promotion.title}
-                className="w-full h-full object-cover"
+                fill
+                quality={72}
+                priority
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 384px"
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
@@ -164,7 +169,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
             {/* Gradient bas */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
 
-            {/* Bouton fermer — w-11 h-11 = 44px minimum ✅ */}
+            {/* Bouton fermer — w-11 h-11 = 44px ✅ */}
             <button
               onClick={handleClose}
               className="absolute top-3 right-3 w-11 h-11 rounded-full bg-white/20 hover:bg-white/35 backdrop-blur-sm border border-white/30 flex items-center justify-center transition-all duration-200 hover:rotate-90 active:scale-90"

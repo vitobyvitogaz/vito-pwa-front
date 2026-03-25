@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
 import type { Promotion } from '@/types/promotion'
 import { Tag, Check, CalendarDays, Share, MapPin, Zap, Clock, AlertTriangle, CheckCircle } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
@@ -131,13 +132,23 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
       onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)')}
     >
 
-      {/* ── IMAGE ── */}
+      {/* ── IMAGE — Next.js Image quality=72, WebP auto ── */}
       <div className="relative w-full aspect-[4/5] overflow-hidden">
-        <img
-          src={promotion.image_url || '/images/promotions/default.jpg'}
-          alt={promotion.title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
+        {promotion.image_url ? (
+          <Image
+            src={promotion.image_url}
+            alt={promotion.title}
+            fill
+            quality={72}
+            loading="lazy"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+            <Tag className="w-12 h-12 text-primary/30" strokeWidth={1} />
+          </div>
+        )}
 
         {/* Gradient bas renforcé */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
@@ -158,7 +169,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
           </div>
         )}
 
-        {/* Badge statut + urgence — rounded-full avec icône */}
+        {/* Badge statut + urgence */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5">
           {promotion.is_active && !isExpired ? (
             <div className="flex items-center gap-1.5 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full border border-white/20">
@@ -224,8 +235,6 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
                   </div>
                 ))}
               </div>
-
-              {/* Date fin */}
               <div className={`flex items-center gap-1.5 pl-3 border-l ${urgency.border}`}>
                 <CalendarDays className={`w-3.5 h-3.5 ${urgency.text} opacity-70`} strokeWidth={1.5} />
                 <span className={`text-xs font-semibold font-sans ${urgency.text}`}>
@@ -287,7 +296,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, delay =
           </div>
         )}
 
-        {/* Code promo — style ticket bordure dashed */}
+        {/* Code promo */}
         {promotion.promo_code && promotion.is_active && !isExpired && (
           <div className="rounded-xl border border-dashed border-primary/40 bg-primary/5 dark:bg-primary/10 overflow-hidden">
             <div className="flex items-center justify-between px-4 py-2 border-b border-dashed border-primary/20">
