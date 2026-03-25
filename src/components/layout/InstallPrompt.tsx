@@ -29,7 +29,8 @@ export const InstallPrompt: React.FC = () => {
   if (!showPrompt) return null
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 animate-slide-up">
+    // ── bottom-4 → bottom-20 md:bottom-4 : au-dessus de la bottom nav mobile ──
+    <div className="fixed bottom-20 md:bottom-4 left-4 right-4 z-50 animate-slide-up">
       <div className="bg-white dark:bg-dark-surface rounded-2xl shadow-2xl border border-neutral-200 dark:border-neutral-700 p-4">
         <button
           onClick={() => setShowPrompt(false)}

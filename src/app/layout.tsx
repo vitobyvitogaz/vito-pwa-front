@@ -24,7 +24,6 @@ export const metadata = {
   description: 'Votre compagnon pour utiliser du gaz tous les jours',
   manifest: '/manifest.json',
   
-  // Icônes
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '32x32' },
@@ -36,7 +35,6 @@ export const metadata = {
     ],
   },
   
-  // Métadonnées PWA
   themeColor: '#008B7F',
   viewport: {
     width: 'device-width',
@@ -44,7 +42,6 @@ export const metadata = {
     maximumScale: 5,
   },
   
-  // Open Graph
   openGraph: {
     title: 'VitoByVitogaz',
     description: 'Votre compagnon pour utiliser du gaz tous les jours',
@@ -55,7 +52,9 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="fr" className={`${inter.variable} ${montserrat.variable}`}>
+    // ── Ajout de la classe "dark" par défaut pour activer le dark mode ──
+    // Le ThemeSwitcher peut toujours basculer en light via JS
+    <html lang="fr" className={`${inter.variable} ${montserrat.variable} dark`}>
       <body className={inter.className}>
         <Header />
         <Breadcrumb />
