@@ -13,7 +13,8 @@ export const MainButtons: React.FC = () => {
     {
       id: 'resellers',
       title: 'Revendeurs',
-      description: 'Géolocalisation en temps réel',
+      // ── Simplifié : "Géolocalisation en temps réel" → plus concret ──
+      description: 'Près de chez vous',
       icon: MapPin,
       href: '/fr/revendeurs',
       color: 'text-primary',
@@ -24,7 +25,8 @@ export const MainButtons: React.FC = () => {
     {
       id: 'order',
       title: 'Commander',
-      description: 'Livraison express à domicile',
+      // ── Simplifié : "Livraison express à domicile" → plus direct ──
+      description: 'Livré chez vous',
       icon: ShoppingCart,
       href: '/fr/commander',
       color: 'text-blue-600 dark:text-blue-400',
@@ -35,7 +37,8 @@ export const MainButtons: React.FC = () => {
     {
       id: 'promotions',
       title: 'Promotions',
-      description: 'Offres et réductions exclusives',
+      // ── Simplifié : "Offres et réductions exclusives" → plus accessible ──
+      description: 'Bonnes affaires du moment',
       icon: Sparkles,
       href: '/fr/promotions',
       color: 'text-amber-600 dark:text-amber-400',
@@ -46,7 +49,8 @@ export const MainButtons: React.FC = () => {
     {
       id: 'documents',
       title: 'Documents',
-      description: 'PAMF, guides et ressources',
+      // ── Simplifié : "PAMF, guides et ressources" → moins technique ──
+      description: 'Guides et conseils',
       icon: FileText,
       href: '/fr/documents',
       color: 'text-neutral-700 dark:text-neutral-300',
@@ -87,12 +91,9 @@ export const MainButtons: React.FC = () => {
               ${activeId === button.id ? 'scale-95' : ''}
               animate-slide-up
             `}
-            style={{
-              animationDelay: `${index * 0.05}s`,
-            }}
+            style={{ animationDelay: `${index * 0.05}s` }}
           >
             <div className="flex flex-col h-full justify-between">
-              {/* Icône - taille augmentée pour cohérence */}
               <div className={`
                 w-14 h-14
                 rounded-xl
@@ -108,7 +109,6 @@ export const MainButtons: React.FC = () => {
                 />
               </div>
 
-              {/* Texte - polices agrandies pour cohérence */}
               <div className="space-y-3 p-3 max-w-full overflow-hidden">
                 <h3 className="text-lg font-sans text-neutral-900 dark:text-white leading-snug tracking-tight truncate">
                   {button.title}
@@ -128,7 +128,6 @@ export const MainButtons: React.FC = () => {
                   />
                 </div>
               </div>
-
             </div>
           </button>
         )

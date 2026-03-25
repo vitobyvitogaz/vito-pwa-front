@@ -9,8 +9,10 @@ import { hapticFeedback } from '@/lib/utils/haptic'
 const navItems = [
   { href: '/fr/revendeurs', label: 'Revendeurs', icon: MapPin },
   { href: '/fr/commander', label: 'Commander', icon: ShoppingCart },
-  { href: '/fr/promotions', label: 'Promotions', icon: Sparkles },
-  { href: '/fr/documents', label: 'Documents', icon: FileText },
+  // ── "Promotions" → "Promos" : plus court, lisible en text-[10px] ──
+  { href: '/fr/promotions', label: 'Promos', icon: Sparkles },
+  // ── "Documents" → "Guides" : plus accessible pour le public malgache ──
+  { href: '/fr/documents', label: 'Guides', icon: FileText },
 ]
 
 export const BottomNav: React.FC = () => {
@@ -20,7 +22,6 @@ export const BottomNav: React.FC = () => {
   const [isIOS, setIsIOS] = useState(false)
 
   useEffect(() => {
-    // Ne pas afficher si déjà installée
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches
     if (isStandalone) return
 
@@ -94,7 +95,6 @@ export const BottomNav: React.FC = () => {
     >
       <div className={`grid h-16 ${showInstall ? 'grid-cols-5' : 'grid-cols-4'}`}>
 
-        {/* 4 nav items */}
         {navItems.map((item) => {
           const Icon = item.icon
           const isActive = pathname.startsWith(item.href)
@@ -106,23 +106,17 @@ export const BottomNav: React.FC = () => {
               className="flex flex-col items-center justify-center gap-1 transition-all duration-200 active:scale-90"
             >
               <div className={`flex items-center justify-center w-10 h-7 rounded-full transition-all duration-200 ${
-                isActive
-                  ? 'bg-primary/10 dark:bg-primary/20'
-                  : ''
+                isActive ? 'bg-primary/10 dark:bg-primary/20' : ''
               }`}>
                 <Icon
                   className={`w-5 h-5 transition-colors duration-200 ${
-                    isActive
-                      ? 'text-primary'
-                      : 'text-neutral-500 dark:text-neutral-400'
+                    isActive ? 'text-primary' : 'text-neutral-500 dark:text-neutral-400'
                   }`}
                   strokeWidth={isActive ? 2 : 1.5}
                 />
               </div>
               <span className={`text-[10px] font-medium leading-none transition-colors duration-200 ${
-                isActive
-                  ? 'text-primary'
-                  : 'text-neutral-500 dark:text-neutral-400'
+                isActive ? 'text-primary' : 'text-neutral-500 dark:text-neutral-400'
               }`}>
                 {item.label}
               </span>
@@ -137,10 +131,7 @@ export const BottomNav: React.FC = () => {
             className="flex flex-col items-center justify-center gap-1 transition-all duration-200 active:scale-90"
           >
             <div className="flex items-center justify-center w-10 h-7 rounded-full bg-primary/10 dark:bg-primary/20">
-              <Download
-                className="w-5 h-5 text-primary"
-                strokeWidth={1.5}
-              />
+              <Download className="w-5 h-5 text-primary" strokeWidth={1.5} />
             </div>
             <span className="text-[10px] font-medium leading-none text-primary">
               Installer
