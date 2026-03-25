@@ -96,12 +96,17 @@ export default function ResellersPage() {
 
   const shouldShowPrompt = showGeolocationPrompt && !userLocation && !hasSkippedGeolocation
 
+  // ── Hauteurs du bottom sheet — sans BOTTOM_NAV_HEIGHT
+  // Le bottom sheet part de bottom:0, la bottom nav (z-[1002]) le couvre
+  // Le contenu a un paddingBottom pour compenser
   const sheetHeights = {
-    quarter: `calc(25vh + ${BOTTOM_NAV_HEIGHT}px)`,
-    half:    `calc(52vh + ${BOTTOM_NAV_HEIGHT}px)`,
-    full:    `calc(88vh + ${BOTTOM_NAV_HEIGHT}px)`,
+    quarter: '25vh',
+    half:    '52vh',
+    full:    '88vh',
   }
 
+  // ── La carte s'arrête là où commence le bottom sheet visible
+  // On ajoute BOTTOM_NAV_HEIGHT car la bottom nav couvre le bas du bottom sheet
   const mapBottoms = {
     quarter: `calc(25vh + ${BOTTOM_NAV_HEIGHT}px)`,
     half:    `calc(52vh + ${BOTTOM_NAV_HEIGHT}px)`,
@@ -130,7 +135,9 @@ export default function ResellersPage() {
         />
       )}
 
-      {/* DESKTOP - inchange */}
+      {/* ═══════════════════════════════════════════════════════════
+          DESKTOP — inchangé
+      ═══════════════════════════════════════════════════════════ */}
       <div className="hidden lg:block pt-14 sm:pt-16">
         {userLocation && (
           <div className="bg-primary/5 border-b border-primary/10 px-4 py-2">
@@ -138,7 +145,7 @@ export default function ResellersPage() {
               <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
               <MapPin className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
               <span className="text-xs text-primary font-medium">
-                Position detectee : {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
+                Position détectée : {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
               </span>
             </div>
           </div>
@@ -151,11 +158,11 @@ export default function ResellersPage() {
                   Trouver un revendeur
                 </h1>
                 <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                  {filteredResellers.length} point{filteredResellers.length > 1 ? 's' : ''} de vente a proximite
+                  {filteredResellers.length} point{filteredResellers.length > 1 ? 's' : ''} de vente à proximité
                 </p>
               </div>
               <div className="flex gap-2">
-                <button onClick={() => setView('split')} className={`p-2 rounded-full transition-all duration-300 ${view === 'split' ? 'bg-primary text-white' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'}`} title="Vue partagee">
+                <button onClick={() => setView('split')} className={`p-2 rounded-full transition-all duration-300 ${view === 'split' ? 'bg-primary text-white' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'}`} title="Vue partagée">
                   <Grid3x3 className="w-5 h-5" strokeWidth={1.5} />
                 </button>
                 <button onClick={() => setView('list')} className={`p-2 rounded-full transition-all duration-300 ${view === 'list' ? 'bg-primary text-white' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'}`} title="Liste seule">
@@ -175,14 +182,14 @@ export default function ResellersPage() {
                   <div>
                     <h3 className="text-base font-medium text-neutral-900 dark:text-white">Calcul des distances</h3>
                     <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-0.5">
-                      {userLocation ? 'Personnalise selon votre position' : 'Activez la geolocalisation'}
+                      {userLocation ? 'Personnalisé selon votre position' : 'Activez la géolocalisation'}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
                     {userLocation ? (
                       <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
                         <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                        <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">GPS active</span>
+                        <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">GPS activé</span>
                       </div>
                     ) : isGeolocationLoading ? (
                       <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
@@ -196,7 +203,7 @@ export default function ResellersPage() {
                       </button>
                     ) : (
                       <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800">
-                        <span className="text-xs font-medium text-amber-700 dark:text-amber-300">GPS desactive</span>
+                        <span className="text-xs font-medium text-amber-700 dark:text-amber-300">GPS désactivé</span>
                       </div>
                     )}
                   </div>
@@ -211,8 +218,8 @@ export default function ResellersPage() {
                         <Loader2 className="w-4 h-4 text-blue-600 animate-spin" strokeWidth={1.5} />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-blue-800 dark:text-blue-300">Detection de votre position</p>
-                        <p className="text-xs text-blue-700/80 dark:text-blue-400/80">Autorisez l'acces a votre position dans le navigateur</p>
+                        <p className="text-sm font-medium text-blue-800 dark:text-blue-300">Détection de votre position</p>
+                        <p className="text-xs text-blue-700/80 dark:text-blue-400/80">Autorisez l'accès à votre position dans le navigateur</p>
                       </div>
                     </div>
                   )}
@@ -222,8 +229,8 @@ export default function ResellersPage() {
                         <Loader2 className="w-4 h-4 text-primary animate-spin" strokeWidth={1.5} />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-primary">Calcul optimise en cours</p>
-                        <p className="text-xs text-primary/80">Affichage instantane avec distances precises</p>
+                        <p className="text-sm font-medium text-primary">Calcul optimisé en cours</p>
+                        <p className="text-xs text-primary/80">Affichage instantané avec distances précises</p>
                       </div>
                     </div>
                   )}
@@ -234,8 +241,8 @@ export default function ResellersPage() {
                           <AlertCircle className="w-3 h-3 text-amber-600" strokeWidth={1.5} />
                         </div>
                         <div className="flex-1">
-                          <p className="text-sm font-medium text-amber-800 dark:text-amber-300">Geolocalisation desactivee</p>
-                          <p className="text-sm text-amber-700/80 dark:text-amber-400/80 mb-2">Les distances ne seront pas calculees</p>
+                          <p className="text-sm font-medium text-amber-800 dark:text-amber-300">Géolocalisation désactivée</p>
+                          <p className="text-sm text-amber-700/80 dark:text-amber-400/80 mb-2">Les distances ne seront pas calculées</p>
                           <button onClick={handleEnableGeolocation} className="text-xs bg-amber-600 text-white px-3 py-1.5 rounded-xl hover:bg-amber-700 transition-all duration-300">
                             Activer maintenant
                           </button>
@@ -250,8 +257,8 @@ export default function ResellersPage() {
                           <CheckCircle className="w-3 h-3 text-emerald-600" strokeWidth={1.5} />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-emerald-800 dark:text-emerald-300">{Object.keys(distances).length} distances calculees</p>
-                          <p className="text-sm text-emerald-700/80 dark:text-emerald-400/80">Revendeurs tries par proximite</p>
+                          <p className="text-sm font-medium text-emerald-800 dark:text-emerald-300">{Object.keys(distances).length} distances calculées</p>
+                          <p className="text-sm text-emerald-700/80 dark:text-emerald-400/80">Revendeurs triés par proximité • ≈ = Distance estimée</p>
                         </div>
                       </div>
                     </div>
@@ -287,7 +294,7 @@ export default function ResellersPage() {
               </div>
               {sortedResellers.length > PAGE_SIZE && (
                 <div className="flex justify-center gap-2 p-4 bg-white dark:bg-dark-surface border-t border-neutral-200 dark:border-neutral-800">
-                  <button disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="px-4 py-2.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 hover:bg-neutral-200 transition-all duration-300">Precedent</button>
+                  <button disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="px-4 py-2.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 hover:bg-neutral-200 transition-all duration-300">Précédent</button>
                   <button disabled={currentPage === Math.ceil(sortedResellers.length / PAGE_SIZE)} onClick={() => setCurrentPage(p => p + 1)} className="px-4 py-2.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 hover:bg-neutral-200 transition-all duration-300">Suivant</button>
                 </div>
               )}
@@ -302,14 +309,19 @@ export default function ResellersPage() {
         </div>
       </div>
 
-      {/* MOBILE */}
+      {/* ═══════════════════════════════════════════════════════════
+          MOBILE
+      ═══════════════════════════════════════════════════════════ */}
       <div className="lg:hidden relative" style={{ height: '100dvh', overflow: 'hidden' }}>
 
-        {/* Carte */}
+        {/* Carte — occupe tout l'espace au-dessus du bottom sheet visible */}
         <div
           className="absolute left-0 right-0"
           style={{
             top: `${NAVBAR_HEIGHT}px`,
+            // ── La carte s'arrête au haut du bottom sheet visible
+            // bottom sheet commence à 0 mais la bottom nav (64px) le couvre en bas
+            // donc le haut visible du bottom sheet est à sheetHeight du bas de l'écran
             bottom: mapBottoms[sheetState],
             zIndex: 1,
             transition: 'bottom 0.35s cubic-bezier(0.32, 0.72, 0, 1)',
@@ -327,14 +339,12 @@ export default function ResellersPage() {
           <GeolocationButton onLocationFound={handleLocationFound} />
         </div>
 
-        {/* Barre flottante haut droite — FILTRES uniquement
-            Le bouton GPS a ete deplace dans le bottom sheet */}
+        {/* Barre flottante haut droite — Filtres + statut GPS */}
         <div
           className="absolute right-0 px-4 pointer-events-none"
           style={{ top: `${NAVBAR_HEIGHT + 12}px`, zIndex: 1000 }}
         >
           <div className="flex flex-col items-end gap-2 pointer-events-auto">
-            {/* Bouton filtres - reste en haut car c'est une action secondaire */}
             <button
               onClick={() => setShowMobileFilters(true)}
               className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-neutral-200 dark:border-neutral-700 active:scale-95 transition-transform"
@@ -343,7 +353,6 @@ export default function ResellersPage() {
               <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300">Filtres</span>
             </button>
 
-            {/* Indicateur GPS actif - juste un statut, pas interactif */}
             {userLocation && (
               <div className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-emerald-200 dark:border-emerald-800">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
@@ -360,17 +369,18 @@ export default function ResellersPage() {
           </div>
         </div>
 
-        {/* Bottom Sheet */}
+        {/* Bottom Sheet — bottom:0, la bottom nav le couvre en bas
+            Le contenu a un paddingBottom pour compenser */}
         <div
           className="absolute left-0 right-0 bg-white dark:bg-dark-surface rounded-t-3xl shadow-2xl flex flex-col"
           style={{
-            bottom: `${BOTTOM_NAV_HEIGHT}px`,
+            bottom: 0,
             height: sheetHeights[sheetState],
             transition: 'height 0.35s cubic-bezier(0.32, 0.72, 0, 1)',
             zIndex: 1000,
           }}
         >
-          {/* Poignee + header */}
+          {/* Poignée + header */}
           <div
             className="flex-shrink-0 pt-3 pb-2 px-4"
             onTouchStart={(e) => { (e.currentTarget as any)._startY = e.touches[0].clientY }}
@@ -388,20 +398,17 @@ export default function ResellersPage() {
           >
             <div className="w-10 h-1 bg-neutral-300 dark:bg-neutral-600 rounded-full mx-auto mb-3" />
             <div className="flex items-center justify-between">
-              {/* Gauche : compteur revendeurs */}
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-primary" strokeWidth={1.5} />
                 <span className="text-sm font-semibold text-neutral-900 dark:text-white">
                   {sortedResellers.length} revendeur{sortedResellers.length > 1 ? 's' : ''}
                 </span>
                 {userLocation && distances && Object.keys(distances).length > 0 && (
-                  <span className="text-xs text-emerald-600 dark:text-emerald-400">• tries par distance</span>
+                  <span className="text-xs text-emerald-600 dark:text-emerald-400">• triés par distance</span>
                 )}
               </div>
 
-              {/* Droite : bouton GPS (zone du pouce) + chevrons */}
               <div className="flex items-center gap-1">
-                {/* Bouton Activer GPS - deplace ici, accessible au pouce */}
                 {!userLocation && !isGeolocationLoading && (
                   <button
                     onClick={handleEnableGeolocation}
@@ -418,7 +425,6 @@ export default function ResellersPage() {
                   </div>
                 )}
 
-                {/* Chevrons - w-11 h-11 = 44px */}
                 {(sheetState === 'half' || sheetState === 'full') && (
                   <button
                     onClick={() => setSheetState(sheetState === 'full' ? 'half' : 'quarter')}
@@ -439,25 +445,27 @@ export default function ResellersPage() {
             </div>
           </div>
 
-          {/* Contenu scrollable */}
+          {/* Contenu scrollable — paddingBottom pour compenser la bottom nav */}
           <div className="flex-1 overflow-y-auto overscroll-contain">
-            <div className="px-4 pb-6">
-              <div className="mb-4">
+            <div className="px-4" style={{ paddingBottom: `calc(${BOTTOM_NAV_HEIGHT}px + 16px)` }}>
+
+              {/* TravelModeSelector compact */}
+              <div className="py-3 border-b border-neutral-100 dark:border-neutral-800 mb-3">
                 <TravelModeSelector mode={travelMode} onChange={handleTravelModeChange} />
               </div>
 
               {distances && Object.keys(distances).length > 0 && userLocation && (
-                <div className="flex items-center gap-2 px-3 py-2 mb-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
+                <div className="flex items-center gap-2 px-3 py-2 mb-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
                   <CheckCircle className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" strokeWidth={1.5} />
                   <span className="text-xs text-emerald-700 dark:text-emerald-300">
-                    {Object.keys(distances).length} distances calculees
+                    {Object.keys(distances).length} distances calculées
                   </span>
                 </div>
               )}
 
               {!userLocation && hasSkippedGeolocation && (
-                <div className="flex items-center justify-between px-3 py-2.5 mb-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800">
-                  <span className="text-xs text-amber-700 dark:text-amber-300">GPS desactive — distances non disponibles</span>
+                <div className="flex items-center justify-between px-3 py-2.5 mb-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800">
+                  <span className="text-xs text-amber-700 dark:text-amber-300">GPS désactivé — distances non disponibles</span>
                   <button onClick={handleEnableGeolocation} className="text-xs bg-amber-600 text-white px-2.5 py-1 rounded-lg">
                     Activer
                   </button>
@@ -481,7 +489,7 @@ export default function ResellersPage() {
                     onClick={() => setCurrentPage(p => p - 1)}
                     className="px-4 py-2.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 text-sm font-medium"
                   >
-                    Precedent
+                    Précédent
                   </button>
                   <button
                     disabled={currentPage === Math.ceil(sortedResellers.length / PAGE_SIZE)}

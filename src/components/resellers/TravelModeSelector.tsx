@@ -15,25 +15,26 @@ const modes = [
 
 export const TravelModeSelector: React.FC<TravelModeSelectorProps> = ({ mode, onChange }) => {
   return (
-    <div className="bg-white dark:bg-dark-surface rounded-2xl p-4 border border-neutral-200 dark:border-neutral-800 mb-4">
-      <p className="text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-3 tracking-tight">
-        Mode de transport
-      </p>
-      <div className="grid grid-cols-2 gap-3">
+    // ── Compact : flex horizontal, moins de padding, pas de card wrapper ──
+    <div className="flex items-center gap-2">
+      <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400 flex-shrink-0">
+        Transport :
+      </span>
+      <div className="flex gap-1.5">
         {modes.map((m) => {
           const Icon = m.icon
           return (
             <button
               key={m.id}
               onClick={() => onChange(m.id)}
-              className={`flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-300 border ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border ${
                 mode === m.id
                   ? 'bg-primary text-white border-primary'
-                  : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600'
+                  : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 border-neutral-200 dark:border-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-700'
               }`}
             >
-              <Icon className="w-6 h-6" strokeWidth={1.5} />
-              <span className="text-xs font-medium">{m.label}</span>
+              <Icon className="w-3.5 h-3.5" strokeWidth={1.5} />
+              {m.label}
             </button>
           )
         })}

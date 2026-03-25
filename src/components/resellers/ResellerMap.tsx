@@ -31,7 +31,6 @@ const LEGEND_ITEMS = [
   { type: 'Maison du gaz'   as const, color: '#0639a7', label: 'Maison du gaz' },
 ]
 
-// ── PIN REVENDEUR — cercle coloré (inchangé) ─────────────────────────────────
 const createResellerIcon = (color: string, isSelected: boolean = false) => {
   const size = isSelected ? 28 : 20
   const borderColor = isSelected ? '#FFD700' : '#ffffff'
@@ -55,7 +54,6 @@ const createResellerIcon = (color: string, isSelected: boolean = false) => {
   })
 }
 
-// ── PIN UTILISATEUR — goutte inversée rouge ──────────────────────────────────
 const createUserIcon = () => {
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="38" viewBox="0 0 30 40">
@@ -78,7 +76,6 @@ const createUserIcon = () => {
   })
 }
 
-// ── MAP CONTROLLER ───────────────────────────────────────────────────────────
 const MapController = ({
   resellers,
   selectedReseller,
@@ -126,7 +123,6 @@ const MapController = ({
   return null
 }
 
-// ── COMPOSANT PRINCIPAL ──────────────────────────────────────────────────────
 export const ResellerMap: React.FC<ResellerMapProps> = ({
   resellers,
   selectedReseller,
@@ -178,7 +174,6 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
           userLocation={userLocation}
         />
 
-        {/* Pin utilisateur — goutte rouge */}
         {userLocation && (
           <Marker
             position={[userLocation.lat, userLocation.lng]}
@@ -190,7 +185,6 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
           </Marker>
         )}
 
-        {/* Pins revendeurs — cercles colorés */}
         {resellers.map((reseller) => (
           <Marker
             key={reseller.id}
@@ -214,8 +208,8 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
         ))}
       </MapContainer>
 
-      {/* Légende */}
-      <div className="absolute bottom-4 left-4 bg-white dark:bg-dark-surface rounded-xl p-3 shadow-lg border border-neutral-200 dark:border-neutral-800 z-[1000]">
+      {/* ── Légende : top-4 sur mobile pour ne pas être cachée par le bottom sheet ── */}
+      <div className="absolute top-4 left-4 lg:bottom-4 lg:top-auto bg-white dark:bg-dark-surface rounded-xl p-3 shadow-lg border border-neutral-200 dark:border-neutral-800 z-[1000]">
         <h4 className="text-xs font-semibold text-neutral-900 dark:text-white mb-2">Revendeurs</h4>
         <div className="space-y-2">
           {LEGEND_ITEMS.map((item) => (
@@ -227,7 +221,6 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
               <span className="text-xs text-neutral-700 dark:text-neutral-300">{item.label}</span>
             </div>
           ))}
-          {/* Votre position — goutte rouge miniature */}
           <div className="flex items-center gap-2 pt-1 border-t border-neutral-200 dark:border-neutral-700">
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="18" viewBox="0 0 30 40" style={{ flexShrink: 0 }}>
               <path
