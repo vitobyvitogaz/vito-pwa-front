@@ -59,7 +59,8 @@ export const BusinessHoursCompact: React.FC<BusinessHoursCompactProps> = ({
             Aujourd'hui : {formatTime(todaySchedule.open!)} - {formatTime(todaySchedule.close!)}
           </span>
           {todaySchedule.breaks && todaySchedule.breaks.length > 0 && (
-            <span className="text-xs text-neutral-500 dark:text-neutral-400">
+            // ── text-xs → text-sm : info de pause lisible sur petit écran ──
+            <span className="text-sm text-neutral-500 dark:text-neutral-400">
               Pause : {todaySchedule.breaks.map(b => `${formatTime(b.start)}-${formatTime(b.end)}`).join(', ')}
             </span>
           )}
@@ -104,7 +105,8 @@ export const BusinessHoursCompact: React.FC<BusinessHoursCompactProps> = ({
                       {formatTime(schedule.open!)} - {formatTime(schedule.close!)}
                     </div>
                     {schedule.breaks && schedule.breaks.length > 0 && (
-                      <div className="text-xs text-neutral-500 dark:text-neutral-400">
+                      // ── text-xs → text-sm : info de pause lisible sur petit écran ──
+                      <div className="text-sm text-neutral-500 dark:text-neutral-400">
                         Pause : {schedule.breaks.map(b => `${formatTime(b.start)}-${formatTime(b.end)}`).join(', ')}
                       </div>
                     )}
@@ -126,10 +128,10 @@ export const BusinessHoursCompact: React.FC<BusinessHoursCompactProps> = ({
       {/* Expanded View */}
       {isExpanded && renderExpandedView()}
 
-      {/* Toggle Button */}
+      {/* Toggle Button — text-xs → text-sm pour lisibilité */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full mt-2 pt-2 border-t border-neutral-200 dark:border-neutral-700 flex items-center justify-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80 transition-colors group"
+        className="w-full mt-2 pt-2 border-t border-neutral-200 dark:border-neutral-700 flex items-center justify-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors group"
       >
         <Calendar className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" strokeWidth={2} />
         <span>{isExpanded ? 'Masquer les horaires' : 'Voir tous les horaires'}</span>

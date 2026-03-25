@@ -16,15 +16,7 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
     return null
   }
 
-  //const allProducts = reseller.reseller_products
   const allProducts = reseller.reseller_products.filter(rp => rp.products.is_active)
-  const featuredProducts = allProducts.filter(rp => rp.products.is_featured)
-  // Remplace
-  //const displayProducts = isExpanded 
-  //  ? allProducts 
-  //  : (featuredProducts.length > 0 ? featuredProducts.slice(0, 6) : allProducts.slice(0, 6))
-
-  // Par
   const displayProducts = isExpanded 
     ? allProducts 
     : allProducts.slice(0, 3)
@@ -51,6 +43,7 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
           </span>
         </div>
         
+        {/* Badge "+N autres" — text-xs conservé : c'est un pill/badge ✅ */}
         {!isExpanded && remainingCount > 0 && (
           <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">
             +{remainingCount} autre{remainingCount > 1 ? 's' : ''}
@@ -58,14 +51,13 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
         )}
       </div>
 
-      {/* Products Compact Display */}
+      {/* Vue compacte */}
       {!isExpanded && (
         <div className="grid grid-cols-3 gap-2">
           {displayProducts.map(rp => {
             const product = rp.products
             return (
               <div key={product.id} className="group">
-                {/*<div className="relative aspect-square rounded-lg overflow-hidden bg-neutral-100 dark:bg-neutral-800 mb-1.5 border border-neutral-200 dark:border-neutral-700 group-hover:border-primary/50 transition-all">*/}
                 <div className="relative aspect-square rounded-lg overflow-hidden bg-white dark:bg-white mb-1.5 border border-neutral-200 dark:border-neutral-700 group-hover:border-primary/50 transition-all">
                   {product.image_url && (
                     <Image
@@ -81,10 +73,12 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
                     </div>
                   )}
                 </div>
-                <p className="text-xs font-medium text-neutral-900 dark:text-white line-clamp-1 mb-0.5">
+                {/* ── text-xs → text-sm : nom produit lisible sur petit écran ── */}
+                <p className="text-sm font-medium text-neutral-900 dark:text-white line-clamp-1 mb-0.5">
                   {product.name}
                 </p>
-                <p className="text-xs font-bold text-primary">
+                {/* ── text-xs → text-sm : prix produit lisible sur petit écran ── */}
+                <p className="text-sm font-bold text-primary">
                   {formatPrice(product.price)}
                 </p>
               </div>
@@ -93,7 +87,7 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
         </div>
       )}
 
-      {/* Products Expanded Display */}
+      {/* Vue étendue */}
       {isExpanded && (
         <div className="grid grid-cols-2 gap-2.5 mb-3">
           {allProducts.map(rp => {
@@ -104,7 +98,6 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
                 className="group relative bg-neutral-50 dark:bg-neutral-800 rounded-lg p-2 border border-neutral-200 dark:border-neutral-700 hover:border-primary/50 dark:hover:border-primary/50 hover:shadow-sm transition-all duration-300"
               >
                 {product.image_url && (
-                  //<div className="relative w-full aspect-square mb-2 rounded-md overflow-hidden bg-white dark:bg-neutral-700">
                   <div className="relative w-full aspect-square mb-2 rounded-md overflow-hidden bg-white dark:bg-white">
                     <Image
                       src={product.image_url}
@@ -116,10 +109,12 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
                 )}
                 
                 <div>
-                  <h6 className="text-xs font-semibold text-neutral-900 dark:text-white mb-0.5 line-clamp-1">
+                  {/* ── text-xs → text-sm : nom produit lisible ── */}
+                  <h6 className="text-sm font-semibold text-neutral-900 dark:text-white mb-0.5 line-clamp-1">
                     {product.name}
                   </h6>
                   
+                  {/* Badge product_code — text-xs conservé : c'est un badge ✅ */}
                   {product.product_code && (
                     <span className="inline-block text-xs font-medium px-1.5 py-0.5 rounded bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 mb-1">
                       {product.product_code}
@@ -130,8 +125,9 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
                     {formatPrice(product.price)}
                   </p>
                   
+                  {/* ── text-xs → text-sm : description lisible ── */}
                   {product.description && (
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-2 mt-1">
+                    <p className="text-sm text-neutral-500 dark:text-neutral-400 line-clamp-2 mt-1">
                       {product.description}
                     </p>
                   )}
@@ -148,10 +144,10 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
         </div>
       )}
 
-      {/* Toggle Button */}
+      {/* Toggle Button — text-xs → text-sm pour lisibilité */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full pt-2 border-t border-neutral-200 dark:border-neutral-700 flex items-center justify-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80 transition-colors group"
+        className="w-full pt-2 border-t border-neutral-200 dark:border-neutral-700 flex items-center justify-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors group"
       >
         <ShoppingCart className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" strokeWidth={2} />
         <span>{isExpanded ? 'Voir moins' : `Voir tous les produits (${allProducts.length})`}</span>
