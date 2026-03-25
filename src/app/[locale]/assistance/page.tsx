@@ -96,7 +96,6 @@ export default function AssistancePage() {
 
   if (isSuccess) {
     return (
-      // ── pb-20 md:pb-0 : espace pour la bottom nav sur mobile ──
       <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16 pb-20 md:pb-0 flex items-center justify-center p-4">
         <div className="w-full max-w-md text-center">
           <div className="w-20 h-20 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center mx-auto mb-6">
@@ -120,7 +119,6 @@ export default function AssistancePage() {
   }
 
   return (
-    // ── pb-20 md:pb-0 : espace pour la bottom nav sur mobile ──
     <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16 pb-20 md:pb-0">
 
       {/* Header teal */}
@@ -141,14 +139,60 @@ export default function AssistancePage() {
           {/* Ligne décorative rouge */}
           <div style={{ width: 60, height: 3, backgroundColor: '#E53E3E', borderRadius: 2, marginBottom: 24 }} />
 
-          {/* Coordonnées */}
-          <div className="space-y-4">
+          {/* ── Téléphone EN PREMIER — action prioritaire pour le public malgache ── */}
+          <a
+            href="tel:+261202236464"
+            className="flex items-center gap-4 group mb-4 p-3 rounded-2xl bg-white/15 hover:bg-white/25 transition-all duration-200 active:scale-95"
+          >
+            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center flex-shrink-0">
+              <Phone className="w-6 h-6 text-primary" strokeWidth={2} />
+            </div>
+            <div>
+              {/* ── Numéro large et lisible ── */}
+              <p className="text-white font-bold text-xl leading-tight">
+                020 22 364 64
+              </p>
+              <p className="text-white/70 text-sm font-sans">
+                Appuyez pour appeler
+              </p>
+            </div>
+            <div className="ml-auto">
+              <div className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                open
+                  ? 'bg-emerald-400/20 text-emerald-200 border border-emerald-400/30'
+                  : 'bg-red-400/20 text-red-200 border border-red-400/30'
+              }`}>
+                <div className="flex items-center gap-1.5">
+                  <div className={`w-1.5 h-1.5 rounded-full ${open ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`} />
+                  {open ? 'Ouvert' : 'Fermé'}
+                </div>
+              </div>
+            </div>
+          </a>
+
+          {/* Horaires */}
+          <div className="flex items-center gap-3 mb-6">
+            <Clock className="w-4 h-4 text-white/60 flex-shrink-0" strokeWidth={1.5} />
+            <p className="text-white/70 text-sm font-sans">Lun. au Ven. | 8h - 17h</p>
+          </div>
+
+          {/* Autres contacts */}
+          <div className="space-y-3 pt-4 border-t border-white/20">
             <a href="mailto:relationclient@vitogaz.mg" className="flex items-center gap-4 group">
               <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center flex-shrink-0">
                 <Mail className="w-5 h-5 text-white" strokeWidth={1.5} />
               </div>
-              <p className="text-white font-medium group-hover:text-white/80 transition-colors">
+              <p className="text-white font-medium group-hover:text-white/80 transition-colors text-sm">
                 relationclient@vitogaz.mg
+              </p>
+            </a>
+
+            <a href="https://www.facebook.com/vitogazmadagascar" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">
+              <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center flex-shrink-0">
+                <Facebook className="w-5 h-5 text-white" strokeWidth={1.5} />
+              </div>
+              <p className="text-white font-medium group-hover:text-white/80 transition-colors text-sm">
+                Vitogaz Madagascar
               </p>
             </a>
 
@@ -158,42 +202,10 @@ export default function AssistancePage() {
                   <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                 </svg>
               </div>
-              <p className="text-white font-medium group-hover:text-white/80 transition-colors">
+              <p className="text-white font-medium group-hover:text-white/80 transition-colors text-sm">
                 vitogazmadagascar
               </p>
             </a>
-
-            <a href="https://www.facebook.com/vitogazmadagascar" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">
-              <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center flex-shrink-0">
-                <Facebook className="w-5 h-5 text-white" strokeWidth={1.5} />
-              </div>
-              <p className="text-white font-medium group-hover:text-white/80 transition-colors">
-                Vitogaz Madagascar
-              </p>
-            </a>
-
-            <a href="tel:+261202236464" className="flex items-center gap-4 group">
-              <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center flex-shrink-0">
-                <Phone className="w-5 h-5 text-white" strokeWidth={1.5} />
-              </div>
-              <p className="text-white font-medium group-hover:text-white/80 transition-colors">
-                020 22 364 64
-              </p>
-            </a>
-          </div>
-
-          {/* Horaires + statut ouvert/fermé */}
-          <div className="flex items-center gap-3 mt-6 pt-6 border-t border-white/20">
-            <Clock className="w-4 h-4 text-white/70 flex-shrink-0" strokeWidth={1.5} />
-            <p className="text-white/80 text-sm">Lun. au Ven. | 8h - 17h</p>
-            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
-              open
-                ? 'bg-emerald-400/20 text-emerald-200 border border-emerald-400/30'
-                : 'bg-red-400/20 text-red-200 border border-red-400/30'
-            }`}>
-              <div className={`w-1.5 h-1.5 rounded-full ${open ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`} />
-              {open ? 'Ouvert' : 'Fermé'}
-            </div>
           </div>
         </div>
       </div>

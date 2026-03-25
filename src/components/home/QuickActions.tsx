@@ -21,10 +21,14 @@ type ActionItem = {
   icon: React.ElementType
   title: string
   subtitle: string
+  // ── Ligne secondaire optionnelle (ex: numéro de téléphone) ──
+  subtitleExtra?: string
   color: string
   bg: string
   border: string
   action: () => void
+  // ── Action directe optionnelle (ex: appel tel:) ──
+  directHref?: string
 }
 
 export const QuickActions: React.FC = () => {
@@ -67,8 +71,7 @@ export const QuickActions: React.FC = () => {
     {
       id: 'revendeur',
       icon: Briefcase,
-      title: 'Devenir Revendeur/Client Professionnel',
-      // ── Correction faute de frappe : "reseau" → "réseau" ──
+      title: 'Devenir partenaire',
       subtitle: 'Rejoignez notre réseau',
       color: 'text-purple-600 dark:text-purple-400',
       bg: 'bg-purple-50 dark:bg-purple-900/20',
@@ -79,10 +82,14 @@ export const QuickActions: React.FC = () => {
       id: 'assistance',
       icon: Phone,
       title: 'Assistance',
-      subtitle: 'Contactez-nous',
+      // ── Numéro visible directement sur la card ──
+      subtitle: '020 22 364 64',
+      subtitleExtra: 'Lun-Ven 8h-17h',
       color: 'text-blue-600 dark:text-blue-400',
       bg: 'bg-blue-50 dark:bg-blue-900/20',
       border: 'border-blue-200 dark:border-blue-800',
+      // ── Tap sur la card → appel direct ──
+      directHref: 'tel:+261202236464',
       action: () => router.push(`/${locale}/assistance`),
     },
   ]
@@ -96,6 +103,48 @@ export const QuickActions: React.FC = () => {
         {actions.map((action, index) => {
           const Icon = action.icon
           const isHovered = hoveredId === action.id
+
+          // ── Card Assistance : lien tel: direct pour un tap immédiat ──
+          if (action.directHref) {
+            return (
+              <a
+                key={action.id}
+                href={action.directHref}
+                onMouseEnter={() => setHoveredId(action.id)}
+                onMouseLeave={() => setHoveredId(null)}
+                onClick={() => hapticFeedback('light')}
+                className="group relative overflow-hidden bg-white dark:bg-dark-surface rounded-xl p-5 text-left transition-all duration-300 border border-neutral-200 dark:border-neutral-800 hover:border-blue-300 dark:hover:border-blue-700 block"
+                style={{
+                  transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
+                }}
+              >
+                <div className="flex items-center gap-4">
+                  <div className={`relative flex-shrink-0 ${action.bg} ${action.border} w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300`}>
+                    <Icon className={`w-6 h-6 ${action.color}`} strokeWidth={1.5} />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-base font-medium text-neutral-900 dark:text-white tracking-tight font-sans">
+                      {action.title}
+                    </p>
+                    {/* ── Numéro en gras, lisible immédiatement ── */}
+                    <p className={`text-base font-bold ${action.color} font-sans`}>
+                      {action.subtitle}
+                    </p>
+                    {action.subtitleExtra && (
+                      <p className="text-xs text-neutral-400 dark:text-neutral-500 font-sans">
+                        {action.subtitleExtra}
+                      </p>
+                    )}
+                  </div>
+                  <ChevronRight
+                    className={`w-5 h-5 text-neutral-400 transition-all duration-300 ${isHovered ? 'translate-x-1' : ''}`}
+                    strokeWidth={1.5}
+                  />
+                </div>
+              </a>
+            )
+          }
+
           return (
             <button
               key={action.id}
@@ -113,13 +162,13 @@ export const QuickActions: React.FC = () => {
             >
               <div className="flex items-center gap-4">
                 <div className={`relative flex-shrink-0 ${action.bg} ${action.border} w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300`}>
-                  <Icon className={`w-6 h-6 ${action.color} transition-all duration-300`} strokeWidth={1.5} />
+                  <Icon className={`w-6 h-6 ${action.color}`} strokeWidth={1.5} />
                 </div>
                 <div className="flex-1">
-                  <p className="text-base font-medium text-neutral-900 dark:text-white mb-1 tracking-tight">
+                  <p className="text-base font-medium text-neutral-900 dark:text-white mb-1 tracking-tight font-sans">
                     {action.title}
                   </p>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400 font-sans">
                     {action.subtitle}
                   </p>
                 </div>
