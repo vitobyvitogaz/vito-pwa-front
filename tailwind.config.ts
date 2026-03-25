@@ -51,6 +51,10 @@ const config: Config = {
         },
         neutral: {
           DEFAULT: '#7E7E7E',
+          // ── Étape 9 : ajout de neutral-25 ivoire ──
+          // Plus doux que le blanc pur (#FFF), moins éblouissant en plein soleil
+          // Utilisé sur from-neutral-25 dans les gradients hero de toutes les pages
+          25: '#FAFAF9',
           50: '#F8F8F8',
           100: '#F1F1F1',
           200: '#E3E3E3',
