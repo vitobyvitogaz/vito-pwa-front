@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { MapPin, ShoppingCart, Sparkles, FileText } from 'lucide-react'
+import { MapPin, ShoppingCart, Sparkles, BookOpen } from 'lucide-react'
 import { ThemeSwitcher } from '@/components/shared/ThemeSwitcher'
 import { InstallButton } from '@/components/shared/InstallButton'
 
@@ -11,7 +11,8 @@ const navItems = [
   { href: '/fr/revendeurs', label: 'Revendeurs', icon: MapPin },
   { href: '/fr/commander', label: 'Commander', icon: ShoppingCart },
   { href: '/fr/promotions', label: 'Promotions', icon: Sparkles },
-  { href: '/fr/documents', label: 'Documents', icon: FileText },
+  // ── Étape 12 : FileText → BookOpen sur le nav desktop ──
+  { href: '/fr/documents', label: 'Documents', icon: BookOpen },
 ]
 
 export const Header: React.FC = () => {

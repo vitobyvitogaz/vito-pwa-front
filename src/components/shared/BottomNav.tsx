@@ -3,16 +3,36 @@
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { MapPin, ShoppingCart, Sparkles, FileText, Download } from 'lucide-react'
+import { MapPin, ShoppingCart, Sparkles, BookOpen, Download } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
+
+// ── Icône bouteille de gaz — identité visuelle forte pour Commander ──────────
+const GasBottleIcon = ({ className, strokeWidth }: { className?: string; strokeWidth?: number }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={strokeWidth}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M10 2h4" />
+    <path d="M12 2v2" />
+    <path d="M8 6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2z" />
+    <path d="M8 10h8" />
+    <path d="M8 14h8" />
+    <circle cx="12" cy="17" r="1" fill="currentColor" stroke="none" />
+  </svg>
+)
 
 const navItems = [
   { href: '/fr/revendeurs', label: 'Revendeurs', icon: MapPin },
-  { href: '/fr/commander', label: 'Commander', icon: ShoppingCart },
-  // ── "Promotions" → "Promos" : plus court, lisible en text-[10px] ──
+  // ── Étape 11 : ShoppingCart → GasBottleIcon, plus représentatif de l'app ──
+  { href: '/fr/commander', label: 'Commander', icon: GasBottleIcon as any },
   { href: '/fr/promotions', label: 'Promos', icon: Sparkles },
-  // ── "Documents" → "Guides" : plus accessible pour le public malgache ──
-  { href: '/fr/documents', label: 'Guides', icon: FileText },
+  // ── Étape 12 : FileText → BookOpen, plus accessible pour le public malgache ──
+  { href: '/fr/documents', label: 'Guides', icon: BookOpen },
 ]
 
 export const BottomNav: React.FC = () => {
