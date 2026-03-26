@@ -11,8 +11,6 @@ export const isPushSupported = (): boolean => {
   )
 }
 
-// ── Convertir la clé VAPID base64 en Uint8Array ──────────────────────────────
-// Cast explicite en ArrayBuffer pour satisfaire les types stricts TypeScript
 const urlBase64ToUint8Array = (base64String: string): ArrayBuffer => {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
@@ -24,7 +22,19 @@ const urlBase64ToUint8Array = (base64String: string): ArrayBuffer => {
   return outputArray.buffer as ArrayBuffer
 }
 
-export const subscribeToPush = async (zones: string[] = []): Promise<boolean> => {
+// ── Préférences par défaut — tout activé ─────────────────────────────────────
+export const DEFAULT_PREFERENCES = {
+  promotions: true,
+  resellers:  true,
+  delivery:   true,
+  broadcast:  true,
+}
+
+// ── S'abonner avec préférences ────────────────────────────────────────────────
+export const subscribeToPush = async (
+  zones: string[] = [],
+  preferences = DEFAULT_PREFERENCES,
+): Promise<boolean> => {
   if (!isPushSupported()) return false
 
   try {
@@ -47,10 +57,11 @@ export const subscribeToPush = async (zones: string[] = []): Promise<boolean> =>
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        endpoint: subJson.endpoint,
-        p256dh:   subJson.keys?.p256dh,
-        auth:     subJson.keys?.auth,
+        endpoint:    subJson.endpoint,
+        p256dh:      subJson.keys?.p256dh,
+        auth:        subJson.keys?.auth,
         zones,
+        preferences,
       }),
     })
 
@@ -58,6 +69,7 @@ export const subscribeToPush = async (zones: string[] = []): Promise<boolean> =>
 
     localStorage.setItem('push-subscription-active', 'true')
     localStorage.setItem('push-subscription-endpoint', subJson.endpoint || '')
+    localStorage.setItem('push-preferences', JSON.stringify(preferences))
 
     return true
   } catch (err) {
@@ -66,6 +78,37 @@ export const subscribeToPush = async (zones: string[] = []): Promise<boolean> =>
   }
 }
 
+// ── Mettre à jour les préférences sans re-subscribe ───────────────────────────
+export const updatePushPreferences = async (
+  preferences: Record<string, boolean>,
+): Promise<boolean> => {
+  if (!isPushSupported()) return false
+
+  try {
+    const registration = await navigator.serviceWorker.ready
+    const subscription = await registration.pushManager.getSubscription()
+    if (!subscription) return false
+
+    const response = await fetch(`${API_URL}/notifications/preferences`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        endpoint: subscription.endpoint,
+        preferences,
+      }),
+    })
+
+    if (!response.ok && response.status !== 204) throw new Error('Erreur update preferences')
+
+    localStorage.setItem('push-preferences', JSON.stringify(preferences))
+    return true
+  } catch (err) {
+    console.error('Erreur updatePushPreferences:', err)
+    return false
+  }
+}
+
+// ── Désabonner ────────────────────────────────────────────────────────────────
 export const unsubscribeFromPush = async (): Promise<boolean> => {
   if (!isPushSupported()) return false
 
@@ -88,6 +131,7 @@ export const unsubscribeFromPush = async (): Promise<boolean> => {
 
     localStorage.removeItem('push-subscription-active')
     localStorage.removeItem('push-subscription-endpoint')
+    localStorage.removeItem('push-preferences')
 
     return true
   } catch (err) {
@@ -96,9 +140,9 @@ export const unsubscribeFromPush = async (): Promise<boolean> => {
   }
 }
 
+// ── Vérifier si abonné ────────────────────────────────────────────────────────
 export const isPushSubscribed = async (): Promise<boolean> => {
   if (!isPushSupported()) return false
-
   try {
     const registration = await navigator.serviceWorker.ready
     const subscription = await registration.pushManager.getSubscription()
@@ -108,27 +152,51 @@ export const isPushSubscribed = async (): Promise<boolean> => {
   }
 }
 
+// ── Lire les préférences depuis localStorage ──────────────────────────────────
+export const getStoredPreferences = (): Record<string, boolean> => {
+  try {
+    const stored = localStorage.getItem('push-preferences')
+    if (stored) return JSON.parse(stored)
+  } catch {}
+  return { ...DEFAULT_PREFERENCES }
+}
+
+// ── Mettre à jour les zones ───────────────────────────────────────────────────
 export const updatePushZones = async (zones: string[]): Promise<void> => {
   if (!isPushSupported()) return
-
   try {
     const registration = await navigator.serviceWorker.ready
     const subscription = await registration.pushManager.getSubscription()
     if (!subscription) return
-
     const subJson = subscription.toJSON()
-
+    const prefs = getStoredPreferences()
     await fetch(`${API_URL}/notifications/subscribe`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        endpoint: subJson.endpoint,
-        p256dh:   subJson.keys?.p256dh,
-        auth:     subJson.keys?.auth,
+        endpoint:    subJson.endpoint,
+        p256dh:      subJson.keys?.p256dh,
+        auth:        subJson.keys?.auth,
         zones,
+        preferences: prefs,
       }),
     })
   } catch (err) {
     console.error('Erreur update zones push:', err)
   }
+}
+
+// ── Gestion du badge non lu ───────────────────────────────────────────────────
+export const getUnreadCount = (): number => {
+  try {
+    return parseInt(localStorage.getItem('push-unread-count') || '0', 10)
+  } catch {
+    return 0
+  }
+}
+
+export const clearUnreadCount = (): void => {
+  localStorage.setItem('push-unread-count', '0')
+  // Notifier les composants qui écoutent
+  window.dispatchEvent(new Event('push-unread-cleared'))
 }

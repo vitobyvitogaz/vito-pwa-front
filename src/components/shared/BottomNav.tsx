@@ -3,20 +3,13 @@
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { MapPin, ShoppingCart, Sparkles, BookOpen, Download } from 'lucide-react'
+import { MapPin, Sparkles, BookOpen, Settings } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 import { IOSInstallModal } from '@/components/shared/IOSInstallModal'
 
 const GasBottleIcon = ({ className, strokeWidth }: { className?: string; strokeWidth?: number }) => (
-  <svg
-    className={className}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={strokeWidth}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
     <path d="M10 2h4" />
     <path d="M12 2v2" />
     <path d="M8 6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2z" />
@@ -28,66 +21,32 @@ const GasBottleIcon = ({ className, strokeWidth }: { className?: string; strokeW
 
 const navItems = [
   { href: '/fr/revendeurs', label: 'Revendeurs', icon: MapPin },
-  { href: '/fr/commander', label: 'Commander', icon: GasBottleIcon as any },
-  { href: '/fr/promotions', label: 'Promos', icon: Sparkles },
-  { href: '/fr/documents', label: 'Guides', icon: BookOpen },
+  { href: '/fr/commander',  label: 'Commander',  icon: GasBottleIcon as any },
+  { href: '/fr/promotions', label: 'Promos',     icon: Sparkles },
+  { href: '/fr/documents',  label: 'Guides',     icon: BookOpen },
+  { href: '/fr/parametres', label: 'Paramètres', icon: Settings },
 ]
 
 export const BottomNav: React.FC = () => {
   const pathname = usePathname()
+
+  // ── InstallPrompt gardé mais déplacé en arrière-plan ──────────────────────
+  // Le prompt natif Android se déclenche toujours si disponible,
+  // mais n'est plus visible dans la bottom nav
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
-  const [showInstall, setShowInstall] = useState(false)
-  const [isIOS, setIsIOS] = useState(false)
   const [showIOSModal, setShowIOSModal] = useState(false)
 
   useEffect(() => {
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches
     if (isStandalone) return
 
-    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
-    setIsIOS(iOS)
-
-    if (iOS) {
-      setShowInstall(true)
-      return
-    }
-
     const handler = (e: Event) => {
       e.preventDefault()
       setDeferredPrompt(e)
-      setShowInstall(true)
     }
-
     window.addEventListener('beforeinstallprompt', handler)
     return () => window.removeEventListener('beforeinstallprompt', handler)
   }, [])
-
-  const handleInstall = async () => {
-    hapticFeedback('medium')
-
-    // ── iOS : modal custom au lieu de alert() ──
-    if (isIOS) {
-      setShowIOSModal(true)
-      return
-    }
-
-    if (!deferredPrompt) {
-      // Android sans prompt natif : modal custom
-      setShowIOSModal(true)
-      return
-    }
-
-    try {
-      deferredPrompt.prompt()
-      const { outcome } = await deferredPrompt.userChoice
-      if (outcome === 'accepted') {
-        setDeferredPrompt(null)
-        setShowInstall(false)
-      }
-    } catch (error) {
-      console.error('Install error:', error)
-    }
-  }
 
   return (
     <>
@@ -95,8 +54,7 @@ export const BottomNav: React.FC = () => {
         className="md:hidden fixed bottom-0 left-0 right-0 z-[1002] bg-white/95 dark:bg-dark-surface/95 backdrop-blur-xl border-t border-neutral-200/60 dark:border-dark-border/60"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
-        <div className={`grid h-16 ${showInstall ? 'grid-cols-5' : 'grid-cols-4'}`}>
-
+        <div className="grid grid-cols-5 h-16">
           {navItems.map((item) => {
             const Icon = item.icon
             const isActive = pathname.startsWith(item.href)
@@ -125,28 +83,10 @@ export const BottomNav: React.FC = () => {
               </Link>
             )
           })}
-
-          {showInstall && (
-            <button
-              onClick={handleInstall}
-              className="flex flex-col items-center justify-center gap-1 transition-all duration-200 active:scale-90"
-            >
-              <div className="flex items-center justify-center w-10 h-7 rounded-full bg-primary/10 dark:bg-primary/20">
-                <Download className="w-5 h-5 text-primary" strokeWidth={1.5} />
-              </div>
-              <span className="text-[10px] font-medium leading-none text-primary">
-                Installer
-              </span>
-            </button>
-          )}
-
         </div>
       </nav>
 
-      {/* Modal iOS custom — rendu en dehors de la nav pour le z-index */}
-      {showIOSModal && (
-        <IOSInstallModal onClose={() => setShowIOSModal(false)} />
-      )}
+      {showIOSModal && <IOSInstallModal onClose={() => setShowIOSModal(false)} />}
     </>
   )
 }

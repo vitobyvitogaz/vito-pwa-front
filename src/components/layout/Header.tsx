@@ -1,22 +1,56 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { MapPin, ShoppingCart, Sparkles, BookOpen } from 'lucide-react'
-import { ThemeSwitcher } from '@/components/shared/ThemeSwitcher'
+import { useEffect, useState } from 'react'
+import { MapPin, ShoppingCart, Sparkles, BookOpen, Bell } from 'lucide-react'
 import { InstallButton } from '@/components/shared/InstallButton'
+import { getUnreadCount, clearUnreadCount } from '@/lib/webpush'
 
 const navItems = [
-  { href: '/fr/revendeurs', label: 'Revendeurs', icon: MapPin },
-  { href: '/fr/commander', label: 'Commander', icon: ShoppingCart },
-  { href: '/fr/promotions', label: 'Promotions', icon: Sparkles },
-  // ── Étape 12 : FileText → BookOpen sur le nav desktop ──
-  { href: '/fr/documents', label: 'Documents', icon: BookOpen },
+  { href: '/fr/revendeurs', label: 'Revendeurs',  icon: MapPin },
+  { href: '/fr/commander',  label: 'Commander',   icon: ShoppingCart },
+  { href: '/fr/promotions', label: 'Promotions',  icon: Sparkles },
+  { href: '/fr/documents',  label: 'Documents',   icon: BookOpen },
 ]
 
 export const Header: React.FC = () => {
   const pathname = usePathname()
+  const router   = useRouter()
+  const [unreadCount, setUnreadCount] = useState(0)
+
+  useEffect(() => {
+    // Lire le compteur initial
+    setUnreadCount(getUnreadCount())
+
+    // Écouter les messages du service worker (nouvelle push reçue)
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'PUSH_RECEIVED') {
+        const current = getUnreadCount()
+        const next = current + 1
+        localStorage.setItem('push-unread-count', String(next))
+        setUnreadCount(next)
+      }
+    }
+
+    // Écouter le clear depuis la page Paramètres
+    const handleCleared = () => setUnreadCount(0)
+
+    navigator.serviceWorker?.addEventListener('message', handleMessage)
+    window.addEventListener('push-unread-cleared', handleCleared)
+
+    return () => {
+      navigator.serviceWorker?.removeEventListener('message', handleMessage)
+      window.removeEventListener('push-unread-cleared', handleCleared)
+    }
+  }, [])
+
+  const handleBellClick = () => {
+    clearUnreadCount()
+    setUnreadCount(0)
+    router.push('/fr/parametres')
+  }
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[1001] bg-white/95 dark:bg-dark-surface/95 backdrop-blur-xl backdrop-saturate-150 border-b border-neutral-200/60 dark:border-dark-border/60 shadow-sm">
@@ -28,22 +62,18 @@ export const Header: React.FC = () => {
             <Image
               src="/logo-vito-light.jpg"
               alt="Vito by Vitogaz Madagascar"
-              width={120}
-              height={67}
-              priority
+              width={120} height={67} priority
               className="h-auto w-auto max-h-[50px] object-contain block dark:hidden"
             />
             <Image
               src="/logo-vito-dark.png"
               alt="Vito by Vitogaz Madagascar"
-              width={120}
-              height={67}
-              priority
+              width={120} height={67} priority
               className="h-auto w-auto max-h-[50px] object-contain hidden dark:block"
             />
           </Link>
 
-          {/* Nav Desktop uniquement */}
+          {/* Nav Desktop */}
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
               const Icon = item.icon
@@ -67,15 +97,27 @@ export const Header: React.FC = () => {
 
           {/* Actions droite */}
           <div className="flex items-center gap-2">
+
+            {/* ── Cloche avec badge — visible sur mobile ET desktop ── */}
+            <button
+              onClick={handleBellClick}
+              className="relative w-10 h-10 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:shadow-md transition-all duration-300 hover:scale-105 flex items-center justify-center"
+              aria-label="Notifications et paramètres"
+            >
+              <Bell className="w-5 h-5 text-neutral-600 dark:text-neutral-300" strokeWidth={1.5} />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </button>
+
             {/* Bouton Installer — Desktop uniquement */}
             <div className="hidden md:block">
               <InstallButton />
             </div>
-            <div className="hidden md:block h-6 w-px bg-neutral-300/40 dark:bg-dark-border/40" />
-            {/* ThemeSwitcher — toujours visible */}
-            <ThemeSwitcher />
-          </div>
 
+          </div>
         </div>
       </div>
     </header>
