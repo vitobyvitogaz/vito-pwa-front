@@ -66,7 +66,18 @@ const urlBase64ToUint8Array = (base64String: string): ArrayBuffer => {
 
 const subscribeToPush = async (zones: string[], preferences: Preferences): Promise<boolean> => {
   try {
+    // ── Log état actuel avant demande ──
+    console.log('[Push] Notification.permission avant:', Notification.permission)
+
+    // Si déjà refusé → inutile de redemander
+    if (Notification.permission === 'denied') {
+      console.log('[Push] Permission déjà refusée')
+      return false
+    }
+
     const permission = await Notification.requestPermission()
+    console.log('[Push] Permission après requestPermission:', permission)
+
     if (permission !== 'granted') return false
 
     const reg = await getSwRegistration()
@@ -291,7 +302,14 @@ export default function ParametresPage() {
         if (success) {
           setPushSubscribed(true)
         } else {
-          alert('Pour activer les alertes, autorisez les notifications dans les paramètres de votre navigateur.')
+          // ── Message précis selon l'état de permission ──
+          const permState = Notification.permission
+          console.log('[Push] Échec subscribe, permission state:', permState)
+          if (permState === 'denied') {
+            alert('Les notifications sont bloquées pour ce site.\n\nPour les activer :\n1. Appuyez sur le cadenas 🔒 dans la barre d\'adresse\n2. Autorisations du site → Notifications → Autoriser')
+          } else {
+            alert('Impossible d\'activer les alertes. Assurez-vous d\'être sur Chrome Android et réessayez.')
+          }
         }
       }
     } catch (err) {
