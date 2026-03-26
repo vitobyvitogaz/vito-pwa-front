@@ -36,12 +36,35 @@ const isPushSupported = (): boolean => {
   )
 }
 
-// ── Timeout sur serviceWorker.ready pour ne jamais bloquer ───────────────────
-const getSwRegistration = (): Promise<ServiceWorkerRegistration | null> => {
-  return Promise.race([
-    navigator.serviceWorker.ready,
-    new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
-  ]) as Promise<ServiceWorkerRegistration | null>
+// ── Obtenir le SW — forcer l'enregistrement si pas encore actif ──────────────
+const getSwRegistration = async (): Promise<ServiceWorkerRegistration | null> => {
+  try {
+    // Forcer l'enregistrement du SW s'il n'est pas encore enregistré
+    const registrations = await navigator.serviceWorker.getRegistrations()
+    if (registrations.length === 0) {
+      console.log('[Push] Aucun SW enregistré, tentative d\'enregistrement...')
+      try {
+        await navigator.serviceWorker.register('/sw.js')
+      } catch (e) {
+        console.log('[Push] Erreur enregistrement SW:', e)
+      }
+    }
+
+    // Attendre que le SW soit prêt — timeout 10s
+    const result = await Promise.race([
+      navigator.serviceWorker.ready,
+      new Promise<null>((resolve) => setTimeout(() => {
+        console.log('[Push] Timeout SW après 10s')
+        resolve(null)
+      }, 10000)),
+    ])
+
+    console.log('[Push] SW registration:', result ? 'OK' : 'null')
+    return result as ServiceWorkerRegistration | null
+  } catch (err) {
+    console.error('[Push] getSwRegistration error:', err)
+    return null
+  }
 }
 
 const isPushSubscribed = async (): Promise<boolean> => {
@@ -66,10 +89,8 @@ const urlBase64ToUint8Array = (base64String: string): ArrayBuffer => {
 
 const subscribeToPush = async (zones: string[], preferences: Preferences): Promise<boolean> => {
   try {
-    // ── Log état actuel avant demande ──
     console.log('[Push] Notification.permission avant:', Notification.permission)
 
-    // Si déjà refusé → inutile de redemander
     if (Notification.permission === 'denied') {
       console.log('[Push] Permission déjà refusée')
       return false
@@ -77,21 +98,28 @@ const subscribeToPush = async (zones: string[], preferences: Preferences): Promi
 
     const permission = await Notification.requestPermission()
     console.log('[Push] Permission après requestPermission:', permission)
-
     if (permission !== 'granted') return false
 
+    console.log('[Push] Récupération SW...')
     const reg = await getSwRegistration()
+    console.log('[Push] SW reg:', reg ? 'OK' : 'null')
     if (!reg) return false
 
+    console.log('[Push] Récupération clé VAPID...')
     const vapidRes = await fetch(`${API_URL}/notifications/vapid-public-key`)
     const { publicKey } = await vapidRes.json()
+    console.log('[Push] Clé VAPID:', publicKey ? 'OK' : 'manquante')
+    if (!publicKey) return false
 
+    console.log('[Push] Création subscription...')
     const sub = await reg.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(publicKey),
     })
+    console.log('[Push] Subscription créée:', sub.endpoint.slice(0, 50))
 
     const subJson = sub.toJSON()
+    console.log('[Push] Envoi au backend...')
     const res = await fetch(`${API_URL}/notifications/subscribe`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -103,12 +131,14 @@ const subscribeToPush = async (zones: string[], preferences: Preferences): Promi
         preferences,
       }),
     })
-
+    console.log('[Push] Réponse backend:', res.status)
     if (!res.ok) return false
+
     localStorage.setItem('push-preferences', JSON.stringify(preferences))
+    console.log('[Push] Abonnement réussi ✅')
     return true
   } catch (err) {
-    console.error('subscribeToPush error:', err)
+    console.error('[Push] subscribeToPush error:', err)
     return false
   }
 }
