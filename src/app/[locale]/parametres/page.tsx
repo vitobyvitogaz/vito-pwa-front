@@ -9,7 +9,6 @@ import {
 } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
-// ── Type des préférences ──────────────────────────────────────────────────────
 type Preferences = {
   promotions: boolean
   resellers:  boolean
@@ -17,65 +16,176 @@ type Preferences = {
   broadcast:  boolean
 }
 
-// ── Imports webpush dynamiques pour éviter les erreurs SSR ───────────────────
-// Ces fonctions utilisent window/navigator qui n'existent pas côté serveur
-let webpushModule: typeof import('@/lib/webpush') | null = null
-const getWebpush = async () => {
-  if (!webpushModule) {
-    webpushModule = await import('@/lib/webpush')
+const DEFAULT_PREFERENCES: Preferences = {
+  promotions: true,
+  resellers:  true,
+  delivery:   true,
+  broadcast:  true,
+}
+
+const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
+
+// ── Helpers push — inline pour éviter tout problème d'import ─────────────────
+
+const isPushSupported = (): boolean => {
+  return (
+    typeof window !== 'undefined' &&
+    'serviceWorker' in navigator &&
+    'PushManager' in window &&
+    'Notification' in window
+  )
+}
+
+// ── Timeout sur serviceWorker.ready pour ne jamais bloquer ───────────────────
+const getSwRegistration = (): Promise<ServiceWorkerRegistration | null> => {
+  return Promise.race([
+    navigator.serviceWorker.ready,
+    new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+  ]) as Promise<ServiceWorkerRegistration | null>
+}
+
+const isPushSubscribed = async (): Promise<boolean> => {
+  try {
+    const reg = await getSwRegistration()
+    if (!reg) return false
+    const sub = await reg.pushManager.getSubscription()
+    return !!sub
+  } catch {
+    return false
   }
-  return webpushModule
+}
+
+const urlBase64ToUint8Array = (base64String: string): ArrayBuffer => {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const rawData = window.atob(base64)
+  const output = new Uint8Array(rawData.length)
+  for (let i = 0; i < rawData.length; ++i) output[i] = rawData.charCodeAt(i)
+  return output.buffer as ArrayBuffer
+}
+
+const subscribeToPush = async (zones: string[], preferences: Preferences): Promise<boolean> => {
+  try {
+    const permission = await Notification.requestPermission()
+    if (permission !== 'granted') return false
+
+    const reg = await getSwRegistration()
+    if (!reg) return false
+
+    const vapidRes = await fetch(`${API_URL}/notifications/vapid-public-key`)
+    const { publicKey } = await vapidRes.json()
+
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(publicKey),
+    })
+
+    const subJson = sub.toJSON()
+    const res = await fetch(`${API_URL}/notifications/subscribe`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        endpoint:    subJson.endpoint,
+        p256dh:      subJson.keys?.p256dh,
+        auth:        subJson.keys?.auth,
+        zones,
+        preferences,
+      }),
+    })
+
+    if (!res.ok) return false
+    localStorage.setItem('push-preferences', JSON.stringify(preferences))
+    return true
+  } catch (err) {
+    console.error('subscribeToPush error:', err)
+    return false
+  }
+}
+
+const unsubscribeFromPush = async (): Promise<void> => {
+  try {
+    const reg = await getSwRegistration()
+    if (!reg) return
+    const sub = await reg.pushManager.getSubscription()
+    if (!sub) return
+    await fetch(`${API_URL}/notifications/unsubscribe`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ endpoint: sub.endpoint }),
+    })
+    await sub.unsubscribe()
+    localStorage.removeItem('push-preferences')
+  } catch (err) {
+    console.error('unsubscribeFromPush error:', err)
+  }
+}
+
+const updatePushPreferences = async (preferences: Preferences): Promise<void> => {
+  try {
+    const reg = await getSwRegistration()
+    if (!reg) return
+    const sub = await reg.pushManager.getSubscription()
+    if (!sub) return
+    await fetch(`${API_URL}/notifications/preferences`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ endpoint: sub.endpoint, preferences }),
+    })
+    localStorage.setItem('push-preferences', JSON.stringify(preferences))
+  } catch (err) {
+    console.error('updatePushPreferences error:', err)
+  }
+}
+
+const getStoredPreferences = (): Preferences => {
+  try {
+    const s = localStorage.getItem('push-preferences')
+    if (s) {
+      const p = JSON.parse(s)
+      return {
+        promotions: p.promotions ?? true,
+        resellers:  p.resellers  ?? true,
+        delivery:   p.delivery   ?? true,
+        broadcast:  p.broadcast  ?? true,
+      }
+    }
+  } catch {}
+  return { ...DEFAULT_PREFERENCES }
 }
 
 // ── ThemeSwitcher inline ──────────────────────────────────────────────────────
 const useTheme = () => {
   const [isDark, setIsDark] = useState(true)
-
   useEffect(() => {
-    const theme = localStorage.getItem('theme')
-    setIsDark(theme !== 'light')
+    setIsDark(localStorage.getItem('theme') !== 'light')
   }, [])
-
   const toggle = () => {
     const newIsDark = !isDark
     setIsDark(newIsDark)
-    if (newIsDark) {
-      document.documentElement.classList.add('dark')
-      localStorage.setItem('theme', 'dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-      localStorage.setItem('theme', 'light')
-    }
+    document.documentElement.classList.toggle('dark', newIsDark)
+    localStorage.setItem('theme', newIsDark ? 'dark' : 'light')
     hapticFeedback('light')
   }
-
   return { isDark, toggle }
 }
 
-// ── Section card ──────────────────────────────────────────────────────────────
+// ── Composants UI ─────────────────────────────────────────────────────────────
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div className="mb-5">
     <p className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-2 px-1">
       {title}
     </p>
-    {/* ── rounded-xl au lieu de rounded-2xl ── */}
     <div className="bg-white dark:bg-dark-surface rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden divide-y divide-neutral-100 dark:divide-neutral-800">
       {children}
     </div>
   </div>
 )
 
-// ── Ligne toggle ──────────────────────────────────────────────────────────────
 const ToggleRow = ({
   icon, label, sublabel, enabled, onToggle, loading = false, disabled = false,
 }: {
-  icon: React.ReactNode
-  label: string
-  sublabel?: string
-  enabled: boolean
-  onToggle: () => void
-  loading?: boolean
-  disabled?: boolean
+  icon: React.ReactNode; label: string; sublabel?: string
+  enabled: boolean; onToggle: () => void; loading?: boolean; disabled?: boolean
 }) => (
   <div className="flex items-center gap-4 px-4 py-3.5">
     <div className="w-9 h-9 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center flex-shrink-0">
@@ -92,30 +202,18 @@ const ToggleRow = ({
         enabled ? 'bg-primary' : 'bg-neutral-300 dark:bg-neutral-700'
       } ${loading || disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
-      {loading ? (
-        <Loader2 className="w-3.5 h-3.5 text-white animate-spin absolute inset-0 m-auto" />
-      ) : (
-        <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform duration-300 absolute top-1 ${
-          enabled ? 'translate-x-6' : 'translate-x-1'
-        }`} />
-      )}
+      {loading
+        ? <Loader2 className="w-3.5 h-3.5 text-white animate-spin absolute inset-0 m-auto" />
+        : <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform duration-300 absolute top-1 ${enabled ? 'translate-x-6' : 'translate-x-1'}`} />
+      }
     </button>
   </div>
 )
 
-// ── Ligne chevron ─────────────────────────────────────────────────────────────
-const ChevronRow = ({
-  icon, label, value, onClick,
-}: {
-  icon: React.ReactNode
-  label: string
-  value?: string
-  onClick?: () => void
+const ChevronRow = ({ icon, label, value, onClick }: {
+  icon: React.ReactNode; label: string; value?: string; onClick?: () => void
 }) => (
-  <button
-    onClick={onClick}
-    className="w-full flex items-center gap-4 px-4 py-3.5 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors"
-  >
+  <button onClick={onClick} className="w-full flex items-center gap-4 px-4 py-3.5 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors">
     <div className="w-9 h-9 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center flex-shrink-0">
       {icon}
     </div>
@@ -132,83 +230,72 @@ export default function ParametresPage() {
   const router = useRouter()
   const { isDark, toggle: toggleTheme } = useTheme()
 
-  // ── Fix SSR : monté uniquement côté client ───────────────────────────────
-  const [mounted, setMounted] = useState(false)
-
+  const [mounted, setMounted]           = useState(false)
   const [pushSupported, setPushSupported]   = useState(false)
   const [pushSubscribed, setPushSubscribed] = useState(false)
-  const [preferences, setPreferences]       = useState<Preferences>({
-    promotions: true, resellers: true, delivery: true, broadcast: true,
-  })
-  const [loadingPush, setLoadingPush]       = useState(true)
+  const [preferences, setPreferences]   = useState<Preferences>({ ...DEFAULT_PREFERENCES })
+  const [loadingPush, setLoadingPush]   = useState(true)
   const [togglingMaster, setTogglingMaster] = useState(false)
-  const [togglingPref, setTogglingPref]     = useState<string | null>(null)
-
-  const [zone, setZone]             = useState<string | null>(null)
-  const [isLocating, setIsLocating] = useState(false)
+  const [togglingPref, setTogglingPref] = useState<string | null>(null)
+  const [zone, setZone]                 = useState<string | null>(null)
+  const [isLocating, setIsLocating]     = useState(false)
   const [cacheCleared, setCacheCleared] = useState(false)
 
-  // ── Monter côté client uniquement ────────────────────────────────────────
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  useEffect(() => { setMounted(true) }, [])
 
   useEffect(() => {
     if (!mounted) return
-    initNotifications()
     loadZone()
-
-    // Clear badge non lu
-    getWebpush().then(m => m.clearUnreadCount())
+    // Clear badge
+    try { localStorage.setItem('push-unread-count', '0') } catch {}
+    initNotifications()
   }, [mounted])
 
   const initNotifications = async () => {
     setLoadingPush(true)
     try {
-      const m = await getWebpush()
-      const supported = m.isPushSupported()
+      const supported = isPushSupported()
       setPushSupported(supported)
-
       if (supported) {
-        const subscribed = await m.isPushSubscribed()
+        const subscribed = await isPushSubscribed()
         setPushSubscribed(subscribed)
         if (subscribed) {
-          const stored = m.getStoredPreferences()
-          setPreferences({
-            promotions: stored.promotions ?? true,
-            resellers:  stored.resellers  ?? true,
-            delivery:   stored.delivery   ?? true,
-            broadcast:  stored.broadcast  ?? true,
-          })
+          setPreferences(getStoredPreferences())
         }
       }
+    } catch (err) {
+      console.error('initNotifications error:', err)
     } finally {
+      // ── Toujours terminer le loading, même en cas d'erreur ──
       setLoadingPush(false)
     }
   }
 
   const loadZone = () => {
-    const saved = localStorage.getItem('user-location')
-    if (saved) setZone(saved)
+    try {
+      const saved = localStorage.getItem('user-location')
+      if (saved) setZone(saved)
+    } catch {}
   }
 
   const handleMasterToggle = async () => {
     hapticFeedback('medium')
     setTogglingMaster(true)
     try {
-      const m = await getWebpush()
       if (pushSubscribed) {
-        await m.unsubscribeFromPush()
+        await unsubscribeFromPush()
         setPushSubscribed(false)
       } else {
         const zones = zone ? [zone.split(',')[0].trim()] : []
-        const success = await m.subscribeToPush(zones, preferences)
+        const success = await subscribeToPush(zones, preferences)
         if (success) {
           setPushSubscribed(true)
         } else {
           alert('Pour activer les alertes, autorisez les notifications dans les paramètres de votre navigateur.')
         }
       }
+    } catch (err) {
+      console.error('handleMasterToggle error:', err)
     } finally {
       setTogglingMaster(false)
     }
@@ -221,8 +308,7 @@ export default function ParametresPage() {
     const newPrefs: Preferences = { ...preferences, [key]: !preferences[key] }
     setPreferences(newPrefs)
     try {
-      const m = await getWebpush()
-      await m.updatePushPreferences(newPrefs)
+      await updatePushPreferences(newPrefs)
     } catch {
       setPreferences(preferences)
     } finally {
@@ -234,7 +320,6 @@ export default function ParametresPage() {
     if (!navigator.geolocation) return
     hapticFeedback('light')
     setIsLocating(true)
-
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         try {
@@ -245,12 +330,9 @@ export default function ParametresPage() {
           )
           const data = await res.json()
           const addr = data.address
-          const label =
-            addr.city || addr.town || addr.village || addr.suburb ||
-            addr.city_district || addr.county || 'Localisation détectée'
+          const label = addr.city || addr.town || addr.village || addr.suburb || addr.city_district || addr.county || 'Localisation détectée'
           const region = addr.state || addr.region || ''
           const full = region ? `${label}, ${region}` : label
-
           setZone(full)
           localStorage.setItem('user-location', full)
           localStorage.setItem('user-location-timestamp', String(Date.now()))
@@ -268,43 +350,20 @@ export default function ParametresPage() {
     try {
       if ('caches' in window) {
         const keys = await caches.keys()
-        await Promise.all(keys.map(key => caches.delete(key)))
+        await Promise.all(keys.map(k => caches.delete(k)))
       }
       setCacheCleared(true)
       setTimeout(() => setCacheCleared(false), 3000)
-    } catch (err) {
-      console.error('Erreur vidage cache:', err)
-    }
+    } catch {}
   }
 
   const notifTypes: { key: keyof Preferences; icon: React.ReactNode; label: string; sublabel: string }[] = [
-    {
-      key:      'promotions',
-      icon:     <Tag className="w-4 h-4 text-amber-500" strokeWidth={1.5} />,
-      label:    'Promotions & offres',
-      sublabel: 'Nouvelles promos Vitogaz',
-    },
-    {
-      key:      'resellers',
-      icon:     <Building2 className="w-4 h-4 text-primary" strokeWidth={1.5} />,
-      label:    'Nouveaux revendeurs',
-      sublabel: 'Points de vente près de vous',
-    },
-    {
-      key:      'delivery',
-      icon:     <Truck className="w-4 h-4 text-blue-500" strokeWidth={1.5} />,
-      label:    'Nouvelles sociétés de livraison',
-      sublabel: 'Livraison à domicile disponible',
-    },
-    {
-      key:      'broadcast',
-      icon:     <Megaphone className="w-4 h-4 text-purple-500" strokeWidth={1.5} />,
-      label:    'Infos Vitogaz',
-      sublabel: 'Annonces importantes',
-    },
+    { key: 'promotions', icon: <Tag className="w-4 h-4 text-amber-500" strokeWidth={1.5} />, label: 'Promotions & offres', sublabel: 'Nouvelles promos Vitogaz' },
+    { key: 'resellers',  icon: <Building2 className="w-4 h-4 text-primary" strokeWidth={1.5} />, label: 'Nouveaux revendeurs', sublabel: 'Points de vente près de vous' },
+    { key: 'delivery',   icon: <Truck className="w-4 h-4 text-blue-500" strokeWidth={1.5} />, label: 'Nouvelles sociétés de livraison', sublabel: 'Livraison à domicile disponible' },
+    { key: 'broadcast',  icon: <Megaphone className="w-4 h-4 text-purple-500" strokeWidth={1.5} />, label: 'Infos Vitogaz', sublabel: 'Annonces importantes' },
   ]
 
-  // ── Pendant le SSR : skeleton minimaliste ────────────────────────────────
   if (!mounted) {
     return (
       <main className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16 pb-24 md:pb-8">
@@ -338,10 +397,7 @@ export default function ParametresPage() {
         {/* Apparence */}
         <Section title="Apparence">
           <ToggleRow
-            icon={isDark
-              ? <Moon className="w-4 h-4 text-indigo-500" strokeWidth={1.5} />
-              : <Sun className="w-4 h-4 text-amber-500" strokeWidth={1.5} />
-            }
+            icon={isDark ? <Moon className="w-4 h-4 text-indigo-500" strokeWidth={1.5} /> : <Sun className="w-4 h-4 text-amber-500" strokeWidth={1.5} />}
             label="Mode sombre"
             sublabel={isDark ? 'Thème sombre activé' : 'Thème clair activé'}
             enabled={isDark}
@@ -360,16 +416,13 @@ export default function ParametresPage() {
             <div className="px-4 py-4 flex items-center gap-3">
               <BellOff className="w-4 h-4 text-neutral-400" strokeWidth={1.5} />
               <p className="text-sm text-neutral-500 dark:text-neutral-400 font-sans">
-                Les notifications ne sont pas supportées sur ce navigateur
+                Les notifications push ne sont pas supportées sur ce navigateur
               </p>
             </div>
           ) : (
             <>
               <ToggleRow
-                icon={pushSubscribed
-                  ? <Bell className="w-4 h-4 text-primary" strokeWidth={1.5} />
-                  : <BellOff className="w-4 h-4 text-neutral-400" strokeWidth={1.5} />
-                }
+                icon={pushSubscribed ? <Bell className="w-4 h-4 text-primary" strokeWidth={1.5} /> : <BellOff className="w-4 h-4 text-neutral-400" strokeWidth={1.5} />}
                 label="Alertes activées"
                 sublabel={pushSubscribed ? 'Vous recevez des alertes' : 'Activez pour recevoir des alertes'}
                 enabled={pushSubscribed}
@@ -403,19 +456,17 @@ export default function ParametresPage() {
                 {isLocating ? 'Détection en cours...' : zone || 'Non définie'}
               </p>
             </div>
-            {/* ── Label dynamique : Rafraîchir si zone déjà connue, Détecter sinon ── */}
             <button
               onClick={handleDetectZone}
               disabled={isLocating}
               className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium transition-all active:scale-95 disabled:opacity-50 flex-shrink-0"
             >
-              {isLocating ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" strokeWidth={1.5} />
-              ) : zone ? (
-                <RefreshCw className="w-3.5 h-3.5" strokeWidth={1.5} />
-              ) : (
-                <LocateFixed className="w-3.5 h-3.5" strokeWidth={1.5} />
-              )}
+              {isLocating
+                ? <Loader2 className="w-3.5 h-3.5 animate-spin" strokeWidth={1.5} />
+                : zone
+                  ? <RefreshCw className="w-3.5 h-3.5" strokeWidth={1.5} />
+                  : <LocateFixed className="w-3.5 h-3.5" strokeWidth={1.5} />
+              }
               {isLocating ? 'Détection...' : zone ? 'Rafraîchir' : 'Détecter'}
             </button>
           </div>
@@ -452,12 +503,8 @@ export default function ParametresPage() {
               <CheckCircle className="w-4 h-4 text-primary" strokeWidth={1.5} />
             </div>
             <div>
-              <p className="text-sm font-medium text-neutral-900 dark:text-white font-sans">
-                Leader du gaz depuis 25 ans
-              </p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">
-                020 22 364 64 · Lun-Ven 8h-17h
-              </p>
+              <p className="text-sm font-medium text-neutral-900 dark:text-white font-sans">Leader du gaz depuis 25 ans</p>
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">020 22 364 64 · Lun-Ven 8h-17h</p>
             </div>
           </div>
         </Section>
