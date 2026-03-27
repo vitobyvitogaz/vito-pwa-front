@@ -542,7 +542,7 @@ export default function ParametresPage() {
               <Info className="w-4 h-4 text-neutral-500" strokeWidth={1.5} />
             </div>
             <div>
-              <p className="text-sm font-medium text-neutral-900 dark:text-white font-sans">Vito by Vitogaz</p>
+              <p className="text-sm font-medium text-neutral-900 dark:text-white font-sans">VitobyVitogaz</p>
               <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">Version 1.0.0 — Madagascar</p>
             </div>
           </div>
@@ -552,7 +552,7 @@ export default function ParametresPage() {
             </div>
             <div>
               <p className="text-sm font-medium text-neutral-900 dark:text-white font-sans">Leader du gaz depuis 25 ans</p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">020 22 364 64 · Lun-Ven 8h-17h</p>
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">020 22 364 64 · Lun-Ven 8h-18h Sam 8h-13h</p>
             </div>
           </div>
         </Section>
