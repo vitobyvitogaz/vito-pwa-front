@@ -13,7 +13,6 @@ import { X, Info, ShieldCheck, Award, Users } from 'lucide-react'
 
 const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
 
-// ── Skeleton hero mobile ──────────────────────────────────────────────────────
 const HeroSkeletonMobile = () => (
   <div className="relative block md:hidden w-full aspect-[4/5] bg-gradient-to-br from-neutral-200 to-neutral-100 dark:from-neutral-800 dark:to-neutral-900 animate-pulse">
     <div className="absolute inset-0 flex items-center justify-center px-4">
@@ -37,7 +36,6 @@ const HeroSkeletonMobile = () => (
   </div>
 )
 
-// ── Skeleton hero desktop ─────────────────────────────────────────────────────
 const HeroSkeletonDesktop = () => (
   <div className="relative hidden md:block w-full aspect-video bg-gradient-to-br from-neutral-200 to-neutral-100 dark:from-neutral-800 dark:to-neutral-900 animate-pulse">
     <div className="absolute inset-0 flex items-center justify-center">
@@ -59,15 +57,10 @@ const HeroSkeletonDesktop = () => (
   </div>
 )
 
-// ── Skeleton MainButtons ──────────────────────────────────────────────────────
 const MainButtonsSkeleton = () => (
   <div className="grid grid-cols-2 gap-6 max-w-3xl mx-auto">
     {[0, 1, 2, 3].map((i) => (
-      <div
-        key={i}
-        className="bg-white dark:bg-dark-surface rounded-xl p-5 aspect-square border border-neutral-100 dark:border-neutral-800 animate-pulse"
-        style={{ animationDelay: `${i * 0.05}s` }}
-      >
+      <div key={i} className="bg-white dark:bg-dark-surface rounded-xl p-5 aspect-square border border-neutral-100 dark:border-neutral-800 animate-pulse" style={{ animationDelay: `${i * 0.05}s` }}>
         <div className="flex flex-col h-full justify-between">
           <div className="w-14 h-14 rounded-xl bg-neutral-100 dark:bg-neutral-800" />
           <div className="space-y-3 p-3">
@@ -85,17 +78,12 @@ const MainButtonsSkeleton = () => (
   </div>
 )
 
-// ── Skeleton QuickActions ─────────────────────────────────────────────────────
 const QuickActionsSkeleton = () => (
   <div className="max-w-7xl mx-auto">
     <div className="h-6 w-36 bg-neutral-200 dark:bg-neutral-800 rounded-lg mb-5 animate-pulse" />
     <div className="grid grid-cols-1 gap-4">
       {[0, 1, 2, 3].map((i) => (
-        <div
-          key={i}
-          className="bg-white dark:bg-dark-surface rounded-xl p-5 border border-neutral-100 dark:border-neutral-800 animate-pulse"
-          style={{ animationDelay: `${i * 0.05}s` }}
-        >
+        <div key={i} className="bg-white dark:bg-dark-surface rounded-xl p-5 border border-neutral-100 dark:border-neutral-800 animate-pulse" style={{ animationDelay: `${i * 0.05}s` }}>
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex-shrink-0" />
             <div className="flex-1 space-y-2">
@@ -110,7 +98,6 @@ const QuickActionsSkeleton = () => (
   </div>
 )
 
-// ── Badge confiance Vitogaz ───────────────────────────────────────────────────
 const TrustBadge = () => (
   <div className="flex items-center justify-center gap-3 sm:gap-6 flex-wrap px-4 py-3 bg-primary/5 dark:bg-primary/10 border-y border-primary/10 dark:border-primary/20">
     <div className="flex items-center gap-2">
@@ -135,6 +122,9 @@ export default function HomePage() {
   const { bannerUrlDesktop, bannerUrlMobile, title, subtitle, description, stats, loading: heroLoading } = useHeroContent()
   const [showGlassCard, setShowGlassCard] = useState(true)
   const [contentReady, setContentReady] = useState(false)
+  // ── Fix : glass card masquée jusqu'au chargement complet de l'image ──────
+  const [desktopImageLoaded, setDesktopImageLoaded] = useState(false)
+  const [mobileImageLoaded, setMobileImageLoaded] = useState(false)
 
   useEffect(() => {
     const fetchAndInitPopup = async () => {
@@ -157,12 +147,17 @@ export default function HomePage() {
     }
   }, [heroLoading])
 
+  // Si pas de banner → considérer l'image comme chargée pour ne pas bloquer
+  useEffect(() => {
+    if (!heroLoading && !bannerUrlDesktop) setDesktopImageLoaded(true)
+    if (!heroLoading && !bannerUrlMobile) setMobileImageLoaded(true)
+  }, [heroLoading, bannerUrlDesktop, bannerUrlMobile])
+
   const hasContent = !heroLoading && (
     title || subtitle || description || (stats && stats.length > 0)
   )
 
   return (
-    // ── Étape 9 : bg-neutral-50 → bg-neutral-25 (ivoire, moins éblouissant) ──
     <main className="min-h-screen bg-neutral-25 dark:bg-dark-bg pt-14 sm:pt-16 pb-20 md:pb-0">
       <OfflineBanner />
       <InstallPrompt />
@@ -180,17 +175,17 @@ export default function HomePage() {
             <Image
               src={bannerUrlDesktop}
               alt="Vitogaz - Gaz domestique"
-              fill
-              priority
-              unoptimized
-              quality={90}
+              fill priority unoptimized quality={90}
               className="object-cover object-center"
               sizes="100vw"
+              // ── Signaler quand l'image est réellement chargée ──
+              onLoad={() => setDesktopImageLoaded(true)}
             />
           )}
           <div className="absolute inset-0 bg-black/10" />
 
-          {hasContent && showGlassCard && (
+          {/* Glass card — visible uniquement après chargement de l'image ── */}
+          {hasContent && showGlassCard && desktopImageLoaded && (
             <div className="absolute inset-0 flex items-center justify-center animate-fade-in">
               <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="relative max-w-2xl mx-auto backdrop-blur-md bg-white/10 dark:bg-black/20 p-8 md:p-10 rounded-2xl border border-white/20 shadow-2xl">
@@ -234,7 +229,7 @@ export default function HomePage() {
             </div>
           )}
 
-          {hasContent && !showGlassCard && (
+          {hasContent && !showGlassCard && desktopImageLoaded && (
             <div className="absolute bottom-8 right-8 animate-fade-in">
               <button
                 onClick={() => setShowGlassCard(true)}
@@ -257,17 +252,15 @@ export default function HomePage() {
             <Image
               src={bannerUrlMobile}
               alt="Vitogaz - Gaz domestique"
-              fill
-              priority
-              unoptimized
-              quality={90}
+              fill priority unoptimized quality={90}
               className="object-cover object-center"
               sizes="100vw"
+              onLoad={() => setMobileImageLoaded(true)}
             />
           )}
           <div className="absolute inset-0 bg-black/10" />
 
-          {hasContent && showGlassCard && (
+          {hasContent && showGlassCard && mobileImageLoaded && (
             <div className="absolute inset-0 flex items-center justify-center px-4 animate-fade-in">
               <div className="relative w-full max-w-sm backdrop-blur-md bg-white/10 dark:bg-black/20 p-6 rounded-2xl border border-white/20 shadow-2xl">
                 <button
@@ -309,7 +302,7 @@ export default function HomePage() {
             </div>
           )}
 
-          {hasContent && !showGlassCard && (
+          {hasContent && !showGlassCard && mobileImageLoaded && (
             <div className="absolute bottom-6 right-6 animate-fade-in">
               <button
                 onClick={() => setShowGlassCard(true)}
@@ -322,15 +315,15 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* ── BADGE CONFIANCE ── */}
+      {/* BADGE CONFIANCE */}
       {!heroLoading && <TrustBadge />}
 
-      {/* ── BOUTONS PRINCIPAUX ── */}
+      {/* BOUTONS PRINCIPAUX */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-12 sm:pb-16">
         {!contentReady ? <MainButtonsSkeleton /> : <MainButtons />}
       </div>
 
-      {/* ── ACTIONS RAPIDES ── */}
+      {/* ACTIONS RAPIDES */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-8 sm:pb-12">
         {!contentReady ? <QuickActionsSkeleton /> : <QuickActions />}
       </div>

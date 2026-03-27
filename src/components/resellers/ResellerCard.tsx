@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import type { Reseller } from '@/types/reseller'
-//import { Phone, MapPin, Clock, Navigation, MessageCircle, Wrench, ShoppingBag, Truck, Store } from 'lucide-react'
 import { Phone, MapPin, Clock, Navigation, MessageCircle, Wrench, ShoppingBag, Truck, Store, Fuel, ShoppingCart, Home } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 import type { DistanceResult } from '@/lib/hooks/useDistanceMatrix'
@@ -26,18 +25,10 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false)
 
-  const handleCall = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    hapticFeedback('medium')
-    if (reseller.phone) {
-      window.location.href = `tel:${reseller.phone}`
-    }
-  }
-
+  // ── WhatsApp : window.open est OK car action intentionnelle ──────────────
   const handleWhatsApp = (e: React.MouseEvent) => {
     e.stopPropagation()
     if (!reseller.whatsapp) return
-    
     hapticFeedback('medium')
     const message = encodeURIComponent(
       `Bonjour ${reseller.name}, je souhaite commander du gaz via Vito.`
@@ -58,26 +49,26 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
   }
 
   const getBadgeColor = () => {
-  switch (reseller.type) {
-    case 'Quincaillerie': return '#C8102E'
-    case 'Épicerie': return '#008B7F'
-    case 'Station Service': return '#FF8C00'
-    case 'Libre Service': return '#7C3AED'
-    case 'Maison du gaz': return '#0EA5E9'
-    default: return '#4B5563'
+    switch (reseller.type) {
+      case 'Quincaillerie':   return '#C8102E'
+      case 'Épicerie':        return '#008B7F'
+      case 'Station Service': return '#FF8C00'
+      case 'Libre Service':   return '#7C3AED'
+      case 'Maison du gaz':   return '#0EA5E9'
+      default:                return '#4B5563'
+    }
   }
-}
 
-const getTypeIcon = () => {
-  switch (reseller.type) {
-    case 'Quincaillerie': return Wrench
-    case 'Épicerie': return ShoppingBag
-    case 'Station Service': return Fuel
-    case 'Libre Service': return ShoppingCart
-    case 'Maison du gaz': return Home
-    default: return Store
+  const getTypeIcon = () => {
+    switch (reseller.type) {
+      case 'Quincaillerie':   return Wrench
+      case 'Épicerie':        return ShoppingBag
+      case 'Station Service': return Fuel
+      case 'Libre Service':   return ShoppingCart
+      case 'Maison du gaz':   return Home
+      default:                return Store
+    }
   }
-}
 
   const TypeIcon = getTypeIcon()
 
@@ -99,7 +90,7 @@ const getTypeIcon = () => {
         transform: isHovered || isSelected ? 'translateY(-2px)' : 'translateY(0)',
       }}
     >
-      {/* Badge type avec icône */}
+      {/* Badge type */}
       <div className="absolute top-4 right-4">
         <div
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/40 text-white"
@@ -118,18 +109,12 @@ const getTypeIcon = () => {
       {/* Badge Ouvert/Fermé */}
       {reseller.business_status && (
         <div className="flex items-center gap-2 mb-3">
-          <span
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
-              reseller.business_status.isOpen
-                ? 'bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800'
-                : 'bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800'
-            }`}
-          >
-            <span
-              className={`w-2 h-2 rounded-full ${
-                reseller.business_status.isOpen ? 'bg-green-500' : 'bg-red-500'
-              }`}
-            />
+          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
+            reseller.business_status.isOpen
+              ? 'bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800'
+              : 'bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800'
+          }`}>
+            <span className={`w-2 h-2 rounded-full ${reseller.business_status.isOpen ? 'bg-green-500' : 'bg-red-500'}`} />
             {reseller.business_status.isOpen ? 'OUVERT' : 'FERMÉ'}
           </span>
           <span className="text-xs text-neutral-500 dark:text-neutral-400">
@@ -138,7 +123,7 @@ const getTypeIcon = () => {
         </div>
       )}
 
-      {/* Distance si disponible */}
+      {/* Distance */}
       {distance && (
         <div className="flex items-center gap-3 mb-3 text-sm">
           <div className="flex items-center gap-1.5 text-primary font-medium">
@@ -158,7 +143,7 @@ const getTypeIcon = () => {
         <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">{reseller.address}</p>
       </div>
 
-      {/* Horaires compacts */}
+      {/* Horaires */}
       {reseller.hours && (
         <div className="mb-3">
           <BusinessHoursCompact
@@ -169,7 +154,7 @@ const getTypeIcon = () => {
         </div>
       )}
 
-      {/* Produits compacts */}
+      {/* Produits */}
       <div className="mb-4">
         <ProductsDisplayCompact reseller={reseller} />
       </div>
@@ -178,10 +163,7 @@ const getTypeIcon = () => {
       {Array.isArray(reseller.services) && reseller.services.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">
           {reseller.services.map(service => (
-            <span
-              key={service}
-              className="px-2.5 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl text-xs font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700"
-            >
+            <span key={service} className="px-2.5 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl text-xs font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700">
               {service}
             </span>
           ))}
@@ -189,20 +171,26 @@ const getTypeIcon = () => {
       )}
 
       {/* Actions */}
-      <div className="flex gap-2">
-        <button
-          onClick={handleCall}
-          disabled={!reseller.phone}
-          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-full font-medium text-sm transition-all duration-300 ${
-            reseller.phone
-              ? 'bg-primary text-white hover:bg-primary/90'
-              : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400 cursor-not-allowed'
-          }`}
-        >
-          <Phone className="w-4 h-4" strokeWidth={1.5} />
-          <span>Appeler</span>
-        </button>
+      <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
 
+        {/* ── Bouton Appeler : <a href="tel:"> natif — garantit l'ouverture de l'app téléphone ── */}
+        {reseller.phone ? (
+          <a
+            href={`tel:${reseller.phone}`}
+            onClick={() => hapticFeedback('medium')}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-full font-medium text-sm bg-primary text-white hover:bg-primary/90 transition-all duration-300"
+          >
+            <Phone className="w-4 h-4" strokeWidth={1.5} />
+            <span>Appeler</span>
+          </a>
+        ) : (
+          <div className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-full font-medium text-sm bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400 cursor-not-allowed">
+            <Phone className="w-4 h-4" strokeWidth={1.5} />
+            <span>Appeler</span>
+          </div>
+        )}
+
+        {/* WhatsApp */}
         <button
           onClick={handleWhatsApp}
           disabled={!reseller.whatsapp}
@@ -216,6 +204,7 @@ const getTypeIcon = () => {
           <MessageCircle className="w-5 h-5" strokeWidth={1.5} />
         </button>
 
+        {/* Itinéraire */}
         <button
           onClick={handleDirections}
           className="flex items-center justify-center w-11 h-11 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300"
