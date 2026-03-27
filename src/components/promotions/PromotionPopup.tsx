@@ -4,39 +4,31 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Image from 'next/image'
 import type { Promotion } from '@/types/promotion'
-import { X, Tag, Sparkles, ArrowRight, Calendar } from 'lucide-react'
+import { X, Tag, Sparkles, ArrowRight, Calendar, Store } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 interface PromotionPopupProps {
-  promotion: Promotion
-  onClose: () => void
+  promotion:    Promotion
+  onClose:      () => void
+  autoCloseSec?: number  // configurable depuis les settings
 }
 
-const POPUP_COOLDOWN_MINUTES = 0
-
-export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClose }) => {
+export const PromotionPopup: React.FC<PromotionPopupProps> = ({
+  promotion,
+  onClose,
+  autoCloseSec = 30,
+}) => {
   const router = useRouter()
   const params = useParams()
   const locale = params.locale as string
 
-  const [isVisible, setIsVisible] = useState(false)
-  const [isClosing, setIsClosing] = useState(false)
-  const [timeLeft, setTimeLeft] = useState({ days: '00', hours: '00', minutes: '00', seconds: '00' })
-  const [isExpired, setIsExpired] = useState(false)
-  const [copied, setCopied] = useState(false)
+  const [isVisible, setIsVisible]   = useState(true)
+  const [isClosing, setIsClosing]   = useState(false)
+  const [timeLeft, setTimeLeft]     = useState({ days: '00', hours: '00', minutes: '00', seconds: '00' })
+  const [isExpired, setIsExpired]   = useState(false)
+  const [copied, setCopied]         = useState(false)
   const [progressWidth, setProgressWidth] = useState(100)
   const promoDurationRef = useRef<number | null>(null)
-
-  useEffect(() => {
-    const lastShown = localStorage.getItem('promotionPopupShown')
-    const shouldShow = !lastShown ||
-      (Date.now() - parseInt(lastShown)) / (1000 * 60) >= POPUP_COOLDOWN_MINUTES
-
-    if (shouldShow) {
-      setIsVisible(true)
-      localStorage.setItem('promotionPopupShown', String(Date.now()))
-    }
-  }, [])
 
   useEffect(() => {
     if (!isVisible) return
@@ -51,41 +43,40 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
     }
 
     const calculateTimeLeft = () => {
-      const now = Date.now()
+      const now  = Date.now()
       const diff = end - now
-
       if (diff <= 0) {
         setIsExpired(true)
         setTimeLeft({ days: '00', hours: '00', minutes: '00', seconds: '00' })
         setProgressWidth(0)
         return
       }
-
       setProgressWidth(Math.min(100, Math.max(0, (diff / promoDurationRef.current!) * 100)))
       setTimeLeft({
-        days: String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0'),
-        hours: String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0'),
+        days:    String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0'),
+        hours:   String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0'),
         minutes: String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0'),
         seconds: String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0'),
       })
     }
 
     calculateTimeLeft()
-    const interval = setInterval(calculateTimeLeft, 1000)
-    const autoCloseTimer = setTimeout(() => handleClose(), 15000)
+    const interval      = setInterval(calculateTimeLeft, 1000)
+    // ── Fermeture auto configurable depuis les settings ──────────────────
+    const autoCloseTimer = setTimeout(() => handleClose(), autoCloseSec * 1000)
 
     return () => {
       clearInterval(interval)
       clearTimeout(autoCloseTimer)
     }
-  }, [promotion.valid_until, isVisible])
+  }, [promotion.valid_until, isVisible, autoCloseSec])
 
   const getUrgencyColor = () => {
     if (isExpired) return { text: 'text-neutral-500', bg: 'bg-neutral-100 dark:bg-neutral-800' }
     const diff = new Date(promotion.valid_until).getTime() - Date.now()
     const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-    if (days > 7) return { text: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20' }
-    if (days > 3) return { text: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20' }
+    if (days > 7)  return { text: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20' }
+    if (days > 3)  return { text: 'text-amber-600 dark:text-amber-400',   bg: 'bg-amber-50 dark:bg-amber-900/20' }
     return { text: 'text-red-600 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-900/20' }
   }
 
@@ -102,10 +93,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
   const handleClose = () => {
     hapticFeedback('light')
     setIsClosing(true)
-    setTimeout(() => {
-      setIsVisible(false)
-      onClose()
-    }, 300)
+    setTimeout(() => { setIsVisible(false); onClose() }, 300)
   }
 
   const handleCTA = () => {
@@ -130,33 +118,28 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
     >
       <div
         className={`relative w-full max-w-sm transition-all duration-300 ${
-          isClosing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
+          isClosing ? 'scale-95 opacity-0 translate-y-4' : 'scale-100 opacity-100 translate-y-0'
         }`}
         style={{ animation: isClosing ? 'none' : 'slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
       >
         <style>{`
           @keyframes slideUp {
             from { transform: translateY(24px) scale(0.97); opacity: 0; }
-            to { transform: translateY(0) scale(1); opacity: 1; }
+            to   { transform: translateY(0) scale(1); opacity: 1; }
           }
-          @keyframes pulse-dot {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-          }
+          @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
           .pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
         `}</style>
 
         <div className="bg-white dark:bg-dark-surface rounded-3xl shadow-2xl overflow-hidden">
 
-          {/* ── IMAGE — Next.js Image quality=72 priority (popup = above fold) ── */}
+          {/* IMAGE */}
           <div className="relative w-full aspect-[4/5] overflow-hidden">
             {promotion.image_url ? (
               <Image
                 src={promotion.image_url}
                 alt={promotion.title}
-                fill
-                quality={72}
-                priority
+                fill quality={72} priority
                 className="object-cover"
                 sizes="(max-width: 640px) 100vw, 384px"
               />
@@ -166,10 +149,9 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
               </div>
             )}
 
-            {/* Gradient bas */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
 
-            {/* Bouton fermer — w-11 h-11 = 44px ✅ */}
+            {/* Bouton fermer */}
             <button
               onClick={handleClose}
               className="absolute top-3 right-3 w-11 h-11 rounded-full bg-white/20 hover:bg-white/35 backdrop-blur-sm border border-white/30 flex items-center justify-center transition-all duration-200 hover:rotate-90 active:scale-90"
@@ -202,7 +184,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
               </div>
             </div>
 
-            {/* Titre + description sur image */}
+            {/* Titre sur image */}
             <div className="absolute bottom-0 left-0 right-0 p-4">
               <h2 className="text-lg font-bold text-white font-sans leading-tight line-clamp-2 drop-shadow-sm mb-1">
                 {promotion.title}
@@ -212,7 +194,6 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
                   {promotion.description}
                 </p>
               )}
-              {/* Barre de progression */}
               <div className="mt-3 h-1 bg-white/20 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-primary transition-all duration-1000 rounded-full"
@@ -222,7 +203,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
             </div>
           </div>
 
-          {/* ── CORPS ── */}
+          {/* CORPS */}
           <div className="px-5 py-4 space-y-3">
 
             {/* Countdown */}
@@ -231,17 +212,15 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
                 <div className="flex items-center justify-between">
                   <div className="grid grid-cols-4 gap-1.5">
                     {[
-                      { value: timeLeft.days, label: 'Jours' },
-                      { value: timeLeft.hours, label: 'Heures' },
+                      { value: timeLeft.days,    label: 'Jours' },
+                      { value: timeLeft.hours,   label: 'Heures' },
                       { value: timeLeft.minutes, label: 'Min' },
                       { value: timeLeft.seconds, label: 'Sec' },
                     ].map((unit, i) => (
                       <div key={i} className="flex flex-col items-center">
-                        <div className="min-w-[2rem] text-center">
-                          <span className={`text-base font-bold tabular-nums font-sans ${urgency.text}`}>
-                            {unit.value}
-                          </span>
-                        </div>
+                        <span className={`text-base font-bold tabular-nums font-sans ${urgency.text}`}>
+                          {unit.value}
+                        </span>
                         <span className={`text-[10px] mt-0.5 font-medium font-sans ${urgency.text} opacity-60`}>
                           {unit.label}
                         </span>
@@ -252,41 +231,34 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({ promotion, onClo
                     <Calendar className="w-3.5 h-3.5 text-neutral-400" strokeWidth={1.5} />
                     <span className="text-xs text-neutral-400 font-sans">
                       {new Date(promotion.valid_until).toLocaleDateString('fr-FR', {
-                        day: 'numeric', month: 'short'
+                        day: 'numeric', month: 'short',
                       })}
                     </span>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="px-3 py-2 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-100 dark:border-red-900">
+              <div className="px-3 py-2 bg-red-50 dark:bg-red-900/20 rounded-xl">
                 <span className="text-xs text-red-600 dark:text-red-400 font-sans">Cette offre a expiré</span>
               </div>
             )}
 
-            {/* Code promo */}
+            {/* Code promo — libellé "à montrer au revendeur" */}
             {promotion.promo_code && promotion.is_active && !isExpired && (
               <div className="rounded-xl border border-primary/20 bg-primary/5 dark:bg-primary/10 overflow-hidden">
-                <div className="flex items-center justify-between px-4 py-2 border-b border-primary/10">
-                  <div className="flex items-center gap-1.5">
-                    <Tag className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
-                    <span className="text-xs font-semibold text-primary/70 uppercase tracking-wider font-sans">
-                      Code promo
-                    </span>
-                  </div>
+                <div className="flex items-center gap-1.5 px-4 py-2 border-b border-primary/10">
+                  <Store className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
+                  <span className="text-xs font-medium text-primary/80 font-sans">
+                    À montrer à votre revendeur
+                  </span>
                 </div>
                 <button
                   onClick={handleCopyCode}
                   className="w-full flex items-center justify-between px-4 py-3 hover:bg-primary/10 transition-all duration-200 group"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Tag className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
-                    </div>
-                    <span className="text-lg font-black text-primary font-mono tracking-widest">
-                      {promotion.promo_code}
-                    </span>
-                  </div>
+                  <span className="text-lg font-black text-primary font-mono tracking-widest">
+                    {promotion.promo_code}
+                  </span>
                   <span className={`text-xs font-semibold font-sans transition-colors px-2.5 py-1 rounded-lg ${
                     copied
                       ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600'

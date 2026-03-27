@@ -3,34 +3,105 @@
 import { useState } from 'react'
 import type { Promotion } from '@/types/promotion'
 
-export const usePromotionPopup = () => {
-  const [showPopup, setShowPopup] = useState(false)
-  const [selectedPromotion, setSelectedPromotion] = useState<Promotion | null>(null)
+const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
+const POPUP_SHOWN_KEY = 'promotionPopupShown'
 
-  const selectPromotion = (promotions: Promotion[]): Promotion | null => {
-    if (promotions.length === 0) return null
+interface PopupSettings {
+  cooldown_hours:     number
+  delay_seconds:      number
+  allowed_pages:      string[]
+  auto_close_seconds: number
+  enabled:            boolean
+}
 
-    const activePromotions = promotions.filter(p => 
-      p.is_active && 
-      new Date(p.valid_until) > new Date()
-      // ← discount_value retiré, une promo sans réduction chiffrée est valide
-    )
+const DEFAULT_SETTINGS: PopupSettings = {
+  cooldown_hours:     48,
+  delay_seconds:      3,
+  allowed_pages:      ['home'],
+  auto_close_seconds: 30,
+  enabled:            true,
+}
 
-    if (activePromotions.length === 0) return null
+// ── Charger les settings popup depuis l'API ────────────────────────────────
+const fetchPopupSettings = async (): Promise<PopupSettings> => {
+  try {
+    const res = await fetch(`${API_URL}/settings/popup_settings`)
+    if (!res.ok) return DEFAULT_SETTINGS
+    const data = await res.json()
 
-    const hour = new Date().getHours()
-    const index = hour % activePromotions.length
-    return activePromotions[index]
+    // L'API peut retourner { setting_value: "{...}" } ou directement l'objet
+    const raw = data?.setting_value ?? data?.value ?? data
+    const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw
+    return { ...DEFAULT_SETTINGS, ...parsed }
+  } catch {
+    return DEFAULT_SETTINGS
   }
+}
 
-  const initializePopup = (promotions: Promotion[]) => {
+// ── Vérifier si le cooldown est respecté ──────────────────────────────────
+const isCooldownRespected = (cooldownHours: number): boolean => {
+  try {
+    const lastShown = localStorage.getItem(POPUP_SHOWN_KEY)
+    if (!lastShown) return true
+    const elapsed = (Date.now() - parseInt(lastShown)) / (1000 * 60 * 60)
+    return elapsed >= cooldownHours
+  } catch {
+    return true
+  }
+}
+
+// ── Sélectionner la promo à afficher ──────────────────────────────────────
+// Priorité : featured en premier, sinon rotation par heure
+const selectPromotion = (promotions: Promotion[]): Promotion | null => {
+  if (!promotions.length) return null
+
+  const active = promotions.filter(
+    p => p.is_active && new Date(p.valid_until) > new Date()
+  )
+  if (!active.length) return null
+
+  // Promo featured en priorité
+  const featured = active.find(p => p.is_featured)
+  if (featured) return featured
+
+  // Sinon rotation par heure
+  const hour = new Date().getHours()
+  return active[hour % active.length]
+}
+
+export const usePromotionPopup = () => {
+  const [showPopup, setShowPopup]               = useState(false)
+  const [selectedPromotion, setSelectedPromotion] = useState<Promotion | null>(null)
+  const [popupSettings, setPopupSettings]       = useState<PopupSettings>(DEFAULT_SETTINGS)
+
+  const initializePopup = async (
+    promotions: Promotion[],
+    currentPage: 'home' | 'promotions' | 'revendeurs' | 'all' = 'home',
+  ) => {
+    const settings = await fetchPopupSettings()
+    setPopupSettings(settings)
+
+    // Popup désactivé
+    if (!settings.enabled) return
+
+    // Page non autorisée
+    if (
+      !settings.allowed_pages.includes('all') &&
+      !settings.allowed_pages.includes(currentPage)
+    ) return
+
+    // Cooldown non respecté
+    if (!isCooldownRespected(settings.cooldown_hours)) return
+
+    const promotion = selectPromotion(promotions)
+    if (!promotion) return
+
+    // Délai configurable avant affichage
     setTimeout(() => {
-      const promotion = selectPromotion(promotions)
-      if (promotion) {
-        setSelectedPromotion(promotion)
-        setShowPopup(true)
-      }
-    }, 2000)
+      setSelectedPromotion(promotion)
+      setShowPopup(true)
+      localStorage.setItem(POPUP_SHOWN_KEY, String(Date.now()))
+    }, settings.delay_seconds * 1000)
   }
 
   const closePopup = () => {
@@ -41,6 +112,7 @@ export const usePromotionPopup = () => {
   return {
     showPopup,
     selectedPromotion,
+    popupSettings,
     initializePopup,
     closePopup,
   }
