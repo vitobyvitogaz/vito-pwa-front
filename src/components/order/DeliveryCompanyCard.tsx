@@ -1,21 +1,60 @@
 'use client'
 
 import { useState } from 'react'
-import { Phone, Mail, MapPin, Clock, CheckCircle, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
+import { Phone, Mail, MapPin, Clock, CheckCircle, ChevronDown, ChevronUp, ExternalLink, ThumbsUp } from 'lucide-react'
 import type { DeliveryCompany } from '@/data/deliveryCompanies'
 import { RatingStars } from './RatingStars'
 import Image from 'next/image'
+
+const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
 
 interface DeliveryCompanyCardProps {
   company: DeliveryCompany
 }
 
+// ── Enregistrer un contact attempt pour déclencher le feedback push 2h après ─
+const recordContactAttempt = async (
+  companyId: number,
+  contactType: 'phone' | 'whatsapp',
+): Promise<void> => {
+  try {
+    // Vérifier que les push sont supportés et que l'utilisateur est abonné
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
+
+    const registration = await Promise.race([
+      navigator.serviceWorker.ready,
+      new Promise<null>(resolve => setTimeout(() => resolve(null), 2000)),
+    ])
+
+    if (!registration) return
+
+    const subscription = await (registration as ServiceWorkerRegistration).pushManager.getSubscription()
+    if (!subscription) return
+
+    const endpoint = subscription.endpoint
+
+    await fetch(`${API_URL}/feedback/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        company_id:    companyId,
+        push_endpoint: endpoint,
+        contact_type:  contactType,
+      }),
+    })
+  } catch {
+    // Silencieux — ne jamais bloquer l'UX pour un tracking
+  }
+}
+
 export const DeliveryCompanyCard: React.FC<DeliveryCompanyCardProps> = ({ company }) => {
   const [descExpanded, setDescExpanded] = useState(false)
 
-  // ── WhatsApp : window.open OK car action intentionnelle ──────────────────
-  const handleWhatsAppClick = () => {
+  // ── WhatsApp ─────────────────────────────────────────────────────────────
+  const handleWhatsAppClick = async () => {
     if (!company.whatsapp) return
+    // Tracker avant d'ouvrir
+    recordContactAttempt(company.id, 'whatsapp')
     const message = `Bonjour ${company.name}, je suis intéressé(e) par une livraison de gaz. Pouvez-vous me renseigner ?`
     window.open(
       `https://wa.me/${company.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`,
@@ -31,6 +70,18 @@ export const DeliveryCompanyCard: React.FC<DeliveryCompanyCardProps> = ({ compan
     const body = `Bonjour,\n\nJe souhaiterais obtenir des informations concernant une livraison de gaz.\n\nPourriez-vous me contacter pour discuter des détails ?\n\nCordialement,`
     return `mailto:${company.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
   }
+
+  // ── Formater la date de vérification ─────────────────────────────────────
+  const formatVerifiedDate = (dateStr: string | null | undefined): string | null => {
+    if (!dateStr) return null
+    try {
+      return new Date(dateStr).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+    } catch {
+      return null
+    }
+  }
+
+  const verifiedDate = formatVerifiedDate((company as any).verified_at)
 
   return (
     <div className="flex flex-col bg-white dark:bg-dark-surface rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 hover:border-primary/50 hover:shadow-md transition-all duration-300 h-full">
@@ -52,15 +103,36 @@ export const DeliveryCompanyCard: React.FC<DeliveryCompanyCardProps> = ({ compan
               <h3 className="text-base font-semibold text-neutral-900 dark:text-white leading-tight">
                 {company.name}
               </h3>
+              {/* ── Badge Vérifié avec date ── */}
               {company.is_verified && (
-                <div className="flex-shrink-0 flex items-center gap-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-xl text-xs font-medium">
-                  <CheckCircle className="w-3 h-3" strokeWidth={1.5} />
-                  Vérifié
+                <div className="flex-shrink-0 flex flex-col items-end gap-0.5">
+                  <div className="flex items-center gap-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-xl text-xs font-medium">
+                    <CheckCircle className="w-3 h-3" strokeWidth={1.5} />
+                    Vérifié par Vitogaz
+                  </div>
+                  {verifiedDate && (
+                    <span className="text-[10px] text-neutral-400 dark:text-neutral-500 pr-1">
+                      depuis {verifiedDate}
+                    </span>
+                  )}
                 </div>
               )}
             </div>
             <div className="mt-1.5">
-              <RatingStars rating={company.rating} reviewCount={company.review_count} size="sm" />
+              {/* ── Rating réel basé sur les feedbacks ── */}
+              {company.review_count > 0 ? (
+                <div className="flex items-center gap-2">
+                  <RatingStars rating={company.rating} reviewCount={company.review_count} size="sm" />
+                  <span className="text-xs text-neutral-400 dark:text-neutral-500 flex items-center gap-0.5">
+                    <ThumbsUp className="w-3 h-3" strokeWidth={1.5} />
+                    {Math.round((company.rating / 5) * 100)}% satisfaits
+                  </span>
+                </div>
+              ) : (
+                <span className="text-xs text-neutral-400 dark:text-neutral-500 font-sans">
+                  Pas encore d'avis
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -158,10 +230,11 @@ export const DeliveryCompanyCard: React.FC<DeliveryCompanyCardProps> = ({ compan
           <p className="text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-3">Contacter</p>
           <div className="grid grid-cols-4 gap-2">
 
-            {/* ── Téléphone : <a href="tel:"> natif — garantit l'ouverture de l'app téléphone ── */}
+            {/* ── Téléphone : <a href="tel:"> natif + tracking ── */}
             {company.phone ? (
               <a
                 href={`tel:${company.phone}`}
+                onClick={() => recordContactAttempt(company.id, 'phone')}
                 className="flex flex-col items-center justify-center p-3 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded-xl transition-all duration-200 group"
                 title={`Tél: ${company.phone}`}
               >
@@ -175,7 +248,7 @@ export const DeliveryCompanyCard: React.FC<DeliveryCompanyCardProps> = ({ compan
               </div>
             )}
 
-            {/* WhatsApp */}
+            {/* WhatsApp + tracking */}
             {company.whatsapp ? (
               <button
                 onClick={handleWhatsAppClick}
@@ -195,14 +268,13 @@ export const DeliveryCompanyCard: React.FC<DeliveryCompanyCardProps> = ({ compan
               </div>
             )}
 
-            {/* ── Messenger : <a href> natif — évite les popups bloqués ── */}
+            {/* Messenger : <a href> natif */}
             {company.messenger ? (
               <a
                 href={company.messenger}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex flex-col items-center justify-center p-3 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded-xl transition-all duration-200 group"
-                title="Ouvrir Messenger"
               >
                 <svg className="w-5 h-5 text-[#0084FF] mb-1 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 0C5.374 0 0 4.975 0 11.111c0 3.498 1.744 6.614 4.469 8.654V24l4.088-2.242c1.092.3 2.246.464 3.443.464 6.626 0 12-4.975 12-11.111S18.626 0 12 0zm1.191 14.963l-3.055-3.26-5.963 3.26L10.732 8l3.131 3.259L19.752 8l-6.561 6.963z"/>
@@ -218,12 +290,11 @@ export const DeliveryCompanyCard: React.FC<DeliveryCompanyCardProps> = ({ compan
               </div>
             )}
 
-            {/* ── Email : <a href="mailto:"> natif ── */}
+            {/* Email : <a href="mailto:"> natif */}
             {company.email ? (
               <a
                 href={getEmailHref()}
                 className="flex flex-col items-center justify-center p-3 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/40 rounded-xl transition-all duration-200 group"
-                title={`Email: ${company.email}`}
               >
                 <Mail className="w-5 h-5 text-purple-600 dark:text-purple-400 mb-1 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
                 <span className="text-xs font-medium text-purple-700 dark:text-purple-300">Email</span>
@@ -234,7 +305,6 @@ export const DeliveryCompanyCard: React.FC<DeliveryCompanyCardProps> = ({ compan
                 <span className="text-xs font-medium text-neutral-400">Email</span>
               </div>
             )}
-
           </div>
         </div>
       </div>

@@ -1,5 +1,7 @@
 // public/sw.js
 
+const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
+
 self.addEventListener('install', (event) => {
   self.skipWaiting()
 })
@@ -30,9 +32,8 @@ self.addEventListener('push', (event) => {
 
   event.waitUntil(
     Promise.all([
-      // Afficher la notification
       self.registration.showNotification(data.title || '📢 Vitogaz Madagascar', options),
-      // Incrémenter le compteur non lu dans tous les clients ouverts
+      // Incrémenter le compteur non lu dans les clients ouverts
       clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
         clientList.forEach((client) => {
           client.postMessage({ type: 'PUSH_RECEIVED' })
@@ -46,18 +47,55 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close()
 
-  const action   = event.action
+  const action    = event.action
   const notifData = event.notification.data || {}
+  const notifType = notifData.type
 
+  // ── Feedback satisfaction ─────────────────────────────────────────────────
+  if (notifType === 'FEEDBACK') {
+    const attemptId = notifData.attemptId
+
+    if (action === 'satisfied' || action === 'unsatisfied') {
+      const satisfied = action === 'satisfied'
+
+      // Envoyer la réponse au backend en arrière-plan
+      event.waitUntil(
+        fetch(`${API_URL}/feedback/respond`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ attempt_id: attemptId, satisfied }),
+        }).catch(() => {}) // Silencieux si offline
+      )
+      // Ne pas naviguer — l'utilisateur a juste répondu à la notification
+      return
+    }
+
+    // Clic sur la notification elle-même → ouvrir la page commander
+    const url = notifData.url || '/fr/commander'
+    event.waitUntil(
+      clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+        for (const client of clientList) {
+          if ('focus' in client) {
+            client.focus()
+            client.postMessage({ type: 'PUSH_NAVIGATE', url })
+            return
+          }
+        }
+        return clients.openWindow(url)
+      })
+    )
+    return
+  }
+
+  // ── Notifications classiques ──────────────────────────────────────────────
   if (action === 'close') return
 
   let url = notifData.url || '/fr'
-
-  if (notifData.type === 'RESELLERS' || action === 'map') {
+  if (notifType === 'RESELLERS' || action === 'map') {
     url = '/fr/revendeurs'
-  } else if (notifData.type === 'DELIVERY') {
+  } else if (notifType === 'DELIVERY') {
     url = '/fr/commander'
-  } else if (notifData.type === 'PROMOTIONS' || action === 'view') {
+  } else if (notifType === 'PROMOTIONS' || action === 'view') {
     url = notifData.url || '/fr/promotions'
   }
 
