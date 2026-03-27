@@ -3,10 +3,10 @@
 import { useState } from 'react'
 import type { Promotion } from '@/types/promotion'
 
-const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
+const API_URL        = 'https://vito-backend-supabase.onrender.com/api/v1'
 const POPUP_SHOWN_KEY = 'promotionPopupShown'
 
-interface PopupSettings {
+export interface PopupSettings {
   cooldown_hours:     number
   delay_seconds:      number
   allowed_pages:      string[]
@@ -22,15 +22,13 @@ const DEFAULT_SETTINGS: PopupSettings = {
   enabled:            true,
 }
 
-// ── Charger les settings popup depuis l'API ────────────────────────────────
 const fetchPopupSettings = async (): Promise<PopupSettings> => {
   try {
     const res = await fetch(`${API_URL}/settings/popup_settings`)
     if (!res.ok) return DEFAULT_SETTINGS
     const data = await res.json()
-
-    // L'API peut retourner { setting_value: "{...}" } ou directement l'objet
-    const raw = data?.setting_value ?? data?.value ?? data
+    // Le service retourne { setting_value: "..." } ou directement l'objet
+    const raw    = data?.setting_value ?? data?.value ?? data
     const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw
     return { ...DEFAULT_SETTINGS, ...parsed }
   } catch {
@@ -38,7 +36,6 @@ const fetchPopupSettings = async (): Promise<PopupSettings> => {
   }
 }
 
-// ── Vérifier si le cooldown est respecté ──────────────────────────────────
 const isCooldownRespected = (cooldownHours: number): boolean => {
   try {
     const lastShown = localStorage.getItem(POPUP_SHOWN_KEY)
@@ -50,29 +47,22 @@ const isCooldownRespected = (cooldownHours: number): boolean => {
   }
 }
 
-// ── Sélectionner la promo à afficher ──────────────────────────────────────
-// Priorité : featured en premier, sinon rotation par heure
 const selectPromotion = (promotions: Promotion[]): Promotion | null => {
   if (!promotions.length) return null
-
   const active = promotions.filter(
     p => p.is_active && new Date(p.valid_until) > new Date()
   )
   if (!active.length) return null
-
-  // Promo featured en priorité
   const featured = active.find(p => p.is_featured)
   if (featured) return featured
-
-  // Sinon rotation par heure
   const hour = new Date().getHours()
   return active[hour % active.length]
 }
 
 export const usePromotionPopup = () => {
-  const [showPopup, setShowPopup]               = useState(false)
+  const [showPopup, setShowPopup]                 = useState(false)
   const [selectedPromotion, setSelectedPromotion] = useState<Promotion | null>(null)
-  const [popupSettings, setPopupSettings]       = useState<PopupSettings>(DEFAULT_SETTINGS)
+  const [popupSettings, setPopupSettings]         = useState<PopupSettings>(DEFAULT_SETTINGS)
 
   const initializePopup = async (
     promotions: Promotion[],
@@ -81,22 +71,16 @@ export const usePromotionPopup = () => {
     const settings = await fetchPopupSettings()
     setPopupSettings(settings)
 
-    // Popup désactivé
     if (!settings.enabled) return
-
-    // Page non autorisée
     if (
       !settings.allowed_pages.includes('all') &&
       !settings.allowed_pages.includes(currentPage)
     ) return
-
-    // Cooldown non respecté
     if (!isCooldownRespected(settings.cooldown_hours)) return
 
     const promotion = selectPromotion(promotions)
     if (!promotion) return
 
-    // Délai configurable avant affichage
     setTimeout(() => {
       setSelectedPromotion(promotion)
       setShowPopup(true)
@@ -109,11 +93,5 @@ export const usePromotionPopup = () => {
     setSelectedPromotion(null)
   }
 
-  return {
-    showPopup,
-    selectedPromotion,
-    popupSettings,
-    initializePopup,
-    closePopup,
-  }
+  return { showPopup, selectedPromotion, popupSettings, initializePopup, closePopup }
 }
