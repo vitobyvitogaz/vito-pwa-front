@@ -5,7 +5,7 @@ import Image from 'next/image'
 import type { Promotion } from '@/types/promotion'
 import {
   Tag, Check, CalendarDays, Share, MapPin, Globe,
-  Clock, AlertTriangle, CheckCircle, Store, Package, Layers,
+  Clock, AlertTriangle, CheckCircle, Store,
 } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
@@ -14,6 +14,10 @@ interface PromotionCardProps {
   delay?:    number
   featured?: boolean
 }
+
+// ── Détecter si une string est un UUID — pour masquer les IDs bruts ──────────
+const isUUID = (str: string) =>
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str)
 
 export const PromotionCard: React.FC<PromotionCardProps> = ({
   promotion,
@@ -89,6 +93,10 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
   const daysLeft    = Math.max(0, Math.floor((end - Date.now()) / 86400000))
   const allZones    = !promotion.zones || promotion.zones.length === 0
 
+  // ── Filtrer les produits applicables — masquer les UUIDs bruts ────────────
+  const applicableProducts: string[] = ((promotion as any).applicable_products ?? [])
+    .filter((p: string) => !isUUID(p))
+
   return (
     <div
       onClick={() => hapticFeedback('light')}
@@ -108,8 +116,8 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
     >
 
       {/* ── IMAGE ── */}
-      {/* aspect-[3/2] sur les cards normales = plus compact et plusieurs par ligne */}
-      {/* aspect-video sur la featured = plus large et impactante */}
+      {/* aspect-[3/2] = ratio paysage compact → plusieurs cards par ligne desktop */}
+      {/* object-top → le haut de l'image reste visible (contenu important en haut) */}
       <div className={`relative w-full overflow-hidden ${featured ? 'aspect-video' : 'aspect-[3/2]'}`}>
         {promotion.image_url ? (
           <Image
@@ -119,7 +127,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
             unoptimized
             quality={72}
             loading="lazy"
-            className="object-cover object-center transition-transform duration-500 group-hover:scale-103"
+            className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
           />
         ) : (
@@ -129,7 +137,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
         )}
 
         {/* Gradient bas */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
 
         {/* Badge Promo du moment */}
         {featured && (
@@ -153,9 +161,9 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
           </div>
         )}
 
-        {/* Badges statut + urgence (non featured) */}
+        {/* Badge statut (non featured) */}
         {!featured && (
-          <div className="absolute top-2.5 left-2.5 flex flex-col gap-1">
+          <div className="absolute top-2.5 left-2.5">
             {promotion.is_active && !isExpired ? (
               <div className="flex items-center gap-1 px-2 py-0.5 bg-black/40 backdrop-blur-sm rounded-full border border-white/20">
                 <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
@@ -169,13 +177,13 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
           </div>
         )}
 
-        {/* Titre + sous-titre sur image */}
+        {/* Titre sur image (bas) */}
         <div className="absolute bottom-0 left-0 right-0 p-3">
-          <h3 className={`font-bold text-white font-sans leading-tight drop-shadow-sm line-clamp-2 ${featured ? 'text-xl mb-0.5' : 'text-sm mb-0'}`}>
+          <h3 className={`font-bold text-white font-sans leading-tight drop-shadow-sm line-clamp-2 ${featured ? 'text-xl' : 'text-sm'}`}>
             {promotion.title}
           </h3>
           {featured && (promotion as any).subtitle && (
-            <p className="text-xs text-white/85 font-sans line-clamp-1 drop-shadow-sm">
+            <p className="text-xs text-white/85 font-sans line-clamp-1 drop-shadow-sm mt-0.5">
               {(promotion as any).subtitle}
             </p>
           )}
@@ -246,42 +254,17 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
           ) : (
             <>
               <MapPin className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0" strokeWidth={1.5} />
-              {promotion.zones!.slice(0, 2).map((z, i) => (
+              {promotion.zones!.slice(0, 3).map((z, i) => (
                 <span key={i} className="text-[10px] px-2 py-0.5 bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 rounded-full font-sans">
                   {z}
                 </span>
               ))}
-              {promotion.zones!.length > 2 && (
-                <span className="text-[10px] text-neutral-400 font-sans">+{promotion.zones!.length - 2}</span>
+              {promotion.zones!.length > 3 && (
+                <span className="text-[10px] text-neutral-400 font-sans">+{promotion.zones!.length - 3}</span>
               )}
             </>
           )}
         </div>
-
-        {/* Catégorie produit */}
-        {(promotion as any).product_category && (
-          <div className="flex items-center gap-1.5">
-            <Layers className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0" strokeWidth={1.5} />
-            <span className="text-[10px] px-2 py-0.5 bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 rounded-full font-sans capitalize">
-              {(promotion as any).product_category}
-            </span>
-          </div>
-        )}
-
-        {/* Produits applicables */}
-        {(promotion as any).applicable_products?.length > 0 && (
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <Package className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0" strokeWidth={1.5} />
-            {(promotion as any).applicable_products.slice(0, 2).map((p: string, i: number) => (
-              <span key={i} className="text-[10px] px-2 py-0.5 bg-primary/8 dark:bg-primary/15 text-primary rounded-full font-sans">
-                {p}
-              </span>
-            ))}
-            {(promotion as any).applicable_products.length > 2 && (
-              <span className="text-[10px] text-neutral-400 font-sans">+{(promotion as any).applicable_products.length - 2}</span>
-            )}
-          </div>
-        )}
 
         {/* Conditions */}
         {promotion.conditions && promotion.conditions.length > 0 && (
@@ -295,7 +278,23 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
               </div>
             ))}
             {promotion.conditions.length > 2 && (
-              <p className="text-[10px] text-neutral-400 font-sans pl-5">+{promotion.conditions.length - 2} condition{promotion.conditions.length - 2 > 1 ? 's' : ''}</p>
+              <p className="text-[10px] text-neutral-400 font-sans pl-5">
+                +{promotion.conditions.length - 2} condition{promotion.conditions.length - 2 > 1 ? 's' : ''}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Produits applicables — affichés uniquement si ce sont des noms, pas des UUIDs */}
+        {applicableProducts.length > 0 && (
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {applicableProducts.slice(0, 3).map((p, i) => (
+              <span key={i} className="text-[10px] px-2 py-0.5 bg-primary/8 dark:bg-primary/15 text-primary rounded-full font-sans">
+                {p}
+              </span>
+            ))}
+            {applicableProducts.length > 3 && (
+              <span className="text-[10px] text-neutral-400 font-sans">+{applicableProducts.length - 3}</span>
             )}
           </div>
         )}
