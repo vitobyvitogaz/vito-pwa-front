@@ -5,7 +5,7 @@ import Image from 'next/image'
 import type { Promotion } from '@/types/promotion'
 import {
   Tag, Check, CalendarDays, Share, MapPin, Globe,
-  Clock, AlertTriangle, CheckCircle, Store,
+  Clock, AlertTriangle, CheckCircle, Store, Package, Layers,
 } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
@@ -15,9 +15,11 @@ interface PromotionCardProps {
   featured?: boolean
 }
 
-// ── Détecter si une string est un UUID — pour masquer les IDs bruts ──────────
-const isUUID = (str: string) =>
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str)
+const isUUID = (s: string) =>
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s)
+
+const filterProductNames = (products: string[]): string[] =>
+  (products || []).filter(p => p && !isUUID(p))
 
 export const PromotionCard: React.FC<PromotionCardProps> = ({
   promotion,
@@ -30,8 +32,8 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
   const [progressWidth, setProgressWidth] = useState(100)
   const promoDurationRef                  = useRef<number | null>(null)
 
-  const end     = new Date(promotion.valid_until).getTime()
-  const diffNow = end - Date.now()
+  const end        = new Date(promotion.valid_until).getTime()
+  const diffNow    = end - Date.now()
   const showLiveCd = !isExpired && diffNow > 0 && diffNow < 48 * 60 * 60 * 1000
 
   useEffect(() => {
@@ -41,15 +43,9 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
         : Date.now() - 30 * 24 * 60 * 60 * 1000
       promoDurationRef.current = end - created
     }
-
     const calc = () => {
       const diff = end - Date.now()
-      if (diff <= 0) {
-        setIsExpired(true)
-        setTimeLeft({ days: '00', hours: '00', minutes: '00', seconds: '00' })
-        setProgressWidth(0)
-        return
-      }
+      if (diff <= 0) { setIsExpired(true); setProgressWidth(0); setTimeLeft({ days: '00', hours: '00', minutes: '00', seconds: '00' }); return }
       setProgressWidth(Math.min(100, Math.max(0, (diff / promoDurationRef.current!) * 100)))
       setTimeLeft({
         days:    String(Math.floor(diff / 86400000)).padStart(2, '0'),
@@ -58,7 +54,6 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
         seconds: String(Math.floor((diff % 60000) / 1000)).padStart(2, '0'),
       })
     }
-
     calc()
     if (!showLiveCd) return
     const iv = setInterval(calc, 1000)
@@ -84,23 +79,20 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
     if (isExpired) return { bg: 'bg-neutral-100 dark:bg-neutral-800', text: 'text-neutral-500', border: 'border-neutral-200 dark:border-neutral-700', label: 'Expirée', icon: Clock }
     const days = Math.floor((end - Date.now()) / 86400000)
     if (days > 7)  return { bg: 'bg-emerald-50 dark:bg-emerald-900/20', text: 'text-emerald-700 dark:text-emerald-400', border: 'border-emerald-200 dark:border-emerald-800', label: `${days}j restants`, icon: CheckCircle }
-    if (days > 3)  return { bg: 'bg-amber-50 dark:bg-amber-900/20',   text: 'text-amber-700 dark:text-amber-400',   border: 'border-amber-200 dark:border-amber-800',   label: `Plus que ${days}j !`, icon: Clock }
+    if (days > 3)  return { bg: 'bg-amber-50 dark:bg-amber-900/20',     text: 'text-amber-700 dark:text-amber-400',     border: 'border-amber-200 dark:border-amber-800',     label: `Plus que ${days}j !`, icon: Clock }
     return { bg: 'bg-red-50 dark:bg-red-900/20', text: 'text-red-700 dark:text-red-400', border: 'border-red-200 dark:border-red-800', label: 'Expire bientôt !', icon: AlertTriangle }
   }
 
-  const urgency     = getUrgency()
-  const UrgencyIcon = urgency.icon
-  const daysLeft    = Math.max(0, Math.floor((end - Date.now()) / 86400000))
-  const allZones    = !promotion.zones || promotion.zones.length === 0
-
-  // ── Filtrer les produits applicables — masquer les UUIDs bruts ────────────
-  const applicableProducts: string[] = ((promotion as any).applicable_products ?? [])
-    .filter((p: string) => !isUUID(p))
+  const urgency      = getUrgency()
+  const UrgencyIcon  = urgency.icon
+  const daysLeft     = Math.max(0, Math.floor((end - Date.now()) / 86400000))
+  const allZones     = !promotion.zones || promotion.zones.length === 0
+  const productNames = filterProductNames((promotion as any).applicable_products || [])
 
   return (
     <div
       onClick={() => hapticFeedback('light')}
-      className={`group relative bg-white dark:bg-dark-surface overflow-hidden border transition-all duration-300 hover:-translate-y-1 animate-slide-up cursor-pointer rounded-2xl ${
+      className={`group relative bg-white dark:bg-dark-surface overflow-hidden border transition-all duration-300 hover:-translate-y-1 animate-slide-up cursor-pointer rounded-2xl flex flex-col ${
         featured ? 'border-primary/30' : 'border-neutral-200 dark:border-neutral-800'
       }`}
       style={{
@@ -115,29 +107,23 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
         : '0 1px 3px rgba(0,0,0,0.05)')}
     >
 
-      {/* ── IMAGE ── */}
-      {/* aspect-[3/2] = ratio paysage compact → plusieurs cards par ligne desktop */}
-      {/* object-top → le haut de l'image reste visible (contenu important en haut) */}
-      <div className={`relative w-full overflow-hidden ${featured ? 'aspect-video' : 'aspect-[3/2]'}`}>
+      {/* ── IMAGE — affichée naturellement, sans overlay ni tronquage ── */}
+      {/* L'image est positionnée AU-DESSUS du contenu, pas en background */}
+      {/* unoptimized = pas de transformation Next.js qui pourrait recadrer */}
+      <div className="relative w-full bg-neutral-50 dark:bg-neutral-900 overflow-hidden rounded-t-2xl">
         {promotion.image_url ? (
-          <Image
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
             src={promotion.image_url}
             alt={promotion.title}
-            fill
-            unoptimized
-            quality={72}
+            className="w-full h-auto object-contain block transition-transform duration-500 group-hover:scale-[1.02]"
             loading="lazy"
-            className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+          <div className="w-full h-36 flex items-center justify-center">
             <Tag className="w-10 h-10 text-primary/30" strokeWidth={1} />
           </div>
         )}
-
-        {/* Gradient bas */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
 
         {/* Badge Promo du moment */}
         {featured && (
@@ -147,25 +133,11 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
           </div>
         )}
 
-        {/* Badge remise */}
-        {promotion.discount_value > 0 && (
-          <div className="absolute top-2.5 right-2.5">
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary/30 rounded-lg blur-sm" />
-              <div className="relative bg-primary text-white rounded-lg px-2.5 py-1 shadow-md">
-                <span className="text-sm font-bold font-sans leading-none">
-                  {promotion.discount_type === 'percentage' ? `-${promotion.discount_value}%` : `-${promotion.discount_value} Ar`}
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Badge statut (non featured) */}
+        {/* Badge statut */}
         {!featured && (
           <div className="absolute top-2.5 left-2.5">
             {promotion.is_active && !isExpired ? (
-              <div className="flex items-center gap-1 px-2 py-0.5 bg-black/40 backdrop-blur-sm rounded-full border border-white/20">
+              <div className="flex items-center gap-1 px-2 py-0.5 bg-black/50 backdrop-blur-sm rounded-full">
                 <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
                 <span className="text-[10px] font-semibold text-white">En cours</span>
               </div>
@@ -177,26 +149,42 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
           </div>
         )}
 
-        {/* Titre sur image (bas) */}
-        <div className="absolute bottom-0 left-0 right-0 p-3">
-          <h3 className={`font-bold text-white font-sans leading-tight drop-shadow-sm line-clamp-2 ${featured ? 'text-xl' : 'text-sm'}`}>
-            {promotion.title}
-          </h3>
-          {featured && (promotion as any).subtitle && (
-            <p className="text-xs text-white/85 font-sans line-clamp-1 drop-shadow-sm mt-0.5">
-              {(promotion as any).subtitle}
-            </p>
-          )}
-        </div>
+        {/* Badge remise */}
+        {promotion.discount_value > 0 && (
+          <div className="absolute top-2.5 right-2.5">
+            <div className="bg-primary text-white rounded-lg px-2.5 py-1 shadow-md">
+              <span className="text-sm font-bold font-sans leading-none">
+                {promotion.discount_type === 'percentage' ? `-${promotion.discount_value}%` : `-${promotion.discount_value} Ar`}
+              </span>
+            </div>
+          </div>
+        )}
 
-        {/* Barre de progression */}
-        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white/20">
+        {/* Barre de progression en bas de l'image */}
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/10">
           <div className="h-full bg-primary transition-all duration-1000" style={{ width: `${progressWidth}%` }} />
         </div>
       </div>
 
-      {/* ── CONTENU ── */}
-      <div className="p-3 space-y-2.5">
+      {/* ── CONTENU — sous l'image ── */}
+      <div className="flex-1 p-3 space-y-2.5">
+
+        {/* Titre + sous-titre */}
+        <div>
+          <h3 className={`font-bold text-neutral-900 dark:text-white font-sans leading-tight ${featured ? 'text-base' : 'text-sm'} line-clamp-2`}>
+            {promotion.title}
+          </h3>
+          {(promotion as any).subtitle && (
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans mt-0.5 line-clamp-1">
+              {(promotion as any).subtitle}
+            </p>
+          )}
+          {promotion.description && (
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans mt-0.5 line-clamp-1">
+              {promotion.description}
+            </p>
+          )}
+        </div>
 
         {/* Countdown */}
         {!isExpired && promotion.is_active ? (
@@ -254,17 +242,42 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
           ) : (
             <>
               <MapPin className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0" strokeWidth={1.5} />
-              {promotion.zones!.slice(0, 3).map((z, i) => (
+              {promotion.zones!.slice(0, 2).map((z, i) => (
                 <span key={i} className="text-[10px] px-2 py-0.5 bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 rounded-full font-sans">
                   {z}
                 </span>
               ))}
-              {promotion.zones!.length > 3 && (
-                <span className="text-[10px] text-neutral-400 font-sans">+{promotion.zones!.length - 3}</span>
+              {promotion.zones!.length > 2 && (
+                <span className="text-[10px] text-neutral-400 font-sans">+{promotion.zones!.length - 2}</span>
               )}
             </>
           )}
         </div>
+
+        {/* Catégorie produit */}
+        {(promotion as any).product_category && (
+          <div className="flex items-center gap-1.5">
+            <Layers className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0" strokeWidth={1.5} />
+            <span className="text-[10px] px-2 py-0.5 bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 rounded-full font-sans capitalize">
+              {(promotion as any).product_category}
+            </span>
+          </div>
+        )}
+
+        {/* Produits applicables — noms uniquement, pas d'UUIDs */}
+        {productNames.length > 0 && (
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <Package className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0" strokeWidth={1.5} />
+            {productNames.slice(0, 2).map((p, i) => (
+              <span key={i} className="text-[10px] px-2 py-0.5 bg-primary/10 text-primary rounded-full font-sans">
+                {p}
+              </span>
+            ))}
+            {productNames.length > 2 && (
+              <span className="text-[10px] text-neutral-400 font-sans">+{productNames.length - 2}</span>
+            )}
+          </div>
+        )}
 
         {/* Conditions */}
         {promotion.conditions && promotion.conditions.length > 0 && (
@@ -285,20 +298,6 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
           </div>
         )}
 
-        {/* Produits applicables — affichés uniquement si ce sont des noms, pas des UUIDs */}
-        {applicableProducts.length > 0 && (
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {applicableProducts.slice(0, 3).map((p, i) => (
-              <span key={i} className="text-[10px] px-2 py-0.5 bg-primary/8 dark:bg-primary/15 text-primary rounded-full font-sans">
-                {p}
-              </span>
-            ))}
-            {applicableProducts.length > 3 && (
-              <span className="text-[10px] text-neutral-400 font-sans">+{applicableProducts.length - 3}</span>
-            )}
-          </div>
-        )}
-
         {/* Code avantage */}
         {promotion.promo_code && promotion.is_active && !isExpired && (
           <div className="rounded-xl border border-dashed border-primary/40 bg-primary/5 dark:bg-primary/10 overflow-hidden">
@@ -307,9 +306,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
                 <Store className="w-3 h-3 text-primary" strokeWidth={1.5} />
                 <span className="text-[10px] font-medium text-primary/80 font-sans">À montrer au revendeur</span>
               </div>
-              <button onClick={handleShare} className="text-[10px] text-primary font-sans hover:opacity-70">
-                Partager
-              </button>
+              <button onClick={handleShare} className="text-[10px] text-primary font-sans hover:opacity-70">Partager</button>
             </div>
             <button onClick={handleCopyCode} className="w-full flex items-center justify-between px-3 py-2 hover:bg-primary/10 transition-all duration-200">
               <span className="text-base font-black text-primary font-mono tracking-widest">{promotion.promo_code}</span>
