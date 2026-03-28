@@ -17,6 +17,10 @@ interface PromotionCardProps {
 const isUUID = (s: string) =>
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s)
 
+// ── fmtDate accepte Date | string pour éviter l'erreur TypeScript ─────────────
+const fmtDate = (d: Date | string, opts?: Intl.DateTimeFormatOptions) =>
+  new Date(d).toLocaleDateString('fr-FR', opts ?? { day: 'numeric', month: 'short', year: 'numeric' })
+
 export const PromotionCard: React.FC<PromotionCardProps> = ({
   promotion,
   delay    = 0,
@@ -91,9 +95,10 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
 
   const productNames = (promo.applicable_products || []).filter((p: string) => p && !isUUID(p))
 
-  const fmtDate = (d: string) => new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
   const validUntilFmt = fmtDate(promotion.valid_until)
-  const validFromFmt  = promo.valid_from ? new Date(promo.valid_from).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) : null
+  const validFromFmt  = promo.valid_from
+    ? fmtDate(promo.valid_from, { day: 'numeric', month: 'short' })
+    : null
 
   return (
     <div
@@ -116,7 +121,6 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
     >
 
       {/* ── COLONNE 1 : IMAGE ─────────────────────────────────────────────── */}
-      {/* Largeur fixe, hauteur auto adaptée, image carrée object-cover      */}
       <div className="relative flex-shrink-0 w-28 sm:w-32 bg-neutral-100 dark:bg-neutral-800 self-stretch">
         {promotion.image_url ? (
           <img
@@ -131,7 +135,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
           </div>
         )}
 
-        {/* Barre de progression verticale sur le bord droit de l'image */}
+        {/* Barre de progression verticale */}
         <div className="absolute top-0 right-0 w-0.5 h-full bg-black/10">
           <div
             className="w-full bg-primary transition-all duration-1000 origin-top"
@@ -139,7 +143,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
           />
         </div>
 
-        {/* Badge remise — en haut à gauche de l'image */}
+        {/* Badge remise */}
         {promotion.discount_value > 0 && (
           <div className="absolute top-2 left-0 bg-primary text-white pl-2 pr-2.5 py-0.5 rounded-r-full shadow-sm">
             <span className="text-xs font-black font-sans leading-none">
@@ -150,7 +154,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
           </div>
         )}
 
-        {/* Badge featured — étoile en bas de l'image */}
+        {/* Badge featured */}
         {featured && (
           <div className="absolute bottom-2 left-0 right-0 flex justify-center">
             <div className="flex items-center gap-1 px-2 py-0.5 bg-primary/90 backdrop-blur-sm text-white rounded-full text-[9px] font-semibold shadow-sm">
@@ -176,7 +180,6 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
               </p>
             )}
           </div>
-          {/* Badge statut */}
           <div className="flex-shrink-0">
             {promotion.is_active && !isExpired ? (
               <div className="flex items-center gap-1 px-1.5 py-0.5 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-full">
@@ -237,7 +240,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
           </div>
         )}
 
-        {/* Période */}
+        {/* Période complète */}
         {validFromFmt && !isExpired && (
           <p className="text-[9px] text-neutral-400 dark:text-neutral-500 font-sans -mt-1">
             Du {validFromFmt} au {validUntilFmt}
@@ -247,7 +250,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
         {/* Métadonnées */}
         <div className="space-y-1.5">
 
-          {/* Toutes les zones — flex-wrap, toutes affichées */}
+          {/* Toutes les zones — toutes affichées */}
           <div className="flex items-start gap-1 flex-wrap">
             {allZones ? (
               <>
@@ -280,7 +283,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
             </div>
           )}
 
-          {/* Produits applicables */}
+          {/* Produits applicables — noms lisibles uniquement */}
           {productNames.length > 0 && (
             <div className="flex items-start gap-1 flex-wrap">
               <Tag className="w-3 h-3 text-neutral-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
@@ -294,7 +297,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
             </div>
           )}
 
-          {/* Conditions */}
+          {/* Conditions — toutes affichées */}
           {promotion.conditions && promotion.conditions.length > 0 && (
             <div className="space-y-1">
               {promotion.conditions.map((c, i) => (
@@ -311,7 +314,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
           )}
         </div>
 
-        {/* Code avantage — ancré en bas */}
+        {/* Code avantage */}
         {promotion.promo_code && promotion.is_active && !isExpired && (
           <div className="mt-auto pt-1">
             <div className="rounded-xl border border-dashed border-primary/40 bg-primary/5 dark:bg-primary/10 overflow-hidden">
