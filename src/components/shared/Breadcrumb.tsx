@@ -16,16 +16,31 @@ export const Breadcrumb: React.FC = () => {
   const segments = pathSegments.slice(1)
 
   const breadcrumbLabels: Record<string, string> = {
-    revendeurs:   'Revendeurs',
-    commander:    'Commander',
-    promotions:   'Promotions',
-    documents:    'Documents',
-    produits:     'Produits',
-    assistance:   'Service Clients',
+    revendeurs:    'Revendeurs',
+    commander:     'Commander',
+    promotions:    'Promotions & Offres',
+    documents:     'Documents',
+    produits:      'Produits',
+    assistance:    'Service Clients',
     'contact-pro': 'Devenir partenaire',
-    profil:       'Mon profil',
-    // ── Fix : P majuscule ──
-    parametres:   'Paramètres',
+    profil:        'Mon profil',
+    parametres:    'Paramètres',
+  }
+
+  // Segments qui sont des UUIDs → afficher un label générique selon le contexte
+  const isUUID = (s: string) =>
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s)
+
+  const getLabel = (segment: string, index: number): string => {
+    if (breadcrumbLabels[segment]) return breadcrumbLabels[segment]
+    if (isUUID(segment)) {
+      // Déduire le contexte depuis le segment précédent
+      const prev = segments[index - 1]
+      if (prev === 'promotions') return "Détail de l'offre"
+      if (prev === 'revendeurs') return "Fiche revendeur"
+      return "Détail"
+    }
+    return segment
   }
 
   return (
@@ -45,7 +60,7 @@ export const Breadcrumb: React.FC = () => {
           {segments.map((segment, index) => {
             const isLast = index === segments.length - 1
             const path = `/${locale}/${segments.slice(0, index + 1).join('/')}`
-            const label = breadcrumbLabels[segment] || segment
+            const label = getLabel(segment, index)
 
             return (
               <li key={segment} className="flex items-center gap-2">

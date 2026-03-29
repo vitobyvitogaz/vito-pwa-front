@@ -8,7 +8,7 @@ import {
   CalendarDays, Tag, Store, Check, Package, ChevronRight,
 } from 'lucide-react'
 
-// ── Icône bouteille de gaz maison ────────────────────────────────────────────
+// ── Icône bouteille de gaz ────────────────────────────────────────────────────
 const GasBottleIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
     <path d="M10 2h4" />
@@ -19,6 +19,49 @@ const GasBottleIcon = ({ className }: { className?: string }) => (
     <circle cx="12" cy="17" r="1" fill="currentColor" stroke="none" />
   </svg>
 )
+
+// ── Mapping slug DB → label affiché ──────────────────────────────────────────
+const CATEGORY_LABELS: Record<string, string> = {
+  bouteille:   'Bouteilles',
+  detendeur:   'Détendeurs',
+  tuyau:       'Tuyaux',
+  kit1:        'Kits Fatapera',
+  kit2:        'Kits connectiques',
+  kit3:        'Kits complets',
+  accessoire:  'Accessoires',
+}
+
+const formatCategory = (raw: string): string =>
+  CATEGORY_LABELS[raw.toLowerCase()] ?? raw
+
+// Composant React dédié — évite les IIFE dans le JSX
+const CategoryBlock = ({ raw }: { raw: string | string[] | null | undefined }) => {
+  if (!raw) return null
+  let cats: string[] = []
+  if (Array.isArray(raw)) {
+    cats = raw
+  } else {
+    try {
+      const parsed = JSON.parse(raw)
+      cats = Array.isArray(parsed) ? parsed : [raw]
+    } catch {
+      cats = [raw]
+    }
+  }
+  const label = cats.filter(Boolean).map(formatCategory).join(' - ')
+  if (!label) return null
+  return (
+    <div className="flex items-center gap-3 px-4 py-3 bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-sm">
+      <div className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center flex-shrink-0">
+        <GasBottleIcon className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
+      </div>
+      <div>
+        <p className="text-[10px] text-neutral-400 font-sans uppercase tracking-wide">Catégorie</p>
+        <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-200 font-sans">{label}</p>
+      </div>
+    </div>
+  )
+}
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
@@ -375,38 +418,8 @@ export default function PromotionDetailPage() {
               <Section title="Produits concernés" icon={Package}>
                 <div className="space-y-3">
 
-                  {/* Catégorie(s) — parser JSON string si nécessaire */}
-                  {promo.product_category && (
-                    (() => {
-                      // product_category peut être : string JSON, string[], ou string simple
-                      let cats: string[] = []
-                      if (Array.isArray(promo.product_category)) {
-                        cats = promo.product_category
-                      } else {
-                        try {
-                          const parsed = JSON.parse(promo.product_category)
-                          cats = Array.isArray(parsed) ? parsed : [promo.product_category]
-                        } catch {
-                          cats = [promo.product_category]
-                        }
-                      }
-                      const label = cats.filter(Boolean).join(' - ')
-                      if (!label) return null
-                      return (
-                        <div className="flex items-center gap-3 px-4 py-3 bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-sm">
-                          <div className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center flex-shrink-0">
-                            <GasBottleIcon className="w-4 h-4 text-neutral-500" />
-                          </div>
-                          <div>
-                            <p className="text-[10px] text-neutral-400 font-sans">Catégorie</p>
-                            <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-200 font-sans">
-                              {label}
-                            </p>
-                          </div>
-                        </div>
-                      )
-                    })()
-                  )}
+                  {/* Catégorie(s) — parsée + labels humains via formatCategory */}
+                  <CategoryBlock raw={promo.product_category} />
 
                   {/* Produits spécifiques — noms résolus depuis les UUIDs */}
                   {productNames.length > 0 && (
