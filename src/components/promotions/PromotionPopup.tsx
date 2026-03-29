@@ -244,7 +244,8 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
             )}
 
             {/* Code promo — libellé "à montrer au revendeur" */}
-            {promotion.promo_code && promotion.is_active && !isExpired && (
+            {/* TODO: à activer quand on aura des codes promo */}
+            {/* {promotion.promo_code && promotion.is_active && !isExpired && (
               <div className="rounded-xl border border-primary/20 bg-primary/5 dark:bg-primary/10 overflow-hidden">
                 <div className="flex items-center gap-1.5 px-4 py-2 border-b border-primary/10">
                   <Store className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
@@ -269,6 +270,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
                 </button>
               </div>
             )}
+            */}
 
             {/* CTA */}
             {!isExpired && (

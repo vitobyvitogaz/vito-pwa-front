@@ -5,8 +5,20 @@ import { useParams, useRouter } from 'next/navigation'
 import type { Promotion } from '@/types/promotion'
 import {
   ArrowLeft, Share2, MapPin, Globe, Clock, AlertTriangle, CheckCircle,
-  CalendarDays, Tag, Store, Check, Layers, Package, ChevronRight,
+  CalendarDays, Tag, Store, Check, Package, ChevronRight,
 } from 'lucide-react'
+
+// ── Icône bouteille de gaz maison ────────────────────────────────────────────
+const GasBottleIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M10 2h4" />
+    <path d="M12 2v2" />
+    <path d="M8 6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2z" />
+    <path d="M8 10h8" />
+    <path d="M8 14h8" />
+    <circle cx="12" cy="17" r="1" fill="currentColor" stroke="none" />
+  </svg>
+)
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
@@ -363,21 +375,37 @@ export default function PromotionDetailPage() {
               <Section title="Produits concernés" icon={Package}>
                 <div className="space-y-3">
 
-                  {/* Catégorie(s) */}
+                  {/* Catégorie(s) — parser JSON string si nécessaire */}
                   {promo.product_category && (
-                    <div className="flex items-center gap-3 px-4 py-3 bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-sm">
-                      <div className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center flex-shrink-0">
-                        <Layers className="w-4 h-4 text-neutral-500" strokeWidth={1.5} />
-                      </div>
-                      <div>
-                        <p className="text-[10px] text-neutral-400 font-sans">Catégorie</p>
-                        <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-200 font-sans">
-                          {Array.isArray(promo.product_category)
-                            ? promo.product_category.join(', ')
-                            : promo.product_category}
-                        </p>
-                      </div>
-                    </div>
+                    (() => {
+                      // product_category peut être : string JSON, string[], ou string simple
+                      let cats: string[] = []
+                      if (Array.isArray(promo.product_category)) {
+                        cats = promo.product_category
+                      } else {
+                        try {
+                          const parsed = JSON.parse(promo.product_category)
+                          cats = Array.isArray(parsed) ? parsed : [promo.product_category]
+                        } catch {
+                          cats = [promo.product_category]
+                        }
+                      }
+                      const label = cats.filter(Boolean).join(' - ')
+                      if (!label) return null
+                      return (
+                        <div className="flex items-center gap-3 px-4 py-3 bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-sm">
+                          <div className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center flex-shrink-0">
+                            <GasBottleIcon className="w-4 h-4 text-neutral-500" />
+                          </div>
+                          <div>
+                            <p className="text-[10px] text-neutral-400 font-sans">Catégorie</p>
+                            <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-200 font-sans">
+                              {label}
+                            </p>
+                          </div>
+                        </div>
+                      )
+                    })()
                   )}
 
                   {/* Produits spécifiques — noms résolus depuis les UUIDs */}

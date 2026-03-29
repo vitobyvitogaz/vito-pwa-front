@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
+import Image from 'next/image'
 import type { Promotion } from '@/types/promotion'
 import { ArrowRight, MapPin, Globe, Clock, AlertTriangle, CheckCircle, Star } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
@@ -34,10 +35,10 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
   }, [promotion.valid_until])
 
   const getUrgency = () => {
-    if (isExpired)     return { text: 'text-neutral-500', bg: 'bg-neutral-100 dark:bg-neutral-800', icon: Clock,         label: 'Expirée' }
-    if (daysLeft > 7)  return { text: 'text-emerald-700 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20', icon: CheckCircle, label: `${daysLeft}j restants` }
-    if (daysLeft > 3)  return { text: 'text-amber-700 dark:text-amber-400',     bg: 'bg-amber-50 dark:bg-amber-900/20',     icon: Clock,       label: `Plus que ${daysLeft}j` }
-    return               { text: 'text-red-700 dark:text-red-400',               bg: 'bg-red-50 dark:bg-red-900/20',         icon: AlertTriangle, label: 'Expire bientôt !' }
+    if (isExpired)     return { text: 'text-neutral-500',                        bg: 'bg-neutral-100 dark:bg-neutral-800',         icon: Clock,         label: 'Expirée' }
+    if (daysLeft > 7)  return { text: 'text-emerald-700 dark:text-emerald-400',  bg: 'bg-emerald-50 dark:bg-emerald-900/20',       icon: CheckCircle,   label: `${daysLeft}j restants` }
+    if (daysLeft > 3)  return { text: 'text-amber-700 dark:text-amber-400',      bg: 'bg-amber-50 dark:bg-amber-900/20',           icon: Clock,         label: `Plus que ${daysLeft}j` }
+    return               { text: 'text-red-700 dark:text-red-400',               bg: 'bg-red-50 dark:bg-red-900/20',               icon: AlertTriangle, label: 'Expire bientôt !' }
   }
 
   const urgency     = getUrgency()
@@ -67,46 +68,36 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
         ? '0 6px 24px -4px rgba(0,139,127,0.2), 0 0 0 1px rgba(0,139,127,0.12)'
         : '0 1px 4px rgba(0,0,0,0.06)')}
     >
-      {/* ── IMAGE ─────────────────────────────────────────────────────────── */}
-      {/* Technique blurred-bg :                                              */}
-      {/*  1. Image floutée en absolute (background, remplit le container)    */}
-      {/*  2. Image réelle en object-contain (entière, non tronquée)          */}
-      {/* → image toujours entière ET container toujours plein                */}
-      <div className="relative w-full aspect-[4/3] overflow-hidden flex-shrink-0">
 
+      {/* ── IMAGE ─────────────────────────────────────────────────────────── */}
+      {/* Même technique que PromotionPopup : aspect-[4/5] + Image fill       */}
+      {/* + object-cover → remplit parfaitement le container                  */}
+      <div className="relative w-full aspect-[4/5] overflow-hidden flex-shrink-0">
         {promotion.image_url ? (
-          <>
-            {/* Couche 1 — background flouté, remplit tout l'espace */}
-            <img
-              src={promotion.image_url}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl brightness-60 saturate-150 pointer-events-none select-none"
-            />
-            {/* Couche 2 — image principale, entière, non tronquée */}
-            <img
-              src={promotion.image_url}
-              alt={promotion.title}
-              className="relative w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.03]"
-              loading="lazy"
-            />
-          </>
+          <Image
+            src={promotion.image_url}
+            alt={promotion.title}
+            fill
+            quality={72}
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
             <span className="text-4xl font-black text-primary/20 font-sans">%</span>
           </div>
         )}
 
-        {/* Gradient bas — lisibilité titre */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
+        {/* Gradient bas pour lisibilité */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent pointer-events-none" />
 
         {/* Badge remise */}
         {promotion.discount_value > 0 && (
           <div className="absolute top-3 left-3 z-10">
             <div className="relative">
-              <div className="absolute inset-0 bg-primary/30 rounded-xl blur-md" />
-              <div className="relative bg-primary text-white rounded-xl px-2.5 py-1 shadow-lg">
-                <span className="text-sm font-black font-sans leading-none">
+              <div className="absolute inset-0 bg-primary/40 rounded-xl blur-sm" />
+              <div className="relative bg-primary text-white rounded-xl px-3 py-1.5 shadow-lg">
+                <span className="text-base font-bold font-sans leading-none">
                   {promotion.discount_type === 'percentage'
                     ? `-${promotion.discount_value}%`
                     : `-${promotion.discount_value} Ar`}
@@ -128,30 +119,32 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
         {!featured && (
           <div className="absolute top-3 right-3 z-10">
             {promotion.is_active && !isExpired ? (
-              <div className="flex items-center gap-1.5 px-2 py-1 bg-black/40 backdrop-blur-sm rounded-full border border-white/20">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full border border-white/20">
                 <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
-                <span className="text-[10px] font-semibold text-white">En cours</span>
+                <span className="text-xs font-semibold text-white">En cours</span>
               </div>
             ) : (
-              <div className="px-2 py-1 bg-black/60 backdrop-blur-sm rounded-full">
-                <span className="text-[10px] font-semibold text-white/80">Expirée</span>
+              <div className="px-2.5 py-1 bg-black/60 backdrop-blur-sm rounded-full">
+                <span className="text-xs font-semibold text-white/80">Expirée</span>
               </div>
             )}
           </div>
         )}
 
-        {/* Titre sur l'image */}
-        <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
+        {/* Titre + description sur l'image */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
           <h3 className={`font-bold text-white font-sans leading-tight drop-shadow-sm line-clamp-2 ${featured ? 'text-base' : 'text-sm'}`}>
             {promotion.title}
           </h3>
-          {promo.subtitle && (
-            <p className="text-[11px] text-white/80 font-sans line-clamp-1 drop-shadow-sm mt-0.5">{promo.subtitle}</p>
+          {promotion.description && (
+            <p className="text-xs text-white/75 font-sans line-clamp-1 drop-shadow-sm mt-0.5">
+              {promotion.description}
+            </p>
           )}
         </div>
       </div>
 
-      {/* ── INFOS ── */}
+      {/* ── INFOS ESSENTIELLES ── */}
       <div className="flex-1 flex flex-col p-3 gap-2.5">
 
         {/* Urgence + date */}
