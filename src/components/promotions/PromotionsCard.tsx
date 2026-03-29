@@ -72,7 +72,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
       {/*  1. Image floutée en absolute (background, remplit le container)    */}
       {/*  2. Image réelle en object-contain (entière, non tronquée)          */}
       {/* → image toujours entière ET container toujours plein                */}
-      <div className="relative w-full aspect-video overflow-hidden flex-shrink-0">
+      <div className="relative w-full aspect-[4/3] overflow-hidden flex-shrink-0">
 
         {promotion.image_url ? (
           <>
