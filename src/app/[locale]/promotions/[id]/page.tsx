@@ -48,7 +48,7 @@ const CategoryBlock = ({ raw }: { raw: string | string[] | null | undefined }) =
       cats = [raw]
     }
   }
-  const label = cats.filter(Boolean).map(formatCategory).join(' - ')
+  const label = [...new Set(cats)].filter(Boolean).map(formatCategory).join(' - ')
   if (!label) return null
   return (
     <div className="flex items-center gap-3 px-4 py-3 bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-sm">
@@ -133,29 +133,36 @@ export default function PromotionDetailPage() {
         setPromotion(data)
 
         // 2. Résoudre les noms des produits depuis applicable_products
-        // applicable_products peut contenir des UUIDs ou des noms selon le backend
+        // applicable_products peut contenir des UUIDs ou des codes/noms courts
         const rawProducts: string[] = data.applicable_products || []
         const uuids   = rawProducts.filter(isUUID)
-        const names   = rawProducts.filter(p => p && !isUUID(p))
+        const nonUUIDs = rawProducts.filter(p => p && !isUUID(p))
 
-        if (uuids.length > 0) {
-          // Fetch tous les produits et filtrer par les UUIDs présents
+        if (uuids.length > 0 || nonUUIDs.length > 0) {
           try {
             const productsRes = await fetch(`${API_URL}/products`)
             if (productsRes.ok) {
               const allProducts: { id: string; name: string }[] = await productsRes.json()
-              const resolvedNames = uuids
+              // Résoudre les UUIDs → noms
+              const fromUUIDs = uuids
                 .map(uuid => allProducts.find(p => p.id === uuid)?.name)
                 .filter(Boolean) as string[]
-              setProductNames([...names, ...resolvedNames])
+              // Résoudre les non-UUIDs → chercher par nom exact dans la BDD
+              // Si trouvé = nom propre, sinon ignorer (évite d'afficher "12kg" brut)
+              const fromNonUUIDs = nonUUIDs
+                .map(code => allProducts.find(
+                  p => p.name.toLowerCase() === code.toLowerCase()
+                )?.name)
+                .filter(Boolean) as string[]
+              setProductNames([...fromUUIDs, ...fromNonUUIDs])
             } else {
-              setProductNames(names)
+              setProductNames([])
             }
           } catch {
-            setProductNames(names)
+            setProductNames([])
           }
         } else {
-          setProductNames(names)
+          setProductNames([])
         }
 
       } catch { setNotFound(true) }
