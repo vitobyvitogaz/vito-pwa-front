@@ -34,18 +34,19 @@ const CATEGORY_LABELS: Record<string, string> = {
 const formatCategory = (raw: string): string =>
   CATEGORY_LABELS[raw.toLowerCase()] ?? raw
 
-// Composant React dédié — évite les IIFE dans le JSX
 const CategoryBlock = ({ raw }: { raw: string | string[] | null | undefined }) => {
   if (!raw) return null
   let cats: string[] = []
   if (Array.isArray(raw)) {
     cats = raw
   } else {
+    // Essayer JSON d'abord (ancien format stocké comme tableau)
     try {
       const parsed = JSON.parse(raw)
       cats = Array.isArray(parsed) ? parsed : [raw]
     } catch {
-      cats = [raw]
+      // Format CSV : "Bouteilles,Accessoires" ou string simple
+      cats = raw.split(',').map(s => s.trim()).filter(Boolean)
     }
   }
   const label = [...new Set(cats)].filter(Boolean).map(formatCategory).join(' - ')

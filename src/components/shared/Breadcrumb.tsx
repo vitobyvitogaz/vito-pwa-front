@@ -36,7 +36,7 @@ export const Breadcrumb: React.FC = () => {
     if (isUUID(segment)) {
       // Déduire le contexte depuis le segment précédent
       const prev = segments[index - 1]
-      if (prev === 'promotions') return "Détail de l'offre"
+      if (prev === 'promotions') return "Détails de l'offre"
       if (prev === 'revendeurs') return "Fiche revendeur"
       return "Détail"
     }
