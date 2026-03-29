@@ -148,7 +148,7 @@ export default function PromotionsPage() {
         <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
           {loading ? (
             // Skeleton — même grille 3 colonnes
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
               {[1, 2, 3, 4, 5, 6].map(i => <SkeletonCard key={i} />)}
             </div>
           ) : active.length === 0 && expired.length === 0 ? (
@@ -168,7 +168,7 @@ export default function PromotionsPage() {
 
               {/* Offres en cours — grille unifiée, featured en tête via sort() */}
               {active.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
                   {active.map((promo, i) => (
                     <PromotionCard
                       key={promo.id}
@@ -186,7 +186,7 @@ export default function PromotionsPage() {
                   <p className="text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-4">
                     Offres expirées
                   </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 opacity-50">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch opacity-50">
                     {expired.map((promo, i) => (
                       <PromotionCard key={promo.id} promotion={promo} delay={i * 0.04} />
                     ))}
