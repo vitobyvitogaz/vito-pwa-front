@@ -279,25 +279,26 @@ export default function HomePage() {
       {/* BADGE CONFIANCE */}
       {!heroLoading && <TrustBadge />}
 
-      {/* BOUTONS PRINCIPAUX */}
+      {/* BOUTONS PRINCIPAUX + ACTIONS RAPIDES — dot pattern étendu */}
       <div className="relative bg-gradient-to-b from-primary/10 to-transparent dark:from-primary/20 dark:to-transparent overflow-hidden">
         {/* Dot pattern subtil */}
         <div
-          className="absolute inset-0 opacity-30 dark:opacity-10"
+          className="absolute inset-0 opacity-40 dark:opacity-15"
           style={{
-            backgroundImage: `radial-gradient(circle, #008B7F 1px, transparent 1px)`,
+            backgroundImage: `radial-gradient(circle, #008B7F 1.5px, transparent 1.5px)`,
             backgroundSize: '24px 24px',
           }}
         />
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-12 sm:pb-16">
           {!contentReady ? <MainButtonsSkeleton /> : <MainButtons />}
         </div>
+
+        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 pb-8 sm:pb-12">
+          {!contentReady ? <QuickActionsSkeleton /> : <QuickActions />}
+        </div>
       </div>
 
-      {/* ACTIONS RAPIDES */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-8 sm:pb-12">
-        {!contentReady ? <QuickActionsSkeleton /> : <QuickActions />}
-      </div>
+
     </main>
   )
 }
