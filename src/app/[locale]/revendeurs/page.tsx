@@ -123,14 +123,14 @@ export default function ResellersPage() {
   const shouldShowPrompt = showGeolocationPrompt && !userLocation && !hasSkippedGeolocation
 
   const sheetHeights = {
-    quarter: '25vh',
-    half: '52vh',
+    quarter: '18vh',
+    half: '42vh',
     full: '88vh',
   }
 
   const mapBottoms = {
-    quarter: `calc(25vh + ${BOTTOM_NAV_HEIGHT}px)`,
-    half: `calc(52vh + ${BOTTOM_NAV_HEIGHT}px)`,
+    quarter: `calc(18vh + ${BOTTOM_NAV_HEIGHT}px)`,
+    half: `calc(42vh + ${BOTTOM_NAV_HEIGHT}px)`,
     full: `calc(88vh + ${BOTTOM_NAV_HEIGHT}px)`,
   }
 
