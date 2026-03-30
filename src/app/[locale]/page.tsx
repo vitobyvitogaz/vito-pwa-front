@@ -280,8 +280,16 @@ export default function HomePage() {
       {!heroLoading && <TrustBadge />}
 
       {/* BOUTONS PRINCIPAUX */}
-      <div className="bg-gradient-to-b from-primary/10 to-transparent dark:from-primary/20 dark:to-transparent">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-12 sm:pb-16">
+      <div className="relative bg-gradient-to-b from-primary/10 to-transparent dark:from-primary/20 dark:to-transparent overflow-hidden">
+        {/* Dot pattern subtil */}
+        <div
+          className="absolute inset-0 opacity-30 dark:opacity-10"
+          style={{
+            backgroundImage: `radial-gradient(circle, #008B7F 1px, transparent 1px)`,
+            backgroundSize: '24px 24px',
+          }}
+        />
+        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-12 sm:pb-16">
           {!contentReady ? <MainButtonsSkeleton /> : <MainButtons />}
         </div>
       </div>
