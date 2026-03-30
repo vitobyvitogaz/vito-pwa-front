@@ -96,7 +96,7 @@ export const QuickActions: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <p className="text-xl font-medium text-neutral-900 dark:text-white mb-5 tracking-tight">
+      <p className="text-xl font-semibold font-display text-neutral-900 dark:text-white mb-5 tracking-tight">
         Actions rapides
       </p>
       <div className="grid grid-cols-1 gap-4">
@@ -123,7 +123,7 @@ export const QuickActions: React.FC = () => {
                     <Icon className={`w-6 h-6 ${action.color}`} strokeWidth={1.5} />
                   </div>
                   <div className="flex-1">
-                    <p className="text-base font-medium text-neutral-900 dark:text-white tracking-tight font-sans">
+                    <p className="text-base font-semibold font-display text-neutral-900 dark:text-white tracking-tight">
                       {action.title}
                     </p>
                     {/* ── Numéro en gras, lisible immédiatement ── */}
@@ -165,7 +165,7 @@ export const QuickActions: React.FC = () => {
                   <Icon className={`w-6 h-6 ${action.color}`} strokeWidth={1.5} />
                 </div>
                 <div className="flex-1">
-                  <p className="text-base font-medium text-neutral-900 dark:text-white mb-1 tracking-tight font-sans">
+                  <p className="text-base font-semibold font-display text-neutral-900 dark:text-white mb-1 tracking-tight">
                     {action.title}
                   </p>
                   <p className="text-sm text-neutral-600 dark:text-neutral-400 font-sans">

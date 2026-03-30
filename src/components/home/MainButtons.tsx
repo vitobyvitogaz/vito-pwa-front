@@ -96,8 +96,10 @@ export const MainButtons: React.FC = () => {
                 bg-white dark:bg-dark-surface
                 rounded-xl p-5 text-left aspect-square
                 transition-all duration-300
-                border border-neutral-200 dark:border-neutral-800
-                hover:border-primary/50
+                border border-neutral-200/60 dark:border-neutral-800
+                hover:border-primary/40
+                shadow-md shadow-neutral-200/80 dark:shadow-neutral-900/60
+                hover:shadow-lg hover:shadow-primary/10 dark:hover:shadow-primary/15
                 ${button.hover}
                 ${activeId === button.id ? 'scale-95' : ''}
                 animate-slide-up
@@ -120,14 +122,14 @@ export const MainButtons: React.FC = () => {
                 </div>
 
                 <div className="space-y-3 p-3 max-w-full overflow-hidden">
-                  <h3 className="text-lg font-sans text-neutral-900 dark:text-white leading-snug tracking-tight truncate">
+                  <h3 className="text-lg font-semibold font-display text-neutral-900 dark:text-white leading-snug tracking-tight truncate">
                     {button.title}
                   </h3>
                   <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-snug line-clamp-2">
                     {button.description}
                   </p>
                   <div className="flex items-center gap-2 pt-1">
-                    <span className={`text-sm font-sans ${button.pulse ? 'text-blue-600 dark:text-blue-400 font-semibold' : 'text-primary'}`}>
+                    <span className={`text-sm font-display font-semibold ${button.pulse ? 'text-blue-600 dark:text-blue-400' : 'text-primary'}`}>
                       Découvrir
                     </span>
                     <ChevronRight

@@ -83,7 +83,7 @@ export const Header: React.FC = () => {
               const isActive = pathname.startsWith(item.href)
               return (
                 <Link key={item.href} href={item.href}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold font-display transition-all duration-200 ${
                     isActive
                       ? 'bg-primary/10 text-primary dark:bg-primary/20'
                       : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-dark-border/20 hover:text-neutral-900 dark:hover:text-white'
@@ -97,7 +97,7 @@ export const Header: React.FC = () => {
 
             {/* ── Lien Paramètres desktop ── */}
             <Link href="/fr/parametres"
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold font-display transition-all duration-200 ${
                 isParametres
                   ? 'bg-primary/10 text-primary dark:bg-primary/20'
                   : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-dark-border/20 hover:text-neutral-900 dark:hover:text-white'
@@ -110,8 +110,6 @@ export const Header: React.FC = () => {
 
           {/* Actions droite */}
           <div className="flex items-center gap-2">
-            {/* Bouton Installer — mobile et desktop */}
-            <InstallButton />
 
             {/* Cloche avec badge */}
             <button
@@ -127,7 +125,8 @@ export const Header: React.FC = () => {
               )}
             </button>
 
-
+            {/* Bouton Installer — mobile et desktop */}
+            <InstallButton />
 
           </div>
         </div>
