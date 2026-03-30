@@ -33,10 +33,20 @@ self.addEventListener('push', (event) => {
   event.waitUntil(
     Promise.all([
       self.registration.showNotification(data.title || '📢 Vitogaz Madagascar', options),
-      // Incrémenter le compteur non lu dans les clients ouverts
+      // Notifier les clients avec les données complètes pour stockage localStorage
       clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
         clientList.forEach((client) => {
-          client.postMessage({ type: 'PUSH_RECEIVED' })
+          client.postMessage({
+            type: 'PUSH_RECEIVED',
+            notification: {
+              id:        Date.now(),
+              title:     data.title || '📢 Vitogaz Madagascar',
+              body:      data.body  || 'Nouvelle information disponible',
+              notifType: data.data?.type || 'BROADCAST',
+              url:       data.data?.url  || '/fr',
+              receivedAt: new Date().toISOString(),
+            },
+          })
         })
       }),
     ])

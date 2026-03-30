@@ -25,9 +25,20 @@ export const Header: React.FC = () => {
 
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type === 'PUSH_RECEIVED') {
+        // Incrémenter le compteur
         const next = getUnreadCount() + 1
         localStorage.setItem('push-unread-count', String(next))
         setUnreadCount(next)
+
+        // Stocker la notification dans l'historique (max 20)
+        const notif = event.data.notification
+        if (notif) {
+          try {
+            const stored = JSON.parse(localStorage.getItem('push-notifications-history') || '[]')
+            const updated = [notif, ...stored].slice(0, 20)
+            localStorage.setItem('push-notifications-history', JSON.stringify(updated))
+          } catch {}
+        }
       }
     }
 
@@ -45,7 +56,7 @@ export const Header: React.FC = () => {
   const handleBellClick = () => {
     clearUnreadCount()
     setUnreadCount(0)
-    router.push('/fr/parametres')
+    router.push('/fr/notifications')
   }
 
   const isParametres = pathname.startsWith('/fr/parametres')

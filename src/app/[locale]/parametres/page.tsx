@@ -469,25 +469,39 @@ export default function ParametresPage() {
             </div>
           ) : (
             <>
+              {/* ── Titre principal — Alertes activées ─────────────────────── */}
               <ToggleRow
-                icon={pushSubscribed ? <Bell className="w-4 h-4 text-primary" strokeWidth={1.5} /> : <BellOff className="w-4 h-4 text-neutral-400" strokeWidth={1.5} />}
+                icon={pushSubscribed
+                  ? <Bell className="w-4 h-4 text-primary" strokeWidth={1.5} />
+                  : <BellOff className="w-4 h-4 text-neutral-400" strokeWidth={1.5} />}
                 label="Alertes activées"
                 sublabel={pushSubscribed ? 'Vous recevez des alertes' : 'Activez pour recevoir des alertes'}
                 enabled={pushSubscribed}
                 onToggle={handleMasterToggle}
                 loading={togglingMaster}
               />
-              {pushSubscribed && notifTypes.map((t) => (
-                <ToggleRow
-                  key={t.key}
-                  icon={t.icon}
-                  label={t.label}
-                  sublabel={t.sublabel}
-                  enabled={preferences[t.key]}
-                  onToggle={() => handlePrefToggle(t.key)}
-                  loading={togglingPref === t.key}
-                />
-              ))}
+
+              {/* ── Titres secondaires — sous-préférences ──────────────────── */}
+              {pushSubscribed && (
+                <div className="bg-neutral-50 dark:bg-neutral-900/40 border-t border-neutral-100 dark:border-neutral-800">
+                  <p className="text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-widest px-4 pt-3 pb-1">
+                    Types d'alertes
+                  </p>
+                  {notifTypes.map((t) => (
+                    <div key={t.key} className="pl-4 border-l-2 border-primary/20 ml-4 mr-2 rounded-l">
+                      <ToggleRow
+                        icon={t.icon}
+                        label={t.label}
+                        sublabel={t.sublabel}
+                        enabled={preferences[t.key]}
+                        onToggle={() => handlePrefToggle(t.key)}
+                        loading={togglingPref === t.key}
+                      />
+                    </div>
+                  ))}
+                  <div className="pb-1" />
+                </div>
+              )}
             </>
           )}
         </Section>
@@ -542,7 +556,7 @@ export default function ParametresPage() {
               <Info className="w-4 h-4 text-neutral-500" strokeWidth={1.5} />
             </div>
             <div>
-              <p className="text-sm font-medium text-neutral-900 dark:text-white font-sans">VitobyVitogaz</p>
+              <p className="text-sm font-medium text-neutral-900 dark:text-white font-sans">Vito by Vitogaz</p>
               <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">Version 1.0.0 — Madagascar</p>
             </div>
           </div>
@@ -552,7 +566,7 @@ export default function ParametresPage() {
             </div>
             <div>
               <p className="text-sm font-medium text-neutral-900 dark:text-white font-sans">Leader du gaz depuis 25 ans</p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">020 22 364 64 · Lun-Ven 8h-18h Sam 8h-13h</p>
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">020 22 364 64 · Lun-Ven 8h-17h</p>
             </div>
           </div>
         </Section>
