@@ -34,7 +34,7 @@ import { useOptimizedDistances, type TravelMode } from '@/lib/hooks/useOptimized
 const PAGE_SIZE = 10
 type SheetState = 'quarter' | 'half' | 'full'
 
-const NAVBAR_HEIGHT = 64
+const NAVBAR_HEIGHT = 65
 const BOTTOM_NAV_HEIGHT = 64
 
 // ── Normalisation pour recherche insensible aux accents ──────────────────────
