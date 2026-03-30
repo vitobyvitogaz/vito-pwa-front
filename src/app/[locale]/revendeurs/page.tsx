@@ -401,7 +401,7 @@ export default function ResellersPage() {
 
         {/* Barre flottante haut droite — une seule ligne : GPS actif | Filtres */}
         <div
-          className="absolute right-0 px-4 pointer-events-none"
+          className="fixed right-0 px-4 pointer-events-none"
           style={{ top: `${NAVBAR_HEIGHT + 4}px`, zIndex: 1000 }}
         >
           <div className="flex flex-row items-center gap-2 pointer-events-auto">
