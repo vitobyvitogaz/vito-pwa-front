@@ -124,14 +124,15 @@ export default function ResellersPage() {
 
   const sheetHeights = {
     quarter: '18vh',
-    half: '42vh',
-    full: '88vh',
+    half:    '42vh',
+    full:    '88vh',
   }
 
+  // La carte s'arrête exactement là où le sheet commence — pas de gap
   const mapBottoms = {
-    quarter: `calc(18vh + ${BOTTOM_NAV_HEIGHT}px)`,
-    half: `calc(42vh + ${BOTTOM_NAV_HEIGHT}px)`,
-    full: `calc(88vh + ${BOTTOM_NAV_HEIGHT}px)`,
+    quarter: '18vh',
+    half:    '42vh',
+    full:    '88vh',
   }
 
   if (isLoadingResellers) {
@@ -372,7 +373,7 @@ export default function ResellersPage() {
       {/* ═══════════════════════════════════════════════════════════
           MOBILE
       ═══════════════════════════════════════════════════════════ */}
-      <div className="lg:hidden relative" style={{ height: '100dvh', overflow: 'hidden' }}>
+      <div className="lg:hidden fixed inset-0" style={{ overflow: 'hidden' }}>
 
         <div
           className="absolute left-0 right-0"
