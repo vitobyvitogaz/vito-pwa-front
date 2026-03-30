@@ -20,13 +20,11 @@ export const MainButtons: React.FC = () => {
       bg: 'bg-primary/10',
       border: 'border-primary/20',
       hover: 'hover:bg-primary/20 dark:hover:bg-primary/20',
-      pulse: false,
+      pulse: true,
     },
     {
       id: 'order',
       title: 'Commander',
-      // ── Corrigé : "Livré chez vous" → "Livraison à domicile" ──
-      // Plus précis sur ce que la page propose réellement
       description: 'Livraison à domicile',
       icon: ShoppingCart,
       href: '/fr/commander',
@@ -46,7 +44,7 @@ export const MainButtons: React.FC = () => {
       bg: 'bg-amber-50 dark:bg-amber-900/20',
       border: 'border-amber-200 dark:border-amber-800',
       hover: 'hover:bg-amber-100 dark:hover:bg-amber-900/30',
-      pulse: false,
+      pulse: true,
     },
     {
       id: 'documents',
@@ -58,7 +56,7 @@ export const MainButtons: React.FC = () => {
       bg: 'bg-neutral-100 dark:bg-neutral-800/50',
       border: 'border-neutral-200 dark:border-neutral-700',
       hover: 'hover:bg-neutral-200 dark:hover:bg-neutral-700',
-      pulse: false,
+      pulse: true,
     },
   ]
 
@@ -109,10 +107,10 @@ export const MainButtons: React.FC = () => {
               <div className="flex flex-col h-full justify-between">
                 <div className="relative w-14 h-14">
                   {button.pulse && activeId !== button.id && (
-                    <div className={`vito-pulse-ring absolute inset-0 rounded-xl ${button.bg} border ${button.border}`} />
+                    <div className={`vito-pulse-ring absolute inset-0 rounded-full ${button.bg} border ${button.border}`} />
                   )}
                   <div className={`
-                    w-14 h-14 rounded-xl ${button.bg} ${button.border}
+                    w-14 h-14 rounded-full ${button.bg} ${button.border}
                     flex items-center justify-center
                     transition-all duration-300 relative z-10
                     ${activeId === button.id ? 'scale-95' : ''}

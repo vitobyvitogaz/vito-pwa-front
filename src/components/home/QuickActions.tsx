@@ -119,7 +119,7 @@ export const QuickActions: React.FC = () => {
                 }}
               >
                 <div className="flex items-center gap-4">
-                  <div className={`relative flex-shrink-0 ${action.bg} ${action.border} w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300`}>
+                  <div className={`relative flex-shrink-0 ${action.bg} ${action.border} w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300`}>
                     <Icon className={`w-6 h-6 ${action.color}`} strokeWidth={1.5} />
                   </div>
                   <div className="flex-1">
@@ -161,7 +161,7 @@ export const QuickActions: React.FC = () => {
               }}
             >
               <div className="flex items-center gap-4">
-                <div className={`relative flex-shrink-0 ${action.bg} ${action.border} w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300`}>
+                <div className={`relative flex-shrink-0 ${action.bg} ${action.border} w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300`}>
                   <Icon className={`w-6 h-6 ${action.color}`} strokeWidth={1.5} />
                 </div>
                 <div className="flex-1">
