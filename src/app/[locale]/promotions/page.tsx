@@ -116,30 +116,30 @@ export default function PromotionsPage() {
           </div>
         </div>
 
-        {/* ── Onglets Grand Public / Entreprise ── */}
+        {/* ── Onglets Grand Public / Entreprise — style simple comme page Produits ── */}
         <div className="flex justify-center mb-8 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-          <div className="inline-flex bg-neutral-100 dark:bg-neutral-800 rounded-full p-1">
+          <div className="flex border-b border-neutral-200 dark:border-neutral-800 gap-8">
             <button
               onClick={() => router.push(`/${locale}/promotions`)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-l-full text-sm font-semibold transition-all duration-300 ${
+              className={`flex items-center gap-2 pb-3 text-sm font-semibold transition-all duration-200 border-b-2 -mb-px ${
                 isGrandPublic
-                  ? 'bg-white dark:bg-dark-surface text-primary shadow-sm'
-                  : 'text-neutral-500 dark:text-neutral-200 hover:text-neutral-700 dark:hover:text-white'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
               }`}
             >
               <Sparkles className="w-4 h-4" strokeWidth={1.5} />
-              Promos Grand Public
+              Grand Public
             </button>
             <button
               onClick={() => router.push(`/${locale}/promotions/entreprise`)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-r-full text-sm font-semibold transition-all duration-300 ${
+              className={`flex items-center gap-2 pb-3 text-sm font-semibold transition-all duration-200 border-b-2 -mb-px ${
                 isEntreprise
-                  ? 'bg-white dark:bg-dark-surface text-primary shadow-sm'
-                  : 'text-neutral-500 dark:text-neutral-200 hover:text-neutral-700 dark:hover:text-white'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
               }`}
             >
               <Building2 className="w-4 h-4" strokeWidth={1.5} />
-              Offres Entreprise
+              Entreprise
             </button>
           </div>
         </div>
