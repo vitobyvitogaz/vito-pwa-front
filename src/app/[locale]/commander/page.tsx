@@ -148,23 +148,23 @@ export default function DeliveryPage() {
           </div>
         </div>
 
-        {/* Statistics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 sm:mb-12">
-          <div className="bg-white dark:bg-dark-surface rounded-2xl p-4 text-center border border-neutral-200 dark:border-neutral-800">
-            <div className="text-2xl sm:text-3xl font-bold text-primary mb-1">{stats.totalCompanies}</div>
-            <div className="text-sm text-neutral-600 dark:text-neutral-400 font-sans">Sociétés</div>
+        {/* Statistics — barre compacte, une seule ligne */}
+        <div className="flex items-center justify-center gap-0 mb-6 bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 rounded-2xl overflow-hidden divide-x divide-neutral-100 dark:divide-neutral-800">
+          <div className="flex-1 flex flex-col items-center py-3 px-2">
+            <span className="text-lg font-bold text-primary leading-none">{stats.totalCompanies}</span>
+            <span className="text-[10px] text-neutral-500 dark:text-neutral-400 font-sans mt-0.5">Sociétés</span>
           </div>
-          <div className="bg-white dark:bg-dark-surface rounded-2xl p-4 text-center border border-neutral-200 dark:border-neutral-800">
-            <div className="text-2xl sm:text-3xl font-bold text-emerald-600 mb-1">{stats.averageRating}</div>
-            <div className="text-sm text-neutral-600 dark:text-neutral-400 font-sans">Note moyenne</div>
+          <div className="flex-1 flex flex-col items-center py-3 px-2">
+            <span className="text-lg font-bold text-emerald-600 leading-none">{stats.averageRating}</span>
+            <span className="text-[10px] text-neutral-500 dark:text-neutral-400 font-sans mt-0.5">Note moy.</span>
           </div>
-          <div className="bg-white dark:bg-dark-surface rounded-2xl p-4 text-center border border-neutral-200 dark:border-neutral-800">
-            <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-1">{stats.fastestDelivery}h</div>
-            <div className="text-sm text-neutral-600 dark:text-neutral-400 font-sans">Plus rapide</div>
+          <div className="flex-1 flex flex-col items-center py-3 px-2">
+            <span className="text-lg font-bold text-blue-600 leading-none">{stats.fastestDelivery}h</span>
+            <span className="text-[10px] text-neutral-500 dark:text-neutral-400 font-sans mt-0.5">+ rapide</span>
           </div>
-          <div className="bg-white dark:bg-dark-surface rounded-2xl p-4 text-center border border-neutral-200 dark:border-neutral-800">
-            <div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-1">{stats.verifiedCount}</div>
-            <div className="text-sm text-neutral-600 dark:text-neutral-400 font-sans">Vérifiées</div>
+          <div className="flex-1 flex flex-col items-center py-3 px-2">
+            <span className="text-lg font-bold text-purple-600 leading-none">{stats.verifiedCount}</span>
+            <span className="text-[10px] text-neutral-500 dark:text-neutral-400 font-sans mt-0.5">Vérifiées</span>
           </div>
         </div>
 
