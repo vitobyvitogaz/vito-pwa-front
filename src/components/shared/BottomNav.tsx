@@ -20,19 +20,16 @@ const GasBottleIcon = ({ className, strokeWidth }: { className?: string; strokeW
 )
 
 const navItems = [
-  { href: '/fr/revendeurs', label: 'Revendeurs', icon: MapPin },
-  { href: '/fr/commander',  label: 'Commander',  icon: GasBottleIcon as any },
-  { href: '/fr/promotions', label: 'Promos',     icon: Sparkles },
-  { href: '/fr/documents',  label: 'Guides',     icon: BookOpen },
-  { href: '/fr/parametres', label: 'Paramètres', icon: Settings },
+  { href: '/fr/revendeurs', label: 'Revendeurs', icon: MapPin,               featured: true  },
+  { href: '/fr/commander',  label: 'Commander',  icon: GasBottleIcon as any, featured: false },
+  { href: '/fr/promotions', label: 'Promos',     icon: Sparkles,             featured: false },
+  { href: '/fr/documents',  label: 'Guides',     icon: BookOpen,             featured: false },
+  { href: '/fr/parametres', label: 'Paramètres', icon: Settings,             featured: false },
 ]
 
 export const BottomNav: React.FC = () => {
   const pathname = usePathname()
 
-  // ── InstallPrompt gardé mais déplacé en arrière-plan ──────────────────────
-  // Le prompt natif Android se déclenche toujours si disponible,
-  // mais n'est plus visible dans la bottom nav
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
   const [showIOSModal, setShowIOSModal] = useState(false)
 
@@ -51,13 +48,50 @@ export const BottomNav: React.FC = () => {
   return (
     <>
       <nav
-        className="md:hidden fixed bottom-0 left-0 right-0 z-[1002] bg-white/95 dark:bg-dark-surface/95 backdrop-blur-xl border-t border-neutral-200/60 dark:border-dark-border/60"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-[1002] bg-white/95 dark:bg-dark-surface/95 backdrop-blur-xl border-t border-neutral-200/60 dark:border-dark-border/60 shadow-[0_-8px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_-8px_24px_rgba(0,0,0,0.3)]"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         <div className="grid grid-cols-5 h-16">
           {navItems.map((item) => {
             const Icon = item.icon
             const isActive = pathname.startsWith(item.href)
+            const isFeatured = item.featured
+
+            // ── Revendeurs — traitement spécial ──────────────────────────────
+            if (isFeatured) {
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => hapticFeedback('light')}
+                  className="flex flex-col items-center justify-center gap-1 transition-all duration-200 active:scale-90"
+                >
+                  <div className={`
+                    flex items-center justify-center w-12 h-8 rounded-full transition-all duration-300
+                    ${isActive
+                      ? 'bg-primary shadow-md shadow-primary/30 dark:shadow-primary/20'
+                      : 'bg-primary/15 dark:bg-primary/25'
+                    }
+                  `}>
+                    <Icon
+                      className={`w-5 h-5 transition-all duration-200 ${
+                        isActive ? 'text-white' : 'text-primary'
+                      }`}
+                      strokeWidth={isActive ? 2.5 : 2}
+                    />
+                  </div>
+                  <span className={`text-[10px] leading-none transition-colors duration-200 font-display ${
+                    isActive
+                      ? 'text-primary font-semibold'
+                      : 'text-primary/70 dark:text-primary/60 font-medium'
+                  }`}>
+                    {item.label}
+                  </span>
+                </Link>
+              )
+            }
+
+            // ── Autres items ─────────────────────────────────────────────────
             return (
               <Link
                 key={item.href}
@@ -65,18 +99,23 @@ export const BottomNav: React.FC = () => {
                 onClick={() => hapticFeedback('light')}
                 className="flex flex-col items-center justify-center gap-1 transition-all duration-200 active:scale-90"
               >
-                <div className={`flex items-center justify-center w-10 h-7 rounded-full transition-all duration-200 ${
-                  isActive ? 'bg-primary/10 dark:bg-primary/20' : ''
-                }`}>
+                <div className={`
+                  flex items-center justify-center w-12 h-8 rounded-full transition-all duration-300
+                  ${isActive ? 'bg-primary/10 dark:bg-primary/20' : ''}
+                `}>
                   <Icon
-                    className={`w-5 h-5 transition-colors duration-200 ${
-                      isActive ? 'text-primary' : 'text-neutral-500 dark:text-neutral-400'
+                    className={`transition-all duration-200 ${
+                      isActive
+                        ? 'w-6 h-6 text-primary'
+                        : 'w-5 h-5 text-neutral-500 dark:text-neutral-400'
                     }`}
                     strokeWidth={isActive ? 2 : 1.5}
                   />
                 </div>
-                <span className={`text-[10px] font-medium leading-none transition-colors duration-200 ${
-                  isActive ? 'text-primary' : 'text-neutral-500 dark:text-neutral-400'
+                <span className={`text-[10px] leading-none transition-colors duration-200 ${
+                  isActive
+                    ? 'text-primary font-semibold font-display'
+                    : 'text-neutral-500 dark:text-neutral-400 font-medium'
                 }`}>
                   {item.label}
                 </span>
