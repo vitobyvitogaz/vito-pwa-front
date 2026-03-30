@@ -122,6 +122,9 @@ export default function ResellersPage() {
 
   const shouldShowPrompt = showGeolocationPrompt && !userLocation && !hasSkippedGeolocation
 
+  // Ancrage en haut de la carte à l'ouverture
+  useEffect(() => { window.scrollTo(0, 0) }, [])
+
   const sheetHeights = {
     quarter: '18vh',
     half:    '42vh',
@@ -373,7 +376,7 @@ export default function ResellersPage() {
       {/* ═══════════════════════════════════════════════════════════
           MOBILE
       ═══════════════════════════════════════════════════════════ */}
-      <div className="lg:hidden fixed inset-0" style={{ overflow: 'hidden' }}>
+      <div className="lg:hidden relative" style={{ height: '100dvh', overflow: 'hidden' }}>
 
         <div
           className="absolute left-0 right-0"
