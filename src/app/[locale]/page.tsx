@@ -280,8 +280,10 @@ export default function HomePage() {
       {!heroLoading && <TrustBadge />}
 
       {/* BOUTONS PRINCIPAUX */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-12 sm:pb-16">
-        {!contentReady ? <MainButtonsSkeleton /> : <MainButtons />}
+      <div className="bg-gradient-to-b from-primary/10 to-transparent dark:from-primary/20 dark:to-transparent">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-12 sm:pb-16">
+          {!contentReady ? <MainButtonsSkeleton /> : <MainButtons />}
+        </div>
       </div>
 
       {/* ACTIONS RAPIDES */}
