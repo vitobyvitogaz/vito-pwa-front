@@ -13,48 +13,13 @@ import { X, Info, ShieldCheck, Award, Users } from 'lucide-react'
 
 const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
 
+// ── Skeletons simplifiés — fond uni sans silhouette de glass card ─────────────
 const HeroSkeletonMobile = () => (
-  <div className="relative block md:hidden w-full aspect-[4/5] bg-gradient-to-br from-neutral-200 to-neutral-100 dark:from-neutral-800 dark:to-neutral-900 animate-pulse">
-    <div className="absolute inset-0 flex items-center justify-center px-4">
-      <div className="w-full max-w-sm bg-white/10 rounded-2xl p-6 space-y-3">
-        <div className="h-8 w-3/4 mx-auto bg-white/20 rounded-xl" />
-        <div className="h-4 w-2/3 mx-auto bg-white/15 rounded-lg" />
-        <div className="h-3 w-1/2 mx-auto bg-white/10 rounded-lg" />
-        <div className="w-12 h-1 bg-white/20 rounded-full mx-auto mt-2" />
-        <div className="flex justify-center gap-6 pt-2">
-          <div className="flex flex-col items-center gap-1">
-            <div className="h-5 w-8 bg-white/20 rounded" />
-            <div className="h-2 w-12 bg-white/15 rounded" />
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <div className="h-5 w-8 bg-white/20 rounded" />
-            <div className="h-2 w-12 bg-white/15 rounded" />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div className="block md:hidden w-full aspect-[27/10] bg-gradient-to-br from-neutral-200 to-neutral-100 dark:from-neutral-800 dark:to-neutral-900 animate-pulse" />
 )
 
 const HeroSkeletonDesktop = () => (
-  <div className="relative hidden md:block w-full aspect-video bg-gradient-to-br from-neutral-200 to-neutral-100 dark:from-neutral-800 dark:to-neutral-900 animate-pulse">
-    <div className="absolute inset-0 flex items-center justify-center">
-      <div className="max-w-2xl w-full mx-4 bg-white/10 rounded-2xl p-10 space-y-4">
-        <div className="h-12 w-2/3 mx-auto bg-white/20 rounded-xl" />
-        <div className="h-6 w-1/2 mx-auto bg-white/15 rounded-lg" />
-        <div className="h-4 w-3/4 mx-auto bg-white/10 rounded-lg" />
-        <div className="w-16 h-1 bg-white/20 rounded-full mx-auto mt-2" />
-        <div className="flex justify-center gap-8 pt-2">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="flex flex-col items-center gap-1.5">
-              <div className="h-6 w-10 bg-white/20 rounded" />
-              <div className="h-2 w-14 bg-white/15 rounded" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  </div>
+  <div className="hidden md:block w-full aspect-[27/10] bg-gradient-to-br from-neutral-200 to-neutral-100 dark:from-neutral-800 dark:to-neutral-900 animate-pulse" />
 )
 
 const MainButtonsSkeleton = () => (
@@ -122,7 +87,6 @@ export default function HomePage() {
   const { bannerUrlDesktop, bannerUrlMobile, title, subtitle, description, stats, loading: heroLoading } = useHeroContent()
   const [showGlassCard, setShowGlassCard] = useState(true)
   const [contentReady, setContentReady] = useState(false)
-  // ── Fix : glass card masquée jusqu'au chargement complet de l'image ──────
   const [desktopImageLoaded, setDesktopImageLoaded] = useState(false)
   const [mobileImageLoaded, setMobileImageLoaded] = useState(false)
 
@@ -147,7 +111,6 @@ export default function HomePage() {
     }
   }, [heroLoading])
 
-  // Si pas de banner → considérer l'image comme chargée pour ne pas bloquer
   useEffect(() => {
     if (!heroLoading && !bannerUrlDesktop) setDesktopImageLoaded(true)
     if (!heroLoading && !bannerUrlMobile) setMobileImageLoaded(true)
@@ -166,25 +129,23 @@ export default function HomePage() {
         <PromotionPopup promotion={selectedPromotion} onClose={closePopup} />
       )}
 
-      {/* ── HERO DESKTOP ── */}
+      {/* ── HERO DESKTOP ── ratio exact bannière : 960×355 = 27/10 ── */}
       {heroLoading ? (
         <HeroSkeletonDesktop />
       ) : (
-        <div className="relative hidden md:block w-full aspect-video">
+        <div className="relative hidden md:block w-full aspect-[27/10]">
           {bannerUrlDesktop && (
             <Image
               src={bannerUrlDesktop}
               alt="Vitogaz - Gaz domestique"
-              fill priority unoptimized quality={90}
+              fill priority quality={75}
               className="object-cover object-center"
               sizes="100vw"
-              // ── Signaler quand l'image est réellement chargée ──
               onLoad={() => setDesktopImageLoaded(true)}
             />
           )}
           <div className="absolute inset-0 bg-black/10" />
 
-          {/* Glass card — visible uniquement après chargement de l'image ── */}
           {hasContent && showGlassCard && desktopImageLoaded && (
             <div className="absolute inset-0 flex items-center justify-center animate-fade-in">
               <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -243,16 +204,16 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* ── HERO MOBILE ── */}
+      {/* ── HERO MOBILE ── même ratio 27/10 ── */}
       {heroLoading ? (
         <HeroSkeletonMobile />
       ) : (
-        <div className="relative block md:hidden w-full aspect-[4/5]">
+        <div className="relative block md:hidden w-full aspect-[27/10]">
           {bannerUrlMobile && (
             <Image
               src={bannerUrlMobile}
               alt="Vitogaz - Gaz domestique"
-              fill priority unoptimized quality={90}
+              fill priority quality={75}
               className="object-cover object-center"
               sizes="100vw"
               onLoad={() => setMobileImageLoaded(true)}

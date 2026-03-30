@@ -110,6 +110,8 @@ export const Header: React.FC = () => {
 
           {/* Actions droite */}
           <div className="flex items-center gap-2">
+            {/* Bouton Installer — mobile et desktop */}
+            <InstallButton />
 
             {/* Cloche avec badge */}
             <button
@@ -125,10 +127,7 @@ export const Header: React.FC = () => {
               )}
             </button>
 
-            {/* Bouton Installer — Desktop uniquement */}
-            <div className="hidden md:block">
-              <InstallButton />
-            </div>
+
 
           </div>
         </div>
