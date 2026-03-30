@@ -64,18 +64,26 @@ self.addEventListener('notificationclick', (event) => {
   // ── Feedback satisfaction → page de notation étoiles ─────────────────────
   if (notifType === 'FEEDBACK') {
     const attemptId = notifData.attemptId
-    // Tap sur la notification → ouvrir la page de notation étoiles
-    const url = notifData.url || `/fr/rating/${attemptId}`
+    const relativeUrl = notifData.url || `/fr/rating/${attemptId}`
+    const absoluteUrl = relativeUrl.startsWith('http')
+      ? relativeUrl
+      : `${self.location.origin}${relativeUrl}`
+
     event.waitUntil(
       clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
         for (const client of clientList) {
+          if ('navigate' in client) {
+            client.navigate(absoluteUrl)
+            client.focus()
+            return
+          }
           if ('focus' in client) {
             client.focus()
-            client.postMessage({ type: 'PUSH_NAVIGATE', url })
+            client.postMessage({ type: 'PUSH_NAVIGATE', url: relativeUrl })
             return
           }
         }
-        return clients.openWindow(url)
+        return clients.openWindow(absoluteUrl)
       })
     )
     return
