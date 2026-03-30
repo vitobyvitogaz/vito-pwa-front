@@ -7,6 +7,8 @@ import { ChevronLeft, ChevronRight, Loader2, Package } from 'lucide-react'
 const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1';
 const ITEMS_PER_PAGE = 12;
 
+// CATEGORY_ORDER — utilisé UNIQUEMENT pour trier les onglets catégories
+// Pas pour l'ordre d'affichage des produits (géré par order_position dans le backoffice)
 const CATEGORY_ORDER = ['Bouteilles', 'Accessoires', 'Kit', 'Gaz au détail']
 
 interface Product {
@@ -36,8 +38,6 @@ export const ProductsList: React.FC = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true)
-      //const response = await fetch(`${API_URL}/products`)
-      //const response = await fetch(`${API_URL}/products/active`)
       const response = await fetch(`${API_URL}/products/active`, { cache: 'no-store' })
       if (!response.ok) throw new Error('Erreur lors du chargement')
       const data = await response.json()
@@ -53,7 +53,7 @@ export const ProductsList: React.FC = () => {
     }
   }
 
-  // Catégories triées selon CATEGORY_ORDER
+  // Onglets catégories — triés selon CATEGORY_ORDER
   const categories = ['all', ...Array.from(
     new Set(products.map(p => p.category).filter(Boolean) as string[])
   ).sort((a, b) => {
@@ -70,14 +70,11 @@ export const ProductsList: React.FC = () => {
     return product.category === selectedCategory
   })
 
-  // Tri par catégorie selon CATEGORY_ORDER, puis is_featured, puis order_position
+  // ── Tri des produits ──────────────────────────────────────────────────────
+  // 1. is_featured en premier (promo du moment)
+  // 2. order_position croissant (ordre défini dans le backoffice admin)
+  // CATEGORY_ORDER n'intervient PAS ici — il ne sert qu'aux onglets
   const sortedProducts = [...filteredProducts].sort((a, b) => {
-    const indexA = CATEGORY_ORDER.indexOf((a.category || '').trim())
-    const indexB = CATEGORY_ORDER.indexOf((b.category || '').trim())
-    const rankA = indexA === -1 ? 999 : indexA
-    const rankB = indexB === -1 ? 999 : indexB
-
-    if (rankA !== rankB) return rankA - rankB
     if (a.is_featured && !b.is_featured) return -1
     if (!a.is_featured && b.is_featured) return 1
     return a.order_position - b.order_position
@@ -131,7 +128,7 @@ export const ProductsList: React.FC = () => {
         </div>
       </div>
 
-      {/* Category filters */}
+      {/* Onglets catégories — ordre défini par CATEGORY_ORDER */}
       <div className="flex gap-2 flex-wrap justify-start">
         {categories.map((category) => (
           <button
@@ -157,7 +154,7 @@ export const ProductsList: React.FC = () => {
         ))}
       </div>
 
-      {/* Products grid */}
+      {/* Grille produits */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
         {paginatedProducts.map((product, index) => (
           <ProductCard
