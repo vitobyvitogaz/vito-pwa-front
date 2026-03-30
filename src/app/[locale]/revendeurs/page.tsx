@@ -381,7 +381,7 @@ export default function ResellersPage() {
         <div
           className="absolute left-0 right-0"
           style={{
-            top: `${NAVBAR_HEIGHT}px`,
+            top: 0,
             bottom: mapBottoms[sheetState],
             zIndex: 1,
             transition: 'bottom 0.35s cubic-bezier(0.32, 0.72, 0, 1)',
