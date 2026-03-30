@@ -282,13 +282,19 @@ export default function HomePage() {
       {/* BOUTONS PRINCIPAUX + ACTIONS RAPIDES — dot pattern étendu */}
       <div className="relative bg-gradient-to-b from-primary/10 to-transparent dark:from-primary/20 dark:to-transparent overflow-hidden">
         {/* Dot pattern subtil */}
-        <div
-          className="absolute inset-0 opacity-40 dark:opacity-15"
-          style={{
-            backgroundImage: `radial-gradient(circle, #008B7F 1.5px, transparent 1.5px)`,
-            backgroundSize: '24px 24px',
-          }}
-        />
+        {/* Grain irrégulier style sable */}
+        <svg className="absolute inset-0 w-full h-full opacity-[0.06] dark:opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
+          <filter id="grain">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.85"
+              numOctaves="4"
+              stitchTiles="stitch"
+            />
+            <feColorMatrix type="saturate" values="0" />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#grain)" fill="#008B7F" />
+        </svg>
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-12 sm:pb-16">
           {!contentReady ? <MainButtonsSkeleton /> : <MainButtons />}
         </div>
