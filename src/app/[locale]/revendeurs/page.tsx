@@ -44,7 +44,7 @@ const normalize = (str: string) =>
 export default function ResellersPage() {
   const { resellers, loading: isLoadingResellers, fetchResellers } = useResellerStore()
   const [view, setView] = useState<'split' | 'list' | 'map'>('split')
-  const [sheetState, setSheetState] = useState<SheetState>('quarter')
+  const [sheetState, setSheetState] = useState<SheetState>('half')
   const [showMobileFilters, setShowMobileFilters] = useState(false)
   const [selectedReseller, setSelectedReseller] = useState<Reseller | null>(null)
   const [filteredResellers, setFilteredResellers] = useState<Reseller[]>([])
