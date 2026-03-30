@@ -399,20 +399,14 @@ export default function ResellersPage() {
           <GeolocationButton onLocationFound={handleLocationFound} />
         </div>
 
-        {/* Barre flottante haut droite */}
+        {/* Barre flottante haut droite — une seule ligne : GPS actif | Filtres */}
         <div
           className="absolute right-0 px-4 pointer-events-none"
           style={{ top: `${NAVBAR_HEIGHT + 12}px`, zIndex: 1000 }}
         >
-          <div className="flex flex-col items-end gap-2 pointer-events-auto">
-            <button
-              onClick={() => setShowMobileFilters(true)}
-              className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-neutral-200 dark:border-neutral-700 active:scale-95 transition-transform"
-            >
-              <SlidersHorizontal className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-400" strokeWidth={1.5} />
-              <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300">Filtres</span>
-            </button>
+          <div className="flex flex-row items-center gap-2 pointer-events-auto">
 
+            {/* GPS actif — en premier */}
             {userLocation && (
               <div className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-emerald-200 dark:border-emerald-800">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
@@ -426,6 +420,16 @@ export default function ResellersPage() {
                 <span className="text-xs font-medium text-primary">Calcul...</span>
               </div>
             )}
+
+            {/* Filtres — en dernier */}
+            <button
+              onClick={() => setShowMobileFilters(true)}
+              className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-dark-surface rounded-full shadow-lg border border-neutral-200 dark:border-neutral-700 active:scale-95 transition-transform"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-400" strokeWidth={1.5} />
+              <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300">Filtres</span>
+            </button>
+
           </div>
         </div>
 
