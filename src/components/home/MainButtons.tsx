@@ -121,14 +121,14 @@ export const MainButtons: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="space-y-3 p-3 max-w-full overflow-hidden">
-                  <h3 className="text-lg font-semibold font-display text-neutral-900 dark:text-white leading-snug tracking-tight truncate">
+                <div className="space-y-2 p-3 max-w-full overflow-hidden">
+                  <h3 className="text-base sm:text-lg font-semibold font-display text-neutral-900 dark:text-white leading-snug tracking-tight truncate">
                     {button.title}
                   </h3>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-snug line-clamp-2">
+                  <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 leading-snug line-clamp-2">
                     {button.description}
                   </p>
-                  <div className="flex items-center gap-2 pt-1">
+                  <div className="hidden sm:flex items-center gap-2 pt-1">
                     <span className={`text-sm font-display font-semibold ${button.pulse ? 'text-blue-600 dark:text-blue-400' : 'text-primary'}`}>
                       Découvrir
                     </span>
