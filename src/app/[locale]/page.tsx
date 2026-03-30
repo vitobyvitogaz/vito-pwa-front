@@ -15,7 +15,7 @@ const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
 
 // ── Skeletons simplifiés — fond uni sans silhouette de glass card ─────────────
 const HeroSkeletonMobile = () => (
-  <div className="block md:hidden w-full aspect-[27/10] bg-gradient-to-br from-neutral-200 to-neutral-100 dark:from-neutral-800 dark:to-neutral-900 animate-pulse" />
+  <div className="block md:hidden w-full aspect-[4/5] bg-gradient-to-br from-neutral-200 to-neutral-100 dark:from-neutral-800 dark:to-neutral-900 animate-pulse" />
 )
 
 const HeroSkeletonDesktop = () => (
@@ -208,7 +208,7 @@ export default function HomePage() {
       {heroLoading ? (
         <HeroSkeletonMobile />
       ) : (
-        <div className="relative block md:hidden w-full aspect-[27/10]">
+        <div className="relative block md:hidden w-full aspect-[4/5]">
           {bannerUrlMobile && (
             <Image
               src={bannerUrlMobile}
