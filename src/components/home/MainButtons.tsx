@@ -122,10 +122,10 @@ export const MainButtons: React.FC = () => {
                 </div>
 
                 <div className="space-y-2 p-3 max-w-full overflow-hidden">
-                  <h3 className="text-base sm:text-lg font-semibold font-display text-neutral-900 dark:text-white leading-snug tracking-tight truncate">
+                  <h3 className="text-base sm:text-lg font-semibold font-display text-neutral-900 dark:text-white leading-snug tracking-tight truncate min-h-[24px] sm:min-h-[28px]">
                     {button.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 leading-snug line-clamp-2">
+                  <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 leading-snug line-clamp-2 h-8 sm:h-10">
                     {button.description}
                   </p>
                   <div className="hidden sm:flex items-center gap-2 pt-1">
