@@ -61,27 +61,11 @@ self.addEventListener('notificationclick', (event) => {
   const notifData = event.notification.data || {}
   const notifType = notifData.type
 
-  // ── Feedback satisfaction ─────────────────────────────────────────────────
+  // ── Feedback satisfaction → page de notation étoiles ─────────────────────
   if (notifType === 'FEEDBACK') {
     const attemptId = notifData.attemptId
-
-    if (action === 'satisfied' || action === 'unsatisfied') {
-      const satisfied = action === 'satisfied'
-
-      // Envoyer la réponse au backend en arrière-plan
-      event.waitUntil(
-        fetch(`${API_URL}/feedback/respond`, {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({ attempt_id: attemptId, satisfied }),
-        }).catch(() => {}) // Silencieux si offline
-      )
-      // Ne pas naviguer — l'utilisateur a juste répondu à la notification
-      return
-    }
-
-    // Clic sur la notification elle-même → ouvrir la page commander
-    const url = notifData.url || '/fr/commander'
+    // Tap sur la notification → ouvrir la page de notation étoiles
+    const url = notifData.url || `/fr/rating/${attemptId}`
     event.waitUntil(
       clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
         for (const client of clientList) {
