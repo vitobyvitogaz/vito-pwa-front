@@ -70,20 +70,20 @@ export const BottomNav: React.FC = () => {
                     flex items-center justify-center w-12 h-8 rounded-full transition-all duration-300
                     ${isActive
                       ? 'bg-primary shadow-md shadow-primary/30 dark:shadow-primary/20'
-                      : 'bg-primary/15 dark:bg-primary/25'
+                      : ''
                     }
                   `}>
                     <Icon
                       className={`w-5 h-5 transition-all duration-200 ${
-                        isActive ? 'text-white' : 'text-primary'
+                        isActive ? 'text-white' : 'text-neutral-500 dark:text-neutral-400'
                       }`}
-                      strokeWidth={isActive ? 2.5 : 2}
+                      strokeWidth={isActive ? 2.5 : 1.5}
                     />
                   </div>
                   <span className={`text-[10px] leading-none transition-colors duration-200 font-display ${
                     isActive
                       ? 'text-primary font-semibold'
-                      : 'text-primary/70 dark:text-primary/60 font-medium'
+                      : 'text-neutral-500 dark:text-neutral-400 font-medium'
                   }`}>
                     {item.label}
                   </span>
