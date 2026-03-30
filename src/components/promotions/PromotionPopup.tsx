@@ -4,13 +4,13 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Image from 'next/image'
 import type { Promotion } from '@/types/promotion'
-import { X, Tag, Sparkles, ArrowRight, Calendar, Store } from 'lucide-react'
+import { X, Sparkles, ArrowRight, Calendar } from 'lucide-react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 interface PromotionPopupProps {
   promotion:    Promotion
   onClose:      () => void
-  autoCloseSec?: number  // configurable depuis les settings
+  autoCloseSec?: number
 }
 
 export const PromotionPopup: React.FC<PromotionPopupProps> = ({
@@ -61,8 +61,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
     }
 
     calculateTimeLeft()
-    const interval      = setInterval(calculateTimeLeft, 1000)
-    // ── Fermeture auto configurable depuis les settings ──────────────────
+    const interval       = setInterval(calculateTimeLeft, 1000)
     const autoCloseTimer = setTimeout(() => handleClose(), autoCloseSec * 1000)
 
     return () => {
@@ -81,14 +80,6 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
   }
 
   const urgency = getUrgencyColor()
-
-  const handleCopyCode = () => {
-    if (!promotion.promo_code) return
-    hapticFeedback('medium')
-    navigator.clipboard.writeText(promotion.promo_code)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
 
   const handleClose = () => {
     hapticFeedback('light')
@@ -110,14 +101,15 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 ${
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto transition-all duration-300 ${
         isClosing ? 'opacity-0' : 'opacity-100'
       }`}
       style={{ backgroundColor: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(6px)' }}
       onClick={(e) => e.target === e.currentTarget && handleClose()}
     >
+      {/* ── max-w-[320px] mobile · max-w-[260px] desktop (sm+) ── */}
       <div
-        className={`relative w-full max-w-sm transition-all duration-300 ${
+        className={`relative w-full max-w-[320px] sm:max-w-[260px] transition-all duration-300 ${
           isClosing ? 'scale-95 opacity-0 translate-y-4' : 'scale-100 opacity-100 translate-y-0'
         }`}
         style={{ animation: isClosing ? 'none' : 'slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
@@ -141,7 +133,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
                 alt={promotion.title}
                 fill quality={72} priority
                 className="object-cover"
-                sizes="(max-width: 640px) 100vw, 384px"
+                sizes="(max-width: 640px) 320px, 260px"
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
@@ -242,35 +234,6 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
                 <span className="text-xs text-red-600 dark:text-red-400 font-sans">Cette offre a expiré</span>
               </div>
             )}
-
-            {/* Code promo — libellé "à montrer au revendeur" */}
-            {/* TODO: à activer quand on aura des codes promo */}
-            {/* {promotion.promo_code && promotion.is_active && !isExpired && (
-              <div className="rounded-xl border border-primary/20 bg-primary/5 dark:bg-primary/10 overflow-hidden">
-                <div className="flex items-center gap-1.5 px-4 py-2 border-b border-primary/10">
-                  <Store className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
-                  <span className="text-xs font-medium text-primary/80 font-sans">
-                    À montrer à votre revendeur
-                  </span>
-                </div>
-                <button
-                  onClick={handleCopyCode}
-                  className="w-full flex items-center justify-between px-4 py-3 hover:bg-primary/10 transition-all duration-200 group"
-                >
-                  <span className="text-lg font-black text-primary font-mono tracking-widest">
-                    {promotion.promo_code}
-                  </span>
-                  <span className={`text-xs font-semibold font-sans transition-colors px-2.5 py-1 rounded-lg ${
-                    copied
-                      ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600'
-                      : 'bg-primary/10 text-primary'
-                  }`}>
-                    {copied ? '✓ Copié' : 'Copier'}
-                  </span>
-                </button>
-              </div>
-            )}
-            */}
 
             {/* CTA */}
             {!isExpired && (
