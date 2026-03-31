@@ -4,7 +4,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { MapPin, ShoppingCart, Sparkles, BookOpen, Bell, Settings } from 'lucide-react'
+import { MapPin, ShoppingCart, Sparkles, BookOpen, Bell, Settings, Gift } from 'lucide-react'
 import { InstallButton } from '@/components/shared/InstallButton'
 import { getUnreadCount, clearUnreadCount } from '@/lib/webpush'
 
@@ -39,6 +39,11 @@ export const Header: React.FC = () => {
             localStorage.setItem('push-notifications-history', JSON.stringify(updated))
           } catch {}
         }
+      }
+
+      // ── Navigation depuis une notification push ────────────────────────
+      if (event.data?.type === 'PUSH_NAVIGATE' && event.data?.url) {
+        router.push(event.data.url)
       }
     }
 
@@ -110,6 +115,15 @@ export const Header: React.FC = () => {
 
           {/* Actions droite */}
           <div className="flex items-center gap-2">
+
+            {/* Mes Avantages */}
+            <button
+              onClick={() => router.push('/fr/mes-avantages')}
+              className="relative w-10 h-10 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:shadow-md transition-all duration-300 hover:scale-105 flex items-center justify-center"
+              aria-label="Mes avantages"
+            >
+              <Gift className="w-5 h-5 text-amber-500" strokeWidth={1.5} />
+            </button>
 
             {/* Cloche avec badge */}
             <button

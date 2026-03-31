@@ -33,7 +33,6 @@ export const InstallButton: React.FC = () => {
   }, [])
 
   const handleInstall = async () => {
-    // ── iOS : ouvrir le modal custom au lieu de alert() ──
     if (isIOS) {
       setShowIOSModal(true)
       return
@@ -41,10 +40,7 @@ export const InstallButton: React.FC = () => {
 
     if (!deferredPrompt) {
       const isAndroid = /Android/.test(navigator.userAgent)
-      if (isAndroid) {
-        // Android sans prompt natif : instructions courtes
-        setShowIOSModal(true)
-      }
+      if (isAndroid) setShowIOSModal(true)
       return
     }
 
@@ -66,11 +62,13 @@ export const InstallButton: React.FC = () => {
     <>
       <button
         onClick={handleInstall}
-        className="install-button group bg-primary text-white rounded-full px-4 py-2.5 flex items-center gap-2 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 active:scale-95"
         aria-label="Installer l'application Vito"
+        className="install-button group bg-primary text-white rounded-full shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center
+          w-10 h-10
+          sm:w-auto sm:h-auto sm:px-4 sm:py-2.5 sm:gap-2"
       >
-        <Download className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
-        <span className="text-sm font-semibold">Installer</span>
+        <Download className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" strokeWidth={1.5} />
+        <span className="hidden sm:inline text-sm font-semibold whitespace-nowrap">Installer</span>
         <style jsx>{`
           .install-button {
             animation: fadeIn 300ms ease-in-out;
@@ -82,7 +80,6 @@ export const InstallButton: React.FC = () => {
         `}</style>
       </button>
 
-      {/* Modal iOS custom */}
       {showIOSModal && (
         <IOSInstallModal onClose={() => setShowIOSModal(false)} />
       )}
