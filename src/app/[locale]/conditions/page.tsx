@@ -5,7 +5,7 @@ import { ArrowLeft, Shield } from 'lucide-react'
 
 const VITOGAZ_GREEN = '#008B7F'
 
-const lastUpdated = '1er avril 2025'
+const lastUpdated = '1er avril 2026'
 
 const sections = [
   {
