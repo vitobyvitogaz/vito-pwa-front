@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Gift, Star, Clock, CheckCircle, ChevronRight, Phone, ArrowLeft, Sparkles, X } from 'lucide-react'
+import { Gift, Star, Clock, ChevronRight, Phone, ArrowLeft, Sparkles } from 'lucide-react'
 
 const API_URL       = 'https://vito-backend-supabase.onrender.com/api/v1'
 const PWA_PHONE_KEY = 'vito-user-phone'
@@ -21,12 +21,6 @@ export default function MesAvantagesPage() {
   const [balance, setBalance]       = useState<PointsBalance | null>(null)
   const [history, setHistory]       = useState<ScanHistory[]>([])
   const [loading, setLoading]       = useState(false)
-  const [showExchange, setShowExchange] = useState(false)
-  const [exchangePoints, setExchangePoints] = useState('')
-  const [exchangeReward, setExchangeReward] = useState('')
-  const [exchanging, setExchanging] = useState(false)
-  const [exchangeSuccess, setExchangeSuccess] = useState(false)
-  const [exchangeError, setExchangeError]     = useState<string | null>(null)
 
   useEffect(() => {
     const saved = localStorage.getItem(PWA_PHONE_KEY)
@@ -52,27 +46,10 @@ export default function MesAvantagesPage() {
     loadData(phoneInput.trim())
   }
 
-  const handleExchange = async () => {
-    if (!exchangePoints || !exchangeReward.trim()) { setExchangeError('Veuillez remplir tous les champs'); return }
-    const pts = parseInt(exchangePoints)
-    if (pts > (balance?.available_points || 0)) { setExchangeError('Points insuffisants'); return }
-    setExchanging(true); setExchangeError(null)
-    try {
-      const res = await fetch(`${API_URL}/scan/exchange`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          phone,
-          name:               localStorage.getItem(PWA_NAME_KEY) || '',
-          points_requested:   pts,
-          reward_description: exchangeReward.trim(),
-        }),
-      })
-      if (!res.ok) { const d = await res.json(); setExchangeError(d.message || 'Erreur'); return }
-      setExchangeSuccess(true)
-      loadData(phone)
-    } catch { setExchangeError('Erreur réseau') }
-    finally { setExchanging(false) }
+  const handleGoToCatalog = () => {
+    // Sauvegarder le téléphone pour la page reward-items
+    localStorage.setItem('vito_user_phone', phone)
+    router.push(`/${locale}/reward-items`)
   }
 
   const fmtDate = (d: string) => new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -137,55 +114,16 @@ export default function MesAvantagesPage() {
             <span>Utilisé : {balance?.used_points || 0} pts</span>
           </div>
 
-          {(balance?.available_points || 0) > 0 && !showExchange && (
-            <button onClick={() => setShowExchange(true)}
+          {/* Nouveau bouton vers le catalogue */}
+          {(balance?.available_points || 0) > 0 && (
+            <button onClick={handleGoToCatalog}
               className="mt-4 w-full py-3 bg-white/20 hover:bg-white/30 rounded-full text-sm font-semibold font-sans transition-colors flex items-center justify-center gap-2">
-              <Gift className="w-4 h-4" /> Échanger mes points
+              <Gift className="w-4 h-4" /> 
+              Échanger mes points
+              <ChevronRight className="w-4 h-4" />
             </button>
           )}
         </div>
-
-        {/* Formulaire d'échange */}
-        {showExchange && !exchangeSuccess && (
-          <div className="bg-white dark:bg-dark-surface rounded-2xl p-5 shadow-md shadow-neutral-200/80 dark:shadow-neutral-900/60 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-base font-semibold font-display text-neutral-900 dark:text-white">Demande d'échange</h3>
-              <button onClick={() => { setShowExchange(false); setExchangeError(null) }} className="p-1.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
-                <X className="w-4 h-4 text-neutral-500" />
-              </button>
-            </div>
-            <div>
-              <label className="text-xs font-medium text-neutral-600 dark:text-neutral-400 font-sans mb-1.5 block">
-                Points à utiliser (max : {balance?.available_points || 0})
-              </label>
-              <input type="number" min="1" max={balance?.available_points || 0} value={exchangePoints}
-                onChange={e => { setExchangePoints(e.target.value); setExchangeError(null) }}
-                placeholder="Ex: 100"
-                className="w-full px-4 py-3 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800/50 text-sm text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all font-sans" />
-            </div>
-            <div>
-              <label className="text-xs font-medium text-neutral-600 dark:text-neutral-400 font-sans mb-1.5 block">
-                Récompense souhaitée
-              </label>
-              <input type="text" value={exchangeReward} onChange={e => { setExchangeReward(e.target.value); setExchangeError(null) }}
-                placeholder="Ex: Bon d'achat 5000 Ar"
-                className="w-full px-4 py-3 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800/50 text-sm text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all font-sans" />
-            </div>
-            {exchangeError && <p className="text-sm text-red-500 font-sans">{exchangeError}</p>}
-            <button onClick={handleExchange} disabled={exchanging}
-              className="w-full py-3.5 bg-primary text-white rounded-full font-semibold font-sans text-sm disabled:opacity-40 hover:bg-primary/90 transition-colors active:scale-95">
-              {exchanging ? 'Envoi...' : 'Envoyer la demande'}
-            </button>
-          </div>
-        )}
-
-        {exchangeSuccess && (
-          <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-5 text-center">
-            <CheckCircle className="w-10 h-10 text-emerald-600 dark:text-emerald-400 mx-auto mb-3" strokeWidth={1.5} />
-            <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-300 font-display mb-1">Demande envoyée !</p>
-            <p className="text-xs text-emerald-700/70 dark:text-emerald-500 font-sans">Notre équipe vous contactera pour valider l'échange.</p>
-          </div>
-        )}
 
         {/* Historique des participations */}
         <div>
