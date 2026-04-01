@@ -84,10 +84,10 @@ export default function RewardItemsPage() {
       const phone = localStorage.getItem("vito_user_phone");
       if (!phone) return;
 
-      const response = await fetch(`${API_URL}/qr/user-points/${phone}`);
+      const response = await fetch(`${API_URL}/scan/points/${phone}`);
       if (!response.ok) throw new Error("Erreur points");
       const data = await response.json();
-      setUserPoints(data.points || 0);
+      setUserPoints(data.available_points || 0);
     } catch (error) {
       console.error("Erreur fetch points:", error);
     }
