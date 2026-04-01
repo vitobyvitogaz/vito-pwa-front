@@ -32,6 +32,7 @@ export default function ExchangePage() {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
+    id_number: "",
     pin: "",
   });
 
@@ -74,10 +75,10 @@ export default function ExchangePage() {
       const phone = localStorage.getItem("vito_user_phone");
       if (!phone) return;
 
-      const response = await fetch(`${API_URL}/qr/user-points/${phone}`);
+      const response = await fetch(`${API_URL}/scan/points/${phone}`);
       if (!response.ok) throw new Error("Erreur points");
       const data = await response.json();
-      setUserPoints(data.points || 0);
+      setUserPoints(data.available_points || 0);
     } catch (error) {
       console.error("Erreur fetch points:", error);
     }
@@ -113,6 +114,11 @@ export default function ExchangePage() {
     // Validations
     if (!formData.name.trim()) {
       setError("Veuillez entrer votre nom");
+      return;
+    }
+
+    if (!formData.id_number.trim()) {
+      setError("Veuillez entrer votre numéro de pièce d'identité");
       return;
     }
 
@@ -325,6 +331,20 @@ export default function ExchangePage() {
                   disabled
                   value={formData.phone}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Numéro de pièce d'identité *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.id_number}
+                  onChange={(e) => setFormData({ ...formData, id_number: e.target.value })}
+                  placeholder="Ex: 101234567890"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008B7F] focus:border-transparent"
                 />
               </div>
 
