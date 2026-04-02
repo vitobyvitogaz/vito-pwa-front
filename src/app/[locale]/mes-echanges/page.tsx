@@ -275,7 +275,7 @@ export default function MesEchangesPage() {
                         {isRejected && exchange.admin_notes && (
                           <div className="mt-3 p-3 bg-red-50 border border-red-100 rounded-xl">
                             <p className="text-xs text-red-600 font-medium mb-1">
-                              ⚠️ Toucher pour voir le motif du refus
+                              ⚠️ Voir motif de refus
                             </p>
                           </div>
                         )}
@@ -333,7 +333,7 @@ export default function MesEchangesPage() {
           onClick={() => setShowRejectModal(false)}
         >
           <div
-            className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md p-6 animate-slide-up"
+            className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md p-6 mb-24 sm:mb-0 animate-slide-up"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between mb-4">

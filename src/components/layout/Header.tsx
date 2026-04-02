@@ -154,11 +154,11 @@ export const Header: React.FC = () => {
           {/* Actions droite */}
           <div className="flex items-center gap-2">
 
-            {/* Mes Échanges avec badge */}
+            {/* Mes Avantages avec badge */}
             <button
-              onClick={() => router.push('/fr/mes-echanges')}
+              onClick={() => router.push('/fr/mes-avantages')}
               className="relative w-10 h-10 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:shadow-md transition-all duration-300 hover:scale-105 flex items-center justify-center"
-              aria-label="Mes échanges"
+              aria-label="Mes avantages"
             >
               <Gift className="w-5 h-5 text-amber-500" strokeWidth={1.5} />
               {exchangesCount > 0 && (
