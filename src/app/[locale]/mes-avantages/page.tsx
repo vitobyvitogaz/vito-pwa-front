@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Gift, Star, Clock, ChevronRight, Phone, ArrowLeft, Sparkles } from 'lucide-react'
+import { Gift, Star, Clock, ChevronRight, Phone, ArrowLeft, Sparkles, Lock } from 'lucide-react'
 
 const API_URL       = 'https://vito-backend-supabase.onrender.com/api/v1'
 const PWA_PHONE_KEY = 'vito-user-phone'
@@ -18,9 +18,12 @@ export default function MesAvantagesPage() {
 
   const [phone, setPhone]           = useState('')
   const [phoneInput, setPhoneInput] = useState('')
+  const [pinInput, setPinInput]     = useState('')
   const [balance, setBalance]       = useState<PointsBalance | null>(null)
   const [history, setHistory]       = useState<ScanHistory[]>([])
   const [loading, setLoading]       = useState(false)
+  const [verifying, setVerifying]   = useState(false)
+  const [pinError, setPinError]     = useState('')
 
   useEffect(() => {
     const saved = localStorage.getItem(PWA_PHONE_KEY)
@@ -39,22 +42,73 @@ export default function MesAvantagesPage() {
     } catch {} finally { setLoading(false) }
   }
 
-  const handlePhoneSubmit = () => {
+  const handlePINInput = (value: string) => {
+    const filtered = value.replace(/\D/g, "").slice(0, 4)
+    setPinInput(filtered)
+    setPinError('')
+  }
+
+  const handlePhoneSubmit = async () => {
     if (!phoneInput.trim()) return
-    localStorage.setItem(PWA_PHONE_KEY, phoneInput.trim())
-    setPhone(phoneInput.trim())
-    loadData(phoneInput.trim())
+    if (pinInput.length !== 4) {
+      setPinError('Code PIN à 4 chiffres requis')
+      return
+    }
+
+    setVerifying(true)
+    setPinError('')
+
+    try {
+      // Vérifier le PIN via l'endpoint points-exchange
+      const res = await fetch(`${API_URL}/points-exchange`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone: phoneInput.trim(),
+          name: 'Verification',
+          reward_item_id: '00000000-0000-0000-0000-000000000000', // Faux ID pour vérification
+          pin: pinInput,
+          verify_only: true
+        })
+      })
+
+      if (res.status === 401 || res.status === 400) {
+        setPinError('Code PIN incorrect')
+        return
+      }
+
+      // Si le PIN n'existe pas encore, on laisse passer (nouveau utilisateur)
+      if (res.status === 404) {
+        localStorage.setItem(PWA_PHONE_KEY, phoneInput.trim())
+        setPhone(phoneInput.trim())
+        loadData(phoneInput.trim())
+        return
+      }
+
+      if (!res.ok) {
+        setPinError('Erreur de vérification')
+        return
+      }
+
+      // PIN correct
+      localStorage.setItem(PWA_PHONE_KEY, phoneInput.trim())
+      setPhone(phoneInput.trim())
+      loadData(phoneInput.trim())
+    } catch (error) {
+      setPinError('Erreur réseau')
+    } finally {
+      setVerifying(false)
+    }
   }
 
   const handleGoToCatalog = () => {
-    // Sauvegarder le téléphone pour la page reward-items
     localStorage.setItem('vito_user_phone', phone)
     router.push(`/${locale}/reward-items`)
   }
 
   const fmtDate = (d: string) => new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
 
-  // ── Saisie téléphone ──────────────────────────────────────────────────────
+  // ── Saisie téléphone + PIN ───────────────────────────────────────────────
   if (!phone) {
     return (
       <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg pt-14 pb-24 flex flex-col items-center justify-center p-6">
@@ -63,20 +117,42 @@ export default function MesAvantagesPage() {
         </div>
         <h1 className="text-2xl font-semibold font-display text-neutral-900 dark:text-white mb-2 text-center">Mes Avantages</h1>
         <p className="text-sm text-neutral-500 dark:text-neutral-400 font-sans text-center mb-8 max-w-xs">
-          Entrez votre numéro de téléphone pour consulter votre solde de points et votre historique de participations.
+          Entrez votre numéro de téléphone et votre code PIN pour accéder à vos avantages.
         </p>
         <div className="w-full max-w-sm space-y-3">
           <div className="flex items-center gap-3 bg-white dark:bg-dark-surface rounded-xl border border-neutral-200 dark:border-neutral-700 px-4 py-3">
             <Phone className="w-5 h-5 text-neutral-400 flex-shrink-0" strokeWidth={1.5} />
             <input type="tel" value={phoneInput} onChange={e => setPhoneInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handlePhoneSubmit()}
               placeholder="+261 34 00 000 00"
               className="flex-1 bg-transparent text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none font-sans" />
           </div>
+          
+          <div className="flex items-center gap-3 bg-white dark:bg-dark-surface rounded-xl border border-neutral-200 dark:border-neutral-700 px-4 py-3">
+            <Lock className="w-5 h-5 text-neutral-400 flex-shrink-0" strokeWidth={1.5} />
+            <input 
+              type="password" 
+              inputMode="numeric"
+              maxLength={4}
+              value={pinInput} 
+              onChange={e => handlePINInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handlePhoneSubmit()}
+              placeholder="Code PIN (4 chiffres)"
+              className="flex-1 bg-transparent text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none font-sans tracking-widest" />
+          </div>
+
+          {pinError && (
+            <p className="text-sm text-red-500 font-sans text-center">{pinError}</p>
+          )}
+
           <button onClick={handlePhoneSubmit}
-            className="w-full py-3.5 bg-primary text-white rounded-full font-semibold font-sans text-sm hover:bg-primary/90 transition-colors active:scale-95">
-            Consulter mes avantages
+            disabled={verifying}
+            className="w-full py-3.5 bg-primary text-white rounded-full font-semibold font-sans text-sm hover:bg-primary/90 transition-colors active:scale-95 disabled:opacity-50">
+            {verifying ? 'Vérification...' : 'Accéder à mes avantages'}
           </button>
+          
+          <p className="text-xs text-center text-neutral-400 font-sans">
+            Premier accès ? Votre code PIN sera créé lors de votre premier échange.
+          </p>
         </div>
       </div>
     )
@@ -93,9 +169,9 @@ export default function MesAvantagesPage() {
             <ArrowLeft className="w-4 h-4" strokeWidth={2} />
             Retour
           </button>
-          <button onClick={() => { setPhone(''); localStorage.removeItem(PWA_PHONE_KEY) }}
+          <button onClick={() => { setPhone(''); localStorage.removeItem(PWA_PHONE_KEY); setPinInput(''); setPhoneInput('') }}
             className="text-xs text-neutral-400 hover:text-red-500 transition-colors font-sans">
-            Changer de numéro
+            Déconnexion
           </button>
         </div>
       </div>
@@ -114,7 +190,6 @@ export default function MesAvantagesPage() {
             <span>Utilisé : {balance?.used_points || 0} pts</span>
           </div>
 
-          {/* Nouveau bouton vers le catalogue */}
           {(balance?.available_points || 0) > 0 && (
             <button onClick={handleGoToCatalog}
               className="mt-4 w-full py-3 bg-white/20 hover:bg-white/30 rounded-full text-sm font-semibold font-sans transition-colors flex items-center justify-center gap-2">

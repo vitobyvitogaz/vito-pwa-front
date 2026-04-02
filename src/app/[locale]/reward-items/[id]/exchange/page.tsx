@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
-import { ArrowLeft, Package, Lock, CheckCircle, AlertCircle } from "lucide-react";
+import { ArrowLeft, Package, CheckCircle, AlertCircle } from "lucide-react";
 
 const VITOGAZ_GREEN = "#008B7F";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://vito-backend-supabase.onrender.com/api/v1";
@@ -27,13 +27,11 @@ export default function ExchangePage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [userPoints, setUserPoints] = useState(0);
-  const [hasPIN, setHasPIN] = useState(false);
   
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     id_number: "",
-    pin: "",
   });
 
   const [error, setError] = useState("");
@@ -52,7 +50,6 @@ export default function ExchangePage() {
     
     fetchItem();
     fetchUserPoints();
-    checkExistingPIN();
   }, [itemId]);
 
   const fetchItem = async () => {
@@ -84,27 +81,6 @@ export default function ExchangePage() {
     }
   };
 
-  const checkExistingPIN = async () => {
-    try {
-      const phone = localStorage.getItem("vito_user_phone");
-      if (!phone) return;
-
-      const response = await fetch(`${API_URL}/points-exchange/check-pin?phone=${phone}`);
-      if (response.ok) {
-        const data = await response.json();
-        setHasPIN(data.hasPIN || false);
-      }
-    } catch (error) {
-      console.error("Erreur check PIN:", error);
-    }
-  };
-
-  const handlePINInput = (value: string) => {
-    // Accepter uniquement les chiffres, max 4
-    const filtered = value.replace(/\D/g, "").slice(0, 4);
-    setFormData((prev) => ({ ...prev, pin: filtered }));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -122,11 +98,6 @@ export default function ExchangePage() {
       return;
     }
 
-    if (formData.pin.length !== 4) {
-      setError(hasPIN ? "PIN à 4 chiffres requis" : "Créez un PIN à 4 chiffres");
-      return;
-    }
-
     if (userPoints < item.points_cost) {
       setError(`Points insuffisants. Il vous manque ${item.points_cost - userPoints} points.`);
       return;
@@ -139,7 +110,7 @@ export default function ExchangePage() {
         phone: formData.phone,
         name: formData.name,
         reward_item_id: itemId,
-        pin: formData.pin,
+        id_number: formData.id_number,
       };
 
       const response = await fetch(`${API_URL}/points-exchange`, {
@@ -346,28 +317,6 @@ export default function ExchangePage() {
                   placeholder="Ex: 101234567890"
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008B7F] focus:border-transparent"
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <Lock className="w-4 h-4 inline mr-1" />
-                  {hasPIN ? "Votre PIN" : "Créer un PIN"} (4 chiffres) *
-                </label>
-                <input
-                  type="password"
-                  inputMode="numeric"
-                  required
-                  maxLength={4}
-                  value={formData.pin}
-                  onChange={(e) => handlePINInput(e.target.value)}
-                  placeholder="••••"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008B7F] focus:border-transparent text-center text-2xl tracking-widest"
-                />
-                <p className="text-xs text-gray-500 mt-2">
-                  {hasPIN
-                    ? "Saisissez votre PIN pour confirmer l'échange"
-                    : "Ce PIN sera requis pour vos futurs échanges"}
-                </p>
               </div>
             </div>
           </div>

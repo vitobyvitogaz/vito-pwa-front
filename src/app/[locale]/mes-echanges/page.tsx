@@ -99,14 +99,21 @@ export default function MesEchangesPage() {
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("fr-FR", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(date);
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return "Date invalide";
+      }
+      return new Intl.DateTimeFormat("fr-FR", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(date);
+    } catch (error) {
+      return "Date invalide";
+    }
   };
 
   // Pagination
