@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import {
   ArrowLeft, QrCode, Star, CheckCircle, Phone, User, Mail,
-  Sparkles, Clock, AlertTriangle, Gift,
+  Sparkles, Clock, AlertTriangle, Gift, CreditCard,
 } from 'lucide-react'
 
 const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
@@ -40,6 +40,7 @@ export default function ScanPage() {
 
   const [name, setName]             = useState('')
   const [phone, setPhone]           = useState('')
+  const [cinNumber, setCinNumber]   = useState('')
   const [email, setEmail]           = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted]   = useState(false)
@@ -76,9 +77,31 @@ export default function ScanPage() {
     fetchPromo()
   }, [code])
 
+  const handleCinInput = (value: string) => {
+    // Accepter seulement les chiffres, max 12
+    const filtered = value.replace(/\D/g, "").slice(0, 12)
+    setCinNumber(filtered)
+    setFormError(null)
+  }
+
   const handleSubmit = async () => {
     if (!name.trim())  { setFormError('Votre nom est obligatoire'); return }
     if (!phone.trim()) { setFormError('Votre numéro de téléphone est obligatoire'); return }
+    
+    // Validation CIN
+    if (!cinNumber.trim()) {
+      setFormError('Le numéro de CIN est obligatoire')
+      return
+    }
+    if (cinNumber.length !== 12) {
+      setFormError('Le numéro de CIN doit contenir exactement 12 chiffres')
+      return
+    }
+    if (!/^\d{12}$/.test(cinNumber)) {
+      setFormError('Le numéro de CIN ne peut contenir que des chiffres')
+      return
+    }
+
     setFormError(null)
     setSubmitting(true)
 
@@ -86,7 +109,13 @@ export default function ScanPage() {
       const res = await fetch(`${API_URL}/scan/participate`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ promo_code: code, name: name.trim(), phone: phone.trim(), email: email.trim() || undefined }),
+        body:    JSON.stringify({ 
+          promo_code: code, 
+          name: name.trim(), 
+          phone: phone.trim(), 
+          cin_number: cinNumber.trim(),
+          email: email.trim() || undefined 
+        }),
       })
       const data = await res.json()
       if (!res.ok) { setFormError(data.message || 'Erreur lors de la participation'); return }
@@ -305,6 +334,25 @@ export default function ScanPage() {
             <input type="tel" value={phone} onChange={e => { setPhone(e.target.value); setFormError(null) }}
               placeholder="Ex: +261 34 00 000 00"
               className="w-full px-4 py-3 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800/50 text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all font-sans" />
+          </div>
+
+          {/* Numéro de CIN */}
+          <div>
+            <label className="flex items-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2 font-sans">
+              <CreditCard className="w-4 h-4 text-neutral-400" strokeWidth={1.5} />
+              Numéro de CIN <span className="text-red-500">*</span>
+            </label>
+            <input 
+              type="text" 
+              inputMode="numeric"
+              maxLength={12}
+              value={cinNumber} 
+              onChange={e => handleCinInput(e.target.value)}
+              placeholder="12 chiffres (ex: 101234567890)"
+              className="w-full px-4 py-3 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800/50 text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all font-sans tracking-wider" />
+            <p className="text-xs text-neutral-400 mt-1.5 font-sans">
+              {cinNumber.length}/12 chiffres
+            </p>
           </div>
 
           {/* Email optionnel */}

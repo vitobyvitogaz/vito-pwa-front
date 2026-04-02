@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
-import { ArrowLeft, Package, CheckCircle, AlertCircle } from "lucide-react";
+import { ArrowLeft, Package, Lock, CheckCircle, AlertCircle } from "lucide-react";
 
 const VITOGAZ_GREEN = "#008B7F";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://vito-backend-supabase.onrender.com/api/v1";
@@ -27,11 +27,12 @@ export default function ExchangePage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [userPoints, setUserPoints] = useState(0);
+  const [hasPIN, setHasPIN] = useState(false);
   
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
-    id_number: "",
+    pin: "",
   });
 
   const [error, setError] = useState("");
@@ -50,6 +51,7 @@ export default function ExchangePage() {
     
     fetchItem();
     fetchUserPoints();
+    checkExistingPIN();
   }, [itemId]);
 
   const fetchItem = async () => {
@@ -81,6 +83,30 @@ export default function ExchangePage() {
     }
   };
 
+  const checkExistingPIN = async () => {
+    try {
+      const phone = localStorage.getItem("vito_user_phone");
+      if (!phone) return;
+
+      // Vérifier si un PIN existe déjà en essayant de récupérer l'historique des échanges
+      const response = await fetch(`${API_URL}/points-exchange?phone=${phone}`);
+      if (response.ok) {
+        const exchanges = await response.json();
+        // Si au moins un échange existe, on suppose qu'un PIN est déjà créé
+        setHasPIN(exchanges && exchanges.length > 0);
+      }
+    } catch (error) {
+      console.error("Erreur check PIN:", error);
+      setHasPIN(false);
+    }
+  };
+
+  const handlePINInput = (value: string) => {
+    // Accepter uniquement les chiffres, max 4
+    const filtered = value.replace(/\D/g, "").slice(0, 4);
+    setFormData((prev) => ({ ...prev, pin: filtered }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -93,8 +119,8 @@ export default function ExchangePage() {
       return;
     }
 
-    if (!formData.id_number.trim()) {
-      setError("Veuillez entrer votre numéro de pièce d'identité");
+    if (formData.pin.length !== 4) {
+      setError(hasPIN ? "PIN à 4 chiffres requis" : "Créez un PIN à 4 chiffres");
       return;
     }
 
@@ -110,7 +136,7 @@ export default function ExchangePage() {
         phone: formData.phone,
         name: formData.name,
         reward_item_id: itemId,
-        id_number: formData.id_number,
+        pin: formData.pin,
       };
 
       const response = await fetch(`${API_URL}/points-exchange`, {
@@ -307,16 +333,24 @@ export default function ExchangePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Numéro de pièce d'identité *
+                  <Lock className="w-4 h-4 inline mr-1" />
+                  {hasPIN ? "Votre code PIN" : "Créer un code PIN"} (4 chiffres) *
                 </label>
                 <input
-                  type="text"
+                  type="password"
+                  inputMode="numeric"
                   required
-                  value={formData.id_number}
-                  onChange={(e) => setFormData({ ...formData, id_number: e.target.value })}
-                  placeholder="Ex: 101234567890"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008B7F] focus:border-transparent"
+                  maxLength={4}
+                  value={formData.pin}
+                  onChange={(e) => handlePINInput(e.target.value)}
+                  placeholder="••••"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008B7F] focus:border-transparent text-center text-2xl tracking-widest"
                 />
+                <p className="text-xs text-gray-500 mt-2">
+                  {hasPIN
+                    ? "Saisissez votre code PIN pour confirmer l'échange"
+                    : "Ce code PIN sera requis pour vos futurs échanges"}
+                </p>
               </div>
             </div>
           </div>
