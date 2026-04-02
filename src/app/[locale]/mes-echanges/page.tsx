@@ -56,6 +56,13 @@ export default function MesEchangesPage() {
       );
       
       setExchanges(sorted);
+
+      // Marquer tous les échanges comme vus
+      const exchangeIds = sorted.map((ex: Exchange) => ex.id);
+      localStorage.setItem("vito_seen_exchanges", JSON.stringify(exchangeIds));
+
+      // Déclencher event pour mettre à jour le badge dans Header
+      window.dispatchEvent(new Event("exchanges-viewed"));
     } catch (error) {
       console.error("Erreur fetch exchanges:", error);
     } finally {

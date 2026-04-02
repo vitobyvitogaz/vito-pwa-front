@@ -19,9 +19,41 @@ export const Header: React.FC = () => {
   const pathname = usePathname()
   const router   = useRouter()
   const [unreadCount, setUnreadCount] = useState(0)
+  const [exchangesCount, setExchangesCount] = useState(0)
+
+  // Fonction pour compter les échanges non vus
+  const updateExchangesBadge = async () => {
+    try {
+      const phone = localStorage.getItem("vito_user_phone");
+      if (!phone) {
+        setExchangesCount(0);
+        return;
+      }
+
+      const response = await fetch(`https://vito-backend-supabase.onrender.com/api/v1/points-exchange?phone=${phone}`);
+      if (!response.ok) {
+        setExchangesCount(0);
+        return;
+      }
+
+      const exchanges = await response.json();
+      const seenIds = JSON.parse(localStorage.getItem("vito_seen_exchanges") || "[]");
+      const unseenCount = exchanges.filter((ex: any) => !seenIds.includes(ex.id)).length;
+      
+      setExchangesCount(unseenCount);
+    } catch (error) {
+      setExchangesCount(0);
+    }
+  };
 
   useEffect(() => {
     setUnreadCount(getUnreadCount())
+
+    // Mettre à jour le badge échanges au chargement
+    updateExchangesBadge();
+
+    // Mettre à jour toutes les 30 secondes
+    const interval = setInterval(updateExchangesBadge, 30000);
 
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type === 'PUSH_RECEIVED') {
@@ -48,15 +80,21 @@ export const Header: React.FC = () => {
     }
 
     const handleCleared = () => setUnreadCount(0)
+    const handleExchangesViewed = () => {
+      setExchangesCount(0);
+    };
 
     navigator.serviceWorker?.addEventListener('message', handleMessage)
     window.addEventListener('push-unread-cleared', handleCleared)
+    window.addEventListener('exchanges-viewed', handleExchangesViewed)
 
     return () => {
+      clearInterval(interval);
       navigator.serviceWorker?.removeEventListener('message', handleMessage)
       window.removeEventListener('push-unread-cleared', handleCleared)
+      window.removeEventListener('exchanges-viewed', handleExchangesViewed)
     }
-  }, [])
+  }, [router])
 
   const handleBellClick = () => {
     clearUnreadCount()
@@ -116,13 +154,18 @@ export const Header: React.FC = () => {
           {/* Actions droite */}
           <div className="flex items-center gap-2">
 
-            {/* Mes Avantages */}
+            {/* Mes Échanges avec badge */}
             <button
-              onClick={() => router.push('/fr/mes-avantages')}
+              onClick={() => router.push('/fr/mes-echanges')}
               className="relative w-10 h-10 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:shadow-md transition-all duration-300 hover:scale-105 flex items-center justify-center"
-              aria-label="Mes avantages"
+              aria-label="Mes échanges"
             >
               <Gift className="w-5 h-5 text-amber-500" strokeWidth={1.5} />
+              {exchangesCount > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
+                  {exchangesCount > 9 ? '9+' : exchangesCount}
+                </span>
+              )}
             </button>
 
             {/* Cloche avec badge */}

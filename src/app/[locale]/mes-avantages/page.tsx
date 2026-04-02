@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Gift, Star, Clock, ChevronRight, Phone, ArrowLeft, Sparkles, Lock } from 'lucide-react'
+import { Gift, Star, Clock, ChevronRight, Phone, ArrowLeft, Sparkles, Lock, ChevronLeft } from 'lucide-react'
 
 const API_URL       = 'https://vito-backend-supabase.onrender.com/api/v1'
 const PWA_PHONE_KEY = 'vito-user-phone'
 const PWA_NAME_KEY  = 'vito-user-name'
+const ITEMS_PER_PAGE = 10
 
 interface PointsBalance { phone: string; name: string | null; total_points: number; used_points: number; available_points: number }
 interface ScanHistory { id: string; promo_code: string; points_earned: number; scanned_at: string; promotions: { title: string; image_url: string | null; discount_value: number; discount_type: string } | null }
@@ -24,6 +25,7 @@ export default function MesAvantagesPage() {
   const [loading, setLoading]       = useState(false)
   const [verifying, setVerifying]   = useState(false)
   const [pinError, setPinError]     = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     const saved = localStorage.getItem(PWA_PHONE_KEY)
@@ -107,6 +109,11 @@ export default function MesAvantagesPage() {
   }
 
   const fmtDate = (d: string) => new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
+
+  // Pagination historique
+  const totalPages = Math.ceil(history.length / ITEMS_PER_PAGE)
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const paginatedHistory = history.slice(startIndex, startIndex + ITEMS_PER_PAGE)
 
   // ── Saisie téléphone + PIN ───────────────────────────────────────────────
   if (!phone) {
@@ -221,27 +228,56 @@ export default function MesAvantagesPage() {
               </button>
             </div>
           ) : (
-            <div className="space-y-3">
-              {history.map((scan) => (
-                <div key={scan.id} className="bg-white dark:bg-dark-surface rounded-xl p-4 shadow-sm shadow-neutral-200/60 dark:shadow-neutral-900/40 flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center flex-shrink-0">
-                    <Sparkles className="w-6 h-6 text-primary" strokeWidth={1.5} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-neutral-900 dark:text-white font-display truncate">
-                      {scan.promotions?.title || scan.promo_code}
-                    </p>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">{fmtDate(scan.scanned_at)}</p>
-                  </div>
-                  {scan.points_earned > 0 && (
-                    <div className="flex items-center gap-1 px-2.5 py-1 bg-amber-50 dark:bg-amber-900/20 rounded-full flex-shrink-0">
-                      <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
-                      <span className="text-xs font-bold text-amber-700 dark:text-amber-400">+{scan.points_earned}</span>
+            <>
+              <div className="space-y-3">
+                {paginatedHistory.map((scan) => (
+                  <div key={scan.id} className="bg-white dark:bg-dark-surface rounded-xl p-4 shadow-sm shadow-neutral-200/60 dark:shadow-neutral-900/40 flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <Sparkles className="w-6 h-6 text-primary" strokeWidth={1.5} />
                     </div>
-                  )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-neutral-900 dark:text-white font-display truncate">
+                        {scan.promotions?.title || scan.promo_code}
+                      </p>
+                      <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">{fmtDate(scan.scanned_at)}</p>
+                    </div>
+                    {scan.points_earned > 0 && (
+                      <div className="flex items-center gap-1 px-2.5 py-1 bg-amber-50 dark:bg-amber-900/20 rounded-full flex-shrink-0">
+                        <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                        <span className="text-xs font-bold text-amber-700 dark:text-amber-400">+{scan.points_earned}</span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-3 mt-4">
+                  <button
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="p-2 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <span className="text-sm text-neutral-600 dark:text-neutral-400 font-sans">
+                    Page {currentPage} / {totalPages}
+                  </span>
+                  <button
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    className="p-2 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
                 </div>
-              ))}
-            </div>
+              )}
+
+              <p className="text-xs text-center text-neutral-400 font-sans mt-3">
+                {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, history.length)} sur {history.length} participation(s)
+              </p>
+            </>
           )}
         </div>
       </div>
