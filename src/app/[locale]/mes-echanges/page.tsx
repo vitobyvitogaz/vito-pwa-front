@@ -79,6 +79,7 @@ export default function MesEchangesPage() {
           textColor: "text-amber-700",
           iconColor: "text-amber-500",
         };
+      case "validated":
       case "approved":
         return {
           icon: CheckCircle,
@@ -138,7 +139,10 @@ export default function MesEchangesPage() {
   };
 
   const pendingCount = exchanges.filter((e) => e.status.toLowerCase() === "pending").length;
-  const approvedCount = exchanges.filter((e) => e.status.toLowerCase() === "approved").length;
+  const approvedCount = exchanges.filter((e) => {
+    const status = e.status.toLowerCase();
+    return status === "validated" || status === "approved";
+  }).length;
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
