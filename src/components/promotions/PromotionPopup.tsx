@@ -204,10 +204,16 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
         style={{ animation: isClosing ? 'none' : 'fadeScale 0.25s ease-out', maxHeight: '88vh' }}
       >
         {/* Colonne gauche — Image */}
-        <div className="relative w-[45%] flex-shrink-0 min-h-[480px]">
+        <div className="relative w-[45%] flex-shrink-0 min-h-[480px] bg-neutral-900 overflow-hidden">
           {promotion.image_url ? (
-            <Image src={promotion.image_url} alt={promotion.title} fill quality={80} priority
-              className="object-cover" sizes="300px" />
+            <>
+              {/* Image floutée en fond */}
+              <Image src={promotion.image_url} alt="" fill quality={40} aria-hidden
+                className="object-cover scale-110 blur-2xl brightness-50 saturate-150 pointer-events-none select-none" sizes="300px" />
+              {/* Image réelle en contain */}
+              <Image src={promotion.image_url} alt={promotion.title} fill quality={80} priority
+                className="object-contain relative" sizes="300px" />
+            </>
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
               <Sparkles className="w-16 h-16 text-primary/30" strokeWidth={1} />
