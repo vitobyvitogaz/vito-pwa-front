@@ -203,26 +203,25 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
         className={`hidden sm:flex relative w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 ${isClosing ? 'scale-95 opacity-0' : ''}`}
         style={{ animation: isClosing ? 'none' : 'fadeScale 0.25s ease-out', maxHeight: '88vh' }}
       >
-        {/* Colonne gauche — Image complète, hauteur = colonne droite */}
-        <div className="w-[45%] flex-shrink-0 bg-neutral-100 dark:bg-neutral-900 flex items-center justify-center self-stretch">
+        {/* Colonne gauche — Image remplit exactement la colonne */}
+        <div className="relative w-[45%] flex-shrink-0 self-stretch flex overflow-hidden">
           {promotion.image_url ? (
             <img
               src={promotion.image_url}
               alt={promotion.title}
-              style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+              style={{ width: '100%', height: '100%', objectFit: 'fill', display: 'block' }}
             />
           ) : (
-            <Sparkles className="w-16 h-16 text-primary/30" strokeWidth={1} />
+            <div className="w-full h-full bg-neutral-100 dark:bg-neutral-900 flex items-center justify-center">
+              <Sparkles className="w-16 h-16 text-primary/30" strokeWidth={1} />
+            </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
           {discountLabel && (
-            <div className="absolute top-5 left-5">
-              <div className="relative">
-                <div className="absolute inset-0 bg-primary/40 rounded-2xl blur-md" />
-                <div className="relative bg-primary text-white rounded-2xl px-4 py-2 shadow-xl">
-                  <span className="text-2xl font-black font-sans">{discountLabel}</span>
-                </div>
+            <div className="absolute top-5 left-5 z-10">
+              <div className="bg-primary text-white rounded-full px-5 py-2 shadow-xl">
+                <span className="text-xl font-black font-sans">{discountLabel}</span>
               </div>
             </div>
           )}
