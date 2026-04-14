@@ -203,16 +203,18 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
         className={`hidden sm:flex relative w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 ${isClosing ? 'scale-95 opacity-0' : ''}`}
         style={{ animation: isClosing ? 'none' : 'fadeScale 0.25s ease-out', maxHeight: '88vh' }}
       >
-        {/* Colonne gauche — image entière en contain, fond identique à colonne droite */}
-        <div className="relative w-[45%] flex-shrink-0 self-stretch bg-white dark:bg-dark-surface flex items-center justify-center overflow-hidden">
+        {/* Colonne gauche — hauteur = colonne droite, largeur auto selon ratio image */}
+        <div className="self-stretch flex-shrink-0">
           {promotion.image_url ? (
             <img
               src={promotion.image_url}
               alt={promotion.title}
-              style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+              style={{ height: '100%', width: 'auto', display: 'block', maxWidth: '400px' }}
             />
           ) : (
-            <Sparkles className="w-16 h-16 text-primary/30" strokeWidth={1} />
+            <div className="w-48 h-full bg-neutral-100 dark:bg-neutral-900 flex items-center justify-center">
+              <Sparkles className="w-16 h-16 text-primary/30" strokeWidth={1} />
+            </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
