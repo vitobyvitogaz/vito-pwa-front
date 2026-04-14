@@ -1,6 +1,6 @@
 'use client'
 
-import { Phone, MapPin, ChevronRight, Briefcase, Mail, X, MessageCircle } from 'lucide-react'
+import { Phone, MapPin, ChevronRight, Briefcase, Mail, X } from 'lucide-react'
 import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { hapticFeedback } from '@/lib/utils/haptic'
@@ -16,9 +16,22 @@ const GasBottleIcon = ({ className, strokeWidth }: { className?: string, strokeW
   </svg>
 )
 
+// ── Icône Messenger officielle ────────────────────────────────────────────────
+const MessengerIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
+  <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2C6.477 2 2 6.145 2 11.259c0 2.824 1.266 5.355 3.293 7.1v3.291l3.104-1.701A10.815 10.815 0 0 0 12 20.517c5.523 0 10-4.145 10-9.258C22 6.145 17.523 2 12 2zm1.018 12.465-2.545-2.668-4.996 2.668 5.478-5.793 2.606 2.668 4.935-2.668-5.478 5.793z"/>
+  </svg>
+)
+
 // ── Modal Assistance ──────────────────────────────────────────────────────────
 const AssistanceModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const contacts = [
+    {
+      icon: Phone,
+      label: 'Téléphone',
+      value: '020 22 364 64',
+      href: 'tel:+261202236464',
+    },
     {
       icon: Mail,
       label: 'Email',
@@ -26,7 +39,7 @@ const AssistanceModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       href: 'mailto:relationclient@vitogaz.mg',
     },
     {
-      icon: MessageCircle,
+      icon: MessengerIcon,
       label: 'Messenger',
       value: 'vitogazmadagascar',
       href: 'https://m.me/vitogazmadagascar',
@@ -36,12 +49,6 @@ const AssistanceModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       label: 'Adresse',
       value: '122, rue Rainandriamampandry — B.P. 3984',
       href: 'https://maps.google.com/?q=122+rue+Rainandriamampandry+Faravohitra+Antananarivo',
-    },
-    {
-      icon: Phone,
-      label: 'Téléphone',
-      value: '020 22 364 64',
-      href: 'tel:+261202236464',
     },
   ]
 
