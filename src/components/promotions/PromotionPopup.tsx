@@ -203,28 +203,16 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
         className={`hidden sm:flex relative w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 ${isClosing ? 'scale-95 opacity-0' : ''}`}
         style={{ animation: isClosing ? 'none' : 'fadeScale 0.25s ease-out', maxHeight: '88vh' }}
       >
-        {/* Colonne gauche — Image complète */}
-        <div className="relative w-[45%] flex-shrink-0 bg-neutral-900 overflow-hidden flex items-center justify-center" style={{ minHeight: 480 }}>
+        {/* Colonne gauche — Image complète, hauteur = colonne droite */}
+        <div className="w-[45%] flex-shrink-0 bg-neutral-100 dark:bg-neutral-900 flex items-center justify-center self-stretch">
           {promotion.image_url ? (
-            <>
-              {/* Fond flouté pour remplir l'espace */}
-              <div className="absolute inset-0">
-                <Image src={promotion.image_url} alt="" fill quality={30} aria-hidden
-                  className="object-cover scale-110 blur-2xl brightness-40 saturate-150 pointer-events-none select-none" sizes="300px" />
-              </div>
-              {/* Image réelle entière en contain */}
-              <div className="relative w-full h-full flex items-center justify-center">
-                <img
-                  src={promotion.image_url}
-                  alt={promotion.title}
-                  style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', display: 'block' }}
-                />
-              </div>
-            </>
+            <img
+              src={promotion.image_url}
+              alt={promotion.title}
+              style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+            />
           ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <Sparkles className="w-16 h-16 text-primary/30" strokeWidth={1} />
-            </div>
+            <Sparkles className="w-16 h-16 text-primary/30" strokeWidth={1} />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
