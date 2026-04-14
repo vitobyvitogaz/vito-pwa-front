@@ -1,12 +1,45 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { Phone } from 'lucide-react'
 
+const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
+
+interface EnterpriseSettings {
+  title:      string
+  subtitle:   string
+  phone:      string
+  show_phone: boolean
+}
+
+const DEFAULT_SETTINGS: EnterpriseSettings = {
+  title:      "Votre entreprise a besoin de Gaz ?",
+  subtitle:   "Découvrez notre offre partenariat conçu pour vous !",
+  phone:      "032 07 218 95",
+  show_phone: true,
+}
+
 export const EnterpriseOfferCard: React.FC = () => {
-  const handleCall = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    window.location.href = 'tel:+261320721895'
-  }
+  const [settings, setSettings] = useState<EnterpriseSettings>(DEFAULT_SETTINGS)
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch(`${API_URL}/settings/enterprise_offer_settings`)
+        if (!res.ok) return
+        const data = await res.json()
+        const raw    = data?.setting_value ?? data?.value ?? data
+        const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw
+        if (parsed && typeof parsed === 'object') {
+          setSettings(prev => ({ ...prev, ...parsed }))
+        }
+      } catch {}
+    }
+    fetchSettings()
+  }, [])
+
+  // Formater le numéro pour le lien tel:
+  const phoneLink = `tel:+261${settings.phone.replace(/\s/g, '').replace(/^0/, '')}`
 
   return (
     <div className="relative bg-white dark:bg-dark-surface rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-sm">
@@ -28,7 +61,7 @@ export const EnterpriseOfferCard: React.FC = () => {
 
         {/* Titre */}
         <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight font-sans mb-2">
-          Votre entreprise a besoin de Gaz ?
+          {settings.title}
         </h2>
 
         {/* Ligne décorative rouge */}
@@ -36,49 +69,21 @@ export const EnterpriseOfferCard: React.FC = () => {
 
         {/* Sous-titre */}
         <p className="text-white/80 text-base sm:text-lg font-sans leading-relaxed max-w-md">
-          Découvrez notre offre partenariat conçu pour vous !
+          {settings.subtitle}
         </p>
       </div>
 
       {/* Corps */}
       <div className="px-8 py-8 flex flex-col items-center gap-6">
 
-        {/* Info contact */}
-        {/*}
-        <div className="w-full">
-        
-        <a href="tel:+261320721895"
-            rel="noopener noreferrer"
-            onClick={handleCall}
-            className="flex items-center gap-4 p-4 rounded-xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 hover:border-primary hover:bg-primary/5 transition-all duration-200 group"
-          >
-            <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-              <Phone className="w-5 h-5 text-white" strokeWidth={1.5} />
-            </div>
-            <div>
-              <p className="text-xs text-neutral-400 font-sans mb-0.5">Téléphone</p>
-              <p className="text-sm font-semibold text-neutral-900 dark:text-white font-sans">032 07 218 95</p>
-            </div>
-          </a>
-        </div>
-        */}
-        {/* CTA principal */}
-        {/*}
-        <a href="tel:+261320721895"
-          rel="noopener noreferrer"
-          onClick={handleCall}
-          className="group w-full flex items-center justify-center gap-3 px-8 py-4 bg-primary hover:bg-primary/90 text-white rounded-full font-semibold text-base transition-all duration-200 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 active:scale-95"
+        {/* Bouton appel — toujours affiché, numéro conditionnel */}
+        <a
+          href={phoneLink}
+          className="group w-full flex items-center justify-center gap-3 px-8 py-4 bg-primary hover:bg-primary/90 text-white rounded-full font-semibold text-base transition-all duration-200 shadow-lg shadow-primary/25 active:scale-95"
         >
-          <Phone className="w-5 h-5 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
-          Appeler directement
+          <Phone className="w-5 h-5" strokeWidth={1.5} />
+          Appeler maintenant{settings.show_phone ? ` — ${settings.phone}` : ''}
         </a>
-        */}
-        <a href="tel:+261320721895"
-        className="group w-full flex items-center justify-center gap-3 px-8 py-4 bg-primary hover:bg-primary/90 text-white rounded-full font-semibold text-base transition-all duration-200 shadow-lg shadow-primary/25 active:scale-95"
-      >
-        <Phone className="w-5 h-5" strokeWidth={1.5} />
-        Appeler directement
-      </a>
 
       </div>
     </div>
