@@ -52,9 +52,8 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    // ── Ajout de la classe "dark" par défaut pour activer le dark mode ──
-    // Le ThemeSwitcher peut toujours basculer en light via JS
-    <html lang="fr" className={`${inter.variable} ${montserrat.variable} dark`}>
+    // ── Mode clair par défaut — le ThemeSwitcher peut basculer en dark via JS ──
+    <html lang="fr" className={`${inter.variable} ${montserrat.variable}`}>
       <body className={inter.className}>
         <Header />
         <Breadcrumb />
