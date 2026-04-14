@@ -200,7 +200,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
 
       {/* ── DESKTOP : 2 colonnes ─────────────────────────────────────────── */}
       <div
-        className={`hidden sm:flex relative w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 ${isClosing ? 'scale-95 opacity-0' : ''}`}
+        className={`hidden sm:flex relative w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 ${isClosing ? 'scale-95 opacity-0' : ''}`}
         style={{ animation: isClosing ? 'none' : 'fadeScale 0.25s ease-out', maxHeight: '88vh' }}
       >
         {/* Colonne gauche — hauteur = colonne droite, largeur auto selon ratio image */}
