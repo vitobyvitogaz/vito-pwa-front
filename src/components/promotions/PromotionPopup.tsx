@@ -203,19 +203,26 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
         className={`hidden sm:flex relative w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 ${isClosing ? 'scale-95 opacity-0' : ''}`}
         style={{ animation: isClosing ? 'none' : 'fadeScale 0.25s ease-out', maxHeight: '88vh' }}
       >
-        {/* Colonne gauche — Image */}
-        <div className="relative w-[45%] flex-shrink-0 min-h-[480px] bg-neutral-900 overflow-hidden">
+        {/* Colonne gauche — Image complète */}
+        <div className="relative w-[45%] flex-shrink-0 bg-neutral-900 overflow-hidden flex items-center justify-center" style={{ minHeight: 480 }}>
           {promotion.image_url ? (
             <>
-              {/* Image floutée en fond */}
-              <Image src={promotion.image_url} alt="" fill quality={40} aria-hidden
-                className="object-cover scale-110 blur-2xl brightness-50 saturate-150 pointer-events-none select-none" sizes="300px" />
-              {/* Image réelle en contain */}
-              <Image src={promotion.image_url} alt={promotion.title} fill quality={80} priority
-                className="object-contain relative" sizes="300px" />
+              {/* Fond flouté pour remplir l'espace */}
+              <div className="absolute inset-0">
+                <Image src={promotion.image_url} alt="" fill quality={30} aria-hidden
+                  className="object-cover scale-110 blur-2xl brightness-40 saturate-150 pointer-events-none select-none" sizes="300px" />
+              </div>
+              {/* Image réelle entière en contain */}
+              <div className="relative w-full h-full flex items-center justify-center">
+                <img
+                  src={promotion.image_url}
+                  alt={promotion.title}
+                  style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', display: 'block' }}
+                />
+              </div>
             </>
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center">
               <Sparkles className="w-16 h-16 text-primary/30" strokeWidth={1} />
             </div>
           )}
