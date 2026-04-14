@@ -21,21 +21,25 @@ const AssistanceModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const contacts = [
     {
       icon: Mail,
+      label: 'Email',
       value: 'relationclient@vitogaz.mg',
       href: 'mailto:relationclient@vitogaz.mg',
     },
     {
       icon: MessageCircle,
+      label: 'Messenger',
       value: 'vitogazmadagascar',
       href: 'https://m.me/vitogazmadagascar',
     },
     {
       icon: MapPin,
+      label: 'Adresse',
       value: '122, rue Rainandriamampandry — B.P. 3984',
       href: 'https://maps.google.com/?q=122+rue+Rainandriamampandry+Faravohitra+Antananarivo',
     },
     {
       icon: Phone,
+      label: 'Téléphone',
       value: '020 22 364 64',
       href: 'tel:+261202236464',
     },
@@ -43,24 +47,36 @@ const AssistanceModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 z-[2000] flex items-end sm:items-center justify-center"
-      style={{ backgroundColor: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}
+      className="fixed inset-0 z-[2000] flex items-end sm:items-center justify-center sm:p-6"
+      style={{ backgroundColor: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)' }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
+      {/* Conteneur — bottom sheet mobile / modal centré desktop */}
       <div
-        className="w-full sm:max-w-sm rounded-t-3xl sm:rounded-2xl overflow-hidden shadow-2xl"
-        style={{ backgroundColor: '#008B7F', paddingBottom: 'env(safe-area-inset-bottom)' }}
+        className="w-full sm:max-w-lg rounded-t-3xl sm:rounded-2xl overflow-hidden shadow-2xl
+          sm:animate-[modalIn_0.2s_ease-out]"
+        style={{
+          backgroundColor: '#008B7F',
+          paddingBottom: 'env(safe-area-inset-bottom)',
+        }}
       >
-        {/* Handle mobile */}
+        <style>{`
+          @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(8px); }
+            to   { opacity: 1; transform: scale(1)    translateY(0);   }
+          }
+        `}</style>
+
+        {/* Handle — mobile uniquement */}
         <div className="pt-3 pb-1 flex justify-center sm:hidden">
           <div className="w-10 h-1 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.3)' }} />
         </div>
 
         {/* Bouton fermer */}
-        <div className="flex justify-end px-4 pt-3">
+        <div className="flex justify-end px-5 pt-4">
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-90"
+            className="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-90 hover:opacity-80"
             style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}
           >
             <X className="w-4 h-4 text-white" strokeWidth={2} />
@@ -68,39 +84,79 @@ const AssistanceModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         </div>
 
         {/* Titre */}
-        <div className="flex flex-col items-center pb-6 pt-2">
-          <h2 className="text-2xl font-black text-white tracking-widest uppercase font-display">
+        <div className="flex flex-col items-center pb-6 pt-1 sm:pt-2 px-6">
+          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-widest uppercase font-display">
             Assistance
           </h2>
-          {/* Ligne décorative rouge */}
-          <div style={{ width: 56, height: 4, backgroundColor: '#E53E3E', borderRadius: 2, marginTop: 8 }} />
+          <div style={{ width: 56, height: 4, backgroundColor: '#E53E3E', borderRadius: 2, marginTop: 10 }} />
+          <p className="text-white/60 text-sm font-sans mt-3 text-center hidden sm:block">
+            Vitogaz Madagascar — Leader du gaz depuis plus de 25 ans
+          </p>
         </div>
 
-        {/* Contacts */}
-        <div className="px-6 pb-8 space-y-4">
-          {contacts.map((c, i) => {
-            const Icon = c.icon
-            return (
-              <a
-                key={i}
-                href={c.href}
-                target={c.href.startsWith('http') ? '_blank' : undefined}
-                rel={c.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                onClick={() => hapticFeedback('light')}
-                className="flex items-center gap-4 active:opacity-70 transition-opacity"
-              >
-                {/* Icône jaune */}
-                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: '#F6C90E' }}>
-                  <Icon className="w-5 h-5" style={{ color: '#008B7F' }} strokeWidth={2} />
-                </div>
-                {/* Texte */}
-                <p className="text-white font-semibold text-sm font-sans truncate">
-                  {c.value}
-                </p>
-              </a>
-            )
-          })}
+        {/* Contacts — liste mobile / grille 2×2 desktop */}
+        <div className="px-5 pb-6 sm:pb-8 sm:px-8">
+
+          {/* Mobile : liste verticale */}
+          <div className="flex flex-col gap-4 sm:hidden">
+            {contacts.map((c, i) => {
+              const Icon = c.icon
+              return (
+                <a
+                  key={i}
+                  href={c.href}
+                  target={c.href.startsWith('http') ? '_blank' : undefined}
+                  rel={c.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  onClick={() => hapticFeedback('light')}
+                  className="flex items-center gap-4 active:opacity-70 transition-opacity"
+                >
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: '#F6C90E' }}>
+                    <Icon className="w-5 h-5" style={{ color: '#008B7F' }} strokeWidth={2} />
+                  </div>
+                  <p className="text-white font-semibold text-sm font-sans truncate">{c.value}</p>
+                </a>
+              )
+            })}
+          </div>
+
+          {/* Desktop : grille 2×2 */}
+          <div className="hidden sm:grid grid-cols-2 gap-4">
+            {contacts.map((c, i) => {
+              const Icon = c.icon
+              return (
+                <a
+                  key={i}
+                  href={c.href}
+                  target={c.href.startsWith('http') ? '_blank' : undefined}
+                  rel={c.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  onClick={() => hapticFeedback('light')}
+                  className="flex flex-col items-center gap-3 p-5 rounded-xl transition-all duration-200 active:scale-95 hover:opacity-90 group"
+                  style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
+                >
+                  <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"
+                    style={{ backgroundColor: '#F6C90E' }}>
+                    <Icon className="w-7 h-7" style={{ color: '#008B7F' }} strokeWidth={2} />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-white/60 text-xs font-sans mb-1">{c.label}</p>
+                    <p className="text-white font-bold text-sm font-sans leading-snug">{c.value}</p>
+                  </div>
+                </a>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Bouton fermer — mobile uniquement */}
+        <div className="px-5 pb-6 sm:hidden">
+          <button
+            onClick={onClose}
+            className="w-full py-3.5 rounded-full font-semibold text-sm font-sans active:scale-95 transition-transform"
+            style={{ backgroundColor: 'rgba(255,255,255,0.15)', color: 'white' }}
+          >
+            Fermer
+          </button>
         </div>
       </div>
     </div>
