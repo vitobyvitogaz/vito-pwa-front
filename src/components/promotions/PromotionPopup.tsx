@@ -204,7 +204,8 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
         style={{ animation: isClosing ? 'none' : 'fadeScale 0.25s ease-out', maxHeight: '88vh' }}
       >
         {/* Colonne gauche — hauteur = colonne droite, largeur auto selon ratio image */}
-        <div className="self-stretch flex-shrink-0">
+        {/* Colonne gauche — hauteur = colonne droite, largeur auto selon ratio image */}
+        <div className="relative self-stretch flex-shrink-0 overflow-hidden">
           {promotion.image_url ? (
             <img
               src={promotion.image_url}
@@ -216,21 +217,21 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
               <Sparkles className="w-16 h-16 text-primary/30" strokeWidth={1} />
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
-          {discountLabel && (
-            <div className="absolute top-5 left-5 z-10">
+          {/* Badges — positionnés dans la colonne gauche uniquement */}
+          <div className="absolute top-5 left-5 flex flex-col gap-2 z-10">
+            {discountLabel && (
               <div className="bg-primary text-white rounded-full px-5 py-2 shadow-xl">
                 <span className="text-xl font-black font-sans">{discountLabel}</span>
               </div>
-            </div>
-          )}
-          <div className="absolute top-5 right-5">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black/40 backdrop-blur-sm rounded-full border border-white/20">
+            )}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black/40 backdrop-blur-sm rounded-full border border-white/20 w-fit">
               <span className="pulse-dot w-2 h-2 bg-emerald-400 rounded-full" />
               <span className="text-xs font-semibold text-white">En cours</span>
             </div>
           </div>
+
+          {/* Barre de progression */}
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
             <div className="h-full bg-primary transition-all duration-1000" style={{ width: `${progressWidth}%` }} />
           </div>
