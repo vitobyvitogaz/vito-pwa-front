@@ -20,83 +20,64 @@ const GasBottleIcon = ({ className, strokeWidth }: { className?: string, strokeW
 const AssistanceModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const contacts = [
     {
-      icon: Phone,
-      label: 'Téléphone',
-      value: '020 22 364 64',
-      sub: 'Lun-Ven 8h-17h · Sam 8h-13h',
-      href: 'tel:+261202236464',
-      color: 'text-emerald-600 dark:text-emerald-400',
-      bg: 'bg-emerald-50 dark:bg-emerald-900/20',
-      border: 'border-emerald-200 dark:border-emerald-800',
-    },
-    {
       icon: Mail,
-      label: 'Email',
       value: 'relationclient@vitogaz.mg',
-      sub: 'Réponse sous 24h',
       href: 'mailto:relationclient@vitogaz.mg',
-      color: 'text-blue-600 dark:text-blue-400',
-      bg: 'bg-blue-50 dark:bg-blue-900/20',
-      border: 'border-blue-200 dark:border-blue-800',
     },
     {
       icon: MessageCircle,
-      label: 'Messenger',
-      value: 'Vitogaz Madagascar',
-      sub: 'Chat Facebook',
+      value: 'vitogazmadagascar',
       href: 'https://m.me/vitogazmadagascar',
-      color: 'text-indigo-600 dark:text-indigo-400',
-      bg: 'bg-indigo-50 dark:bg-indigo-900/20',
-      border: 'border-indigo-200 dark:border-indigo-800',
     },
     {
       icon: MapPin,
-      label: 'Adresse',
-      value: '122, rue Rainandriamampandry',
-      sub: 'Faravohitra — B.P. 3984',
+      value: '122, rue Rainandriamampandry — B.P. 3984',
       href: 'https://maps.google.com/?q=122+rue+Rainandriamampandry+Faravohitra+Antananarivo',
-      color: 'text-amber-600 dark:text-amber-400',
-      bg: 'bg-amber-50 dark:bg-amber-900/20',
-      border: 'border-amber-200 dark:border-amber-800',
+    },
+    {
+      icon: Phone,
+      value: '020 22 364 64',
+      href: 'tel:+261202236464',
     },
   ]
 
   return (
     <div
       className="fixed inset-0 z-[2000] flex items-end sm:items-center justify-center"
-      style={{ backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}
+      style={{ backgroundColor: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
       <div
-        className="w-full sm:max-w-md bg-white dark:bg-dark-surface rounded-t-3xl sm:rounded-2xl shadow-2xl"
-        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+        className="w-full sm:max-w-sm rounded-t-3xl sm:rounded-2xl overflow-hidden shadow-2xl"
+        style={{ backgroundColor: '#008B7F', paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         {/* Handle mobile */}
         <div className="pt-3 pb-1 flex justify-center sm:hidden">
-          <div className="w-10 h-1 bg-neutral-300 dark:bg-neutral-600 rounded-full" />
+          <div className="w-10 h-1 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.3)' }} />
         </div>
 
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100 dark:border-neutral-800">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
-              <Phone className="w-5 h-5 text-blue-600 dark:text-blue-400" strokeWidth={1.5} />
-            </div>
-            <div>
-              <p className="font-bold text-neutral-900 dark:text-white font-display">Assistance</p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">Vitogaz Madagascar</p>
-            </div>
-          </div>
+        {/* Bouton fermer */}
+        <div className="flex justify-end px-4 pt-3">
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center active:scale-90 transition-transform"
+            className="w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-90"
+            style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}
           >
-            <X className="w-4 h-4 text-neutral-500" strokeWidth={1.5} />
+            <X className="w-4 h-4 text-white" strokeWidth={2} />
           </button>
         </div>
 
+        {/* Titre */}
+        <div className="flex flex-col items-center pb-6 pt-2">
+          <h2 className="text-2xl font-black text-white tracking-widest uppercase font-display">
+            Assistance
+          </h2>
+          {/* Ligne décorative rouge */}
+          <div style={{ width: 56, height: 4, backgroundColor: '#E53E3E', borderRadius: 2, marginTop: 8 }} />
+        </div>
+
         {/* Contacts */}
-        <div className="px-4 py-4 space-y-3">
+        <div className="px-6 pb-8 space-y-4">
           {contacts.map((c, i) => {
             const Icon = c.icon
             return (
@@ -106,30 +87,20 @@ const AssistanceModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 target={c.href.startsWith('http') ? '_blank' : undefined}
                 rel={c.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                 onClick={() => hapticFeedback('light')}
-                className="flex items-center gap-4 p-4 rounded-xl border border-neutral-100 dark:border-neutral-800 hover:border-neutral-200 dark:hover:border-neutral-700 transition-all duration-200 active:scale-[0.98] hover:shadow-sm bg-white dark:bg-dark-surface"
+                className="flex items-center gap-4 active:opacity-70 transition-opacity"
               >
-                <div className={`w-11 h-11 rounded-full ${c.bg} border ${c.border} flex items-center justify-center flex-shrink-0`}>
-                  <Icon className={`w-5 h-5 ${c.color}`} strokeWidth={1.5} />
+                {/* Icône jaune */}
+                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ backgroundColor: '#F6C90E' }}>
+                  <Icon className="w-5 h-5" style={{ color: '#008B7F' }} strokeWidth={2} />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-neutral-400 dark:text-neutral-500 font-sans mb-0.5">{c.label}</p>
-                  <p className={`text-sm font-semibold ${c.color} font-sans truncate`}>{c.value}</p>
-                  <p className="text-xs text-neutral-400 dark:text-neutral-500 font-sans">{c.sub}</p>
-                </div>
-                <ChevronRight className="w-4 h-4 text-neutral-300 flex-shrink-0" strokeWidth={1.5} />
+                {/* Texte */}
+                <p className="text-white font-semibold text-sm font-sans truncate">
+                  {c.value}
+                </p>
               </a>
             )
           })}
-        </div>
-
-        {/* Bouton fermer */}
-        <div className="px-4 pb-5">
-          <button
-            onClick={onClose}
-            className="w-full py-3.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 font-semibold text-sm font-sans active:scale-95 transition-transform"
-          >
-            Fermer
-          </button>
         </div>
       </div>
     </div>
