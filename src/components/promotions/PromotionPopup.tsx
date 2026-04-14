@@ -200,21 +200,19 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
 
       {/* ── DESKTOP : 2 colonnes ─────────────────────────────────────────── */}
       <div
-        className={`hidden sm:flex relative w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 ${isClosing ? 'scale-95 opacity-0' : ''}`}
+        className={`hidden sm:flex relative w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 ${isClosing ? 'scale-95 opacity-0' : ''}`}
         style={{ animation: isClosing ? 'none' : 'fadeScale 0.25s ease-out', maxHeight: '88vh' }}
       >
-        {/* Colonne gauche — largeur libre, hauteur = colonne droite */}
-        <div className="relative flex-shrink-0 self-stretch flex overflow-hidden">
+        {/* Colonne gauche — image entière en contain, fond identique à colonne droite */}
+        <div className="relative w-[45%] flex-shrink-0 self-stretch bg-white dark:bg-dark-surface flex items-center justify-center overflow-hidden">
           {promotion.image_url ? (
             <img
               src={promotion.image_url}
               alt={promotion.title}
-              style={{ height: '100%', width: 'auto', display: 'block' }}
+              style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
             />
           ) : (
-            <div className="w-64 h-full bg-neutral-100 dark:bg-neutral-900 flex items-center justify-center">
-              <Sparkles className="w-16 h-16 text-primary/30" strokeWidth={1} />
-            </div>
+            <Sparkles className="w-16 h-16 text-primary/30" strokeWidth={1} />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
