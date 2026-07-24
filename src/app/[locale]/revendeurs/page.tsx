@@ -72,12 +72,42 @@ export default function ResellersPage() {
     } catch { /* localStorage indisponible */ }
   }, [])
 
+  // Au montage : centrage optimiste sur la derniere position connue,
+  // + auto-geoloc SILENCIEUSE uniquement si la permission est deja accordee.
+  // (Best practice : jamais de demande auto au 1er chargement, cf. Lighthouse)
+  useEffect(() => {
+    try {
+      const last = localStorage.getItem('vito_last_position')
+      if (last) {
+        const pos = JSON.parse(last)
+        if (typeof pos?.lat === 'number' && typeof pos?.lng === 'number') {
+          setUserLocation({ lat: pos.lat, lng: pos.lng })
+        }
+      }
+    } catch { /* ignore */ }
+
+    if (typeof navigator !== 'undefined' && navigator.permissions?.query) {
+      navigator.permissions
+        .query({ name: 'geolocation' } as PermissionDescriptor)
+        .then(status => {
+          if (status.state === 'granted') {
+            setIsGeolocationLoading(true)
+            getCurrentPosition()
+          }
+        })
+        .catch(() => { /* Permissions API indisponible : l'utilisateur cliquera */ })
+    }
+  }, [getCurrentPosition])
+
   const handleLocationFound = useCallback((location: { lat: number; lng: number }) => {
     setUserLocation(location)
     setHasGeolocationAttempted(true)
     setIsGeolocationLoading(false)
     setShowGeolocationPrompt(false)
-    try { localStorage.setItem('vito_geo_choice', 'granted') } catch {}
+    try {
+      localStorage.setItem('vito_geo_choice', 'granted')
+      localStorage.setItem('vito_last_position', JSON.stringify(location))
+    } catch {}
   }, [])
 
   // Erreur/timeout géoloc : on arrête le spinner et on ferme le modal,
