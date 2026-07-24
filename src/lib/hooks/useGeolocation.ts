@@ -25,7 +25,7 @@ export const useGeolocation = () => {
 
     setState(prev => ({ ...prev, loading: true, error: null }))
 
-    // watchPosition force une position fraîche, on l'arrête dès la première réponse
+    // Position rapide (réseau, cache accepté), arrêtée dès la première réponse
     const watchId = navigator.geolocation.watchPosition(
       (position) => {
         console.log('📍 [useGeolocation] Position fraîche obtenue:', {
@@ -52,9 +52,12 @@ export const useGeolocation = () => {
         })
       },
       {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 0,
+        // Réseau/wifi plutôt que GPS matériel : ~1s au lieu de 10-15s,
+        // et bien assez précis pour trier des revendeurs par distance
+        enableHighAccuracy: false,
+        timeout: 8000,
+        // Accepte une position récente (<1min) → instantané si déjà disponible
+        maximumAge: 60000,
       }
     )
   }
