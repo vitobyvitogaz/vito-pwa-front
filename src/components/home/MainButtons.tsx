@@ -1,7 +1,8 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { MapPin, ShoppingCart, Sparkles, FileText, ChevronRight } from 'lucide-react'
+import { MapPin, ShoppingCart, Sparkles, ChevronRight } from 'lucide-react'
+import { GasBottleIcon } from '@/components/icons/GasBottleIcon'
 import { useState } from 'react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
@@ -47,15 +48,15 @@ export const MainButtons: React.FC = () => {
       pulse: true,
     },
     {
-      id: 'documents',
-      title: 'Documents',
-      description: 'Guides et conseils',
-      icon: FileText,
-      href: '/fr/documents',
-      color: 'text-neutral-700 dark:text-neutral-300',
-      bg: 'bg-neutral-100 dark:bg-neutral-800/50',
-      border: 'border-neutral-200 dark:border-neutral-700',
-      hover: 'hover:bg-neutral-200 dark:hover:bg-neutral-700',
+      id: 'produits',
+      title: 'Produits',
+      description: 'Notre gamme',
+      icon: GasBottleIcon,
+      href: '/fr/produits',
+      color: 'text-primary',
+      bg: 'bg-primary/10',
+      border: 'border-primary/20',
+      hover: 'hover:bg-primary/20 dark:hover:bg-primary/20',
       pulse: true,
     },
   ]
