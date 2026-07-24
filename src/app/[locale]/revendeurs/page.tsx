@@ -53,7 +53,7 @@ export default function ResellersPage() {
   const [travelMode, setTravelMode] = useState<TravelMode>('DRIVING')
   const [hasGeolocationAttempted, setHasGeolocationAttempted] = useState(false)
   const [isGeolocationLoading, setIsGeolocationLoading] = useState(false)
-  const [showGeolocationPrompt, setShowGeolocationPrompt] = useState(true)
+  const [showGeolocationPrompt, setShowGeolocationPrompt] = useState(false)
   const [hasSkippedGeolocation, setHasSkippedGeolocation] = useState(false)
   // ── État de recherche textuelle ──────────────────────────────────────────
   const [searchQuery, setSearchQuery] = useState('')
@@ -63,10 +63,26 @@ export default function ResellersPage() {
     if (resellers.length > 0) setFilteredResellers(resellers)
   }, [resellers])
 
+  // N'affiche le prompt géoloc qu'au 1er passage (choix mémorisé ensuite)
+  useEffect(() => {
+    try {
+      if (!localStorage.getItem('vito_geo_choice')) setShowGeolocationPrompt(true)
+    } catch { /* localStorage indisponible */ }
+  }, [])
+
   const handleLocationFound = useCallback((location: { lat: number; lng: number }) => {
     setUserLocation(location)
     setHasGeolocationAttempted(true)
     setIsGeolocationLoading(false)
+    setShowGeolocationPrompt(false)
+    try { localStorage.setItem('vito_geo_choice', 'granted') } catch {}
+  }, [])
+
+  // Erreur/timeout géoloc : on arrête le spinner et on ferme le modal,
+  // sinon isGeolocationLoading resterait true -> spinner infini
+  const handleGeolocationError = useCallback(() => {
+    setIsGeolocationLoading(false)
+    setHasGeolocationAttempted(true)
     setShowGeolocationPrompt(false)
   }, [])
 
@@ -83,6 +99,7 @@ export default function ResellersPage() {
     setHasSkippedGeolocation(true)
     setShowGeolocationPrompt(false)
     setIsGeolocationLoading(false)
+    try { localStorage.setItem('vito_geo_choice', 'skipped') } catch {}
   }, [])
 
   // ── Revendeurs filtrés par recherche textuelle ────────────────────────────
@@ -334,7 +351,7 @@ export default function ResellersPage() {
               </div>
               <div className="w-3/5 relative">
                 <ResellerMap resellers={searchFilteredResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} userLocation={userLocation} />
-                <GeolocationButton onLocationFound={handleLocationFound} />
+                <GeolocationButton onLocationFound={handleLocationFound} onError={handleGeolocationError} />
               </div>
             </div>
           )}
@@ -367,7 +384,7 @@ export default function ResellersPage() {
           {view === 'map' && (
             <div className="relative h-full">
               <ResellerMap resellers={searchFilteredResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} userLocation={userLocation} />
-              <GeolocationButton onLocationFound={handleLocationFound} />
+              <GeolocationButton onLocationFound={handleLocationFound} onError={handleGeolocationError} />
             </div>
           )}
         </div>
@@ -396,7 +413,7 @@ export default function ResellersPage() {
             }}
             userLocation={userLocation}
           />
-          <GeolocationButton onLocationFound={handleLocationFound} />
+          <GeolocationButton onLocationFound={handleLocationFound} onError={handleGeolocationError} />
         </div>
 
         {/* Barre flottante haut droite — une seule ligne : GPS actif | Filtres */}
