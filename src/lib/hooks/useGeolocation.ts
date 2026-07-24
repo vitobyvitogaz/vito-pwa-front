@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 
 interface GeolocationState {
   latitude: number | null
@@ -17,7 +17,7 @@ export const useGeolocation = () => {
     loading: false,
   })
 
-  const getCurrentPosition = () => {
+  const getCurrentPosition = useCallback(() => {
     if (!navigator.geolocation) {
       setState(prev => ({ ...prev, error: 'La géolocalisation n\'est pas supportée' }))
       return
@@ -60,7 +60,7 @@ export const useGeolocation = () => {
         maximumAge: 60000,
       }
     )
-  }
+  }, [])
 
   return { ...state, getCurrentPosition }
 }
