@@ -7,9 +7,10 @@ import { hapticFeedback } from '@/lib/utils/haptic'
 
 interface GeolocationButtonProps {
   onLocationFound: (location: { lat: number; lng: number }) => void
+  onError?: () => void
 }
 
-export const GeolocationButton: React.FC<GeolocationButtonProps> = ({ onLocationFound }) => {
+export const GeolocationButton: React.FC<GeolocationButtonProps> = ({ onLocationFound, onError }) => {
   const { latitude, longitude, error, loading, getCurrentPosition } = useGeolocation()
   const [showError, setShowError] = useState(false)
   const [hasRequestedLocation, setHasRequestedLocation] = useState(false)
@@ -30,11 +31,12 @@ export const GeolocationButton: React.FC<GeolocationButtonProps> = ({ onLocation
 
   useEffect(() => {
     if (error) {
+      onError?.()
       setShowError(true)
       const timer = setTimeout(() => setShowError(false), 3000)
       return () => clearTimeout(timer)
     }
-  }, [error])
+  }, [error, onError])
 
   return (
     <div className="absolute bottom-6 right-6 z-10">
