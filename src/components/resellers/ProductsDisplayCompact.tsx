@@ -23,12 +23,18 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
   
   const remainingCount = allProducts.length - displayProducts.length
 
-  const formatPrice = (price: number | null) => {
-    if (!price) return 'Prix sur demande'
-    return new Intl.NumberFormat('fr-MG', {
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat('fr-MG', {
       minimumFractionDigits: 0,
     }).format(price) + ' Ar'
-  }
+
+  // Vrai prix → proéminent (teal, gras) ; pas de prix → discret (gris, normal)
+  const renderPrice = (price: number | null) =>
+    price ? (
+      <p className="text-sm font-bold text-primary">{formatPrice(price)}</p>
+    ) : (
+      <p className="text-sm font-normal text-neutral-400 dark:text-neutral-500">Sur demande</p>
+    )
 
   return (
     <div className="border border-neutral-200 dark:border-neutral-800 rounded-xl p-3 bg-white dark:bg-neutral-900/50 hover:border-neutral-300 dark:hover:border-neutral-700 transition-all duration-200">
@@ -73,14 +79,12 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
                     </div>
                   )}
                 </div>
-                {/* ── text-xs → text-sm : nom produit lisible sur petit écran ── */}
-                <p className="text-sm font-medium text-neutral-900 dark:text-white line-clamp-1 mb-0.5">
+                {/* Nom sur 2 lignes max, hauteur réservée pour aligner les cartes */}
+                <p className="text-sm font-medium text-neutral-900 dark:text-white line-clamp-2 min-h-[2.5rem] mb-0.5">
                   {product.name}
                 </p>
-                {/* ── text-xs → text-sm : prix produit lisible sur petit écran ── */}
-                <p className="text-sm font-bold text-primary">
-                  {formatPrice(product.price)}
-                </p>
+                {/* Vrai prix teal/gras, sinon "Sur demande" discret */}
+                {renderPrice(product.price)}
               </div>
             )
           })}
@@ -110,7 +114,7 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
                 
                 <div>
                   {/* ── text-xs → text-sm : nom produit lisible ── */}
-                  <h6 className="text-sm font-semibold text-neutral-900 dark:text-white mb-0.5 line-clamp-1">
+                  <h6 className="text-sm font-semibold text-neutral-900 dark:text-white mb-0.5 line-clamp-2">
                     {product.name}
                   </h6>
                   
@@ -121,9 +125,7 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
                     </span>
                   )}
                   
-                  <p className="text-sm font-bold text-primary">
-                    {formatPrice(product.price)}
-                  </p>
+                  {renderPrice(product.price)}
                   
                   {/* ── text-xs → text-sm : description lisible ── */}
                   {product.description && (
