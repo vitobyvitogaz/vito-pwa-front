@@ -131,7 +131,6 @@ const nextConfig = {
   reactStrictMode: true,
   turbopack: {},
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
