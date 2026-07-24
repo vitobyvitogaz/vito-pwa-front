@@ -1,20 +1,9 @@
 'use client'
 
-import { Phone, MapPin, ChevronRight, Briefcase, Mail, X } from 'lucide-react'
+import { Phone, MapPin, ChevronRight, Briefcase, Mail, X, FileText } from 'lucide-react'
 import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { hapticFeedback } from '@/lib/utils/haptic'
-
-const GasBottleIcon = ({ className, strokeWidth }: { className?: string, strokeWidth?: number }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
-    <path d="M10 2h4" />
-    <path d="M12 2v2" />
-    <path d="M8 6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2z" />
-    <path d="M8 10h8" />
-    <path d="M8 14h8" />
-    <circle cx="12" cy="17" r="1" fill="currentColor" stroke="none" />
-  </svg>
-)
 
 // ── Icône Messenger officielle ────────────────────────────────────────────────
 const MessengerIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
@@ -206,13 +195,13 @@ export const QuickActions: React.FC = () => {
       },
     },
     {
-      id: 'produits',
-      icon: GasBottleIcon,
-      title: 'Produits',
-      subtitle: 'Notre gamme',
-      color: 'text-primary dark:text-primary',
-      bg: 'bg-primary/10 dark:bg-primary/20',
-      action: () => router.push(`/${locale}/produits`),
+      id: 'documents',
+      icon: FileText,
+      title: 'Documents',
+      subtitle: 'Guides et conseils',
+      color: 'text-neutral-600 dark:text-neutral-400',
+      bg: 'bg-neutral-100 dark:bg-neutral-800/50',
+      action: () => router.push(`/${locale}/documents`),
     },
     {
       id: 'revendeur',
