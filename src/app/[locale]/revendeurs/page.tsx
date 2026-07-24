@@ -30,6 +30,7 @@ import {
 import type { Reseller } from '@/types/reseller'
 import { useResellerStore } from '@/store/useResellerStore'
 import { useOptimizedDistances, type TravelMode } from '@/lib/hooks/useOptimizedDistances'
+import { useGeolocation } from '@/lib/hooks/useGeolocation'
 
 const PAGE_SIZE = 10
 type SheetState = 'quarter' | 'half' | 'full'
@@ -43,6 +44,7 @@ const normalize = (str: string) =>
 
 export default function ResellersPage() {
   const { resellers, loading: isLoadingResellers, fetchResellers } = useResellerStore()
+  const { latitude: geoLat, longitude: geoLng, error: geoError, getCurrentPosition } = useGeolocation()
   const [view, setView] = useState<'split' | 'list' | 'map'>('split')
   const [sheetState, setSheetState] = useState<SheetState>('half')
   const [showMobileFilters, setShowMobileFilters] = useState(false)
@@ -88,12 +90,8 @@ export default function ResellersPage() {
 
   const handleEnableGeolocation = useCallback(() => {
     setIsGeolocationLoading(true)
-    setTimeout(() => {
-      const geolocButton = document.querySelector('[title="Utiliser ma position"]') as HTMLButtonElement
-      if (geolocButton && !geolocButton.disabled) geolocButton.click()
-      else setIsGeolocationLoading(false)
-    }, 100)
-  }, [])
+    getCurrentPosition()
+  }, [getCurrentPosition])
 
   const handleSkipGeolocation = useCallback(() => {
     setHasSkippedGeolocation(true)
@@ -101,6 +99,17 @@ export default function ResellersPage() {
     setIsGeolocationLoading(false)
     try { localStorage.setItem('vito_geo_choice', 'skipped') } catch {}
   }, [])
+
+  // Géoloc pilotée directement par la page (plus de querySelector().click())
+  useEffect(() => {
+    if (geoLat != null && geoLng != null) {
+      handleLocationFound({ lat: geoLat, lng: geoLng })
+    }
+  }, [geoLat, geoLng, handleLocationFound])
+
+  useEffect(() => {
+    if (geoError) handleGeolocationError()
+  }, [geoError, handleGeolocationError])
 
   // ── Revendeurs filtrés par recherche textuelle ────────────────────────────
   const searchFilteredResellers = useMemo(() => {
