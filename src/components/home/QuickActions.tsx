@@ -195,15 +195,6 @@ export const QuickActions: React.FC = () => {
       },
     },
     {
-      id: 'documents',
-      icon: FileText,
-      title: 'Documents',
-      subtitle: 'Guides et conseils',
-      color: 'text-neutral-600 dark:text-neutral-400',
-      bg: 'bg-neutral-100 dark:bg-neutral-800/50',
-      action: () => router.push(`/${locale}/documents`),
-    },
-    {
       id: 'revendeur',
       icon: Briefcase,
       title: 'Devenir partenaire',
@@ -211,6 +202,15 @@ export const QuickActions: React.FC = () => {
       color: 'text-purple-600 dark:text-purple-400',
       bg: 'bg-purple-50 dark:bg-purple-900/20',
       action: () => router.push(`/${locale}/contact-pro`),
+    },
+    {
+      id: 'documents',
+      icon: FileText,
+      title: 'Documents',
+      subtitle: 'Guides et conseils',
+      color: 'text-neutral-600 dark:text-neutral-400',
+      bg: 'bg-neutral-100 dark:bg-neutral-800/50',
+      action: () => router.push(`/${locale}/documents`),
     },
     {
       id: 'assistance',
