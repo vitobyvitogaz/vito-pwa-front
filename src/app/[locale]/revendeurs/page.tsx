@@ -389,7 +389,7 @@ export default function ResellersPage() {
                 />
               </div>
               <div className="w-3/5 relative">
-                <ResellerMap resellers={searchFilteredResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} userLocation={userLocation} />
+                <ResellerMap resellers={searchFilteredResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} userLocation={userLocation} distances={distances} />
                 <GeolocationButton onLocationFound={handleLocationFound} onError={handleGeolocationError} />
               </div>
             </div>
@@ -422,7 +422,7 @@ export default function ResellersPage() {
           )}
           {view === 'map' && (
             <div className="relative h-full">
-              <ResellerMap resellers={searchFilteredResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} userLocation={userLocation} />
+              <ResellerMap resellers={searchFilteredResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} userLocation={userLocation} distances={distances} />
               <GeolocationButton onLocationFound={handleLocationFound} onError={handleGeolocationError} />
             </div>
           )}
@@ -451,6 +451,7 @@ export default function ResellersPage() {
               setSheetState('quarter')
             }}
             userLocation={userLocation}
+            distances={distances}
           />
           <GeolocationButton onLocationFound={handleLocationFound} onError={handleGeolocationError} />
         </div>
