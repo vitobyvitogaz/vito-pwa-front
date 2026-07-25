@@ -51,6 +51,41 @@ const createUserIcon = () => L.divIcon({
   popupAnchor: [0, -38],
 })
 
+// ── Distance à vol d'oiseau + lien itinéraire ────────────────────────────────
+const distanceMeters = (
+  from: { lat: number; lng: number },
+  to: { lat: number; lng: number }
+) => {
+  const R = 6371000
+  const toRad = (d: number) => (d * Math.PI) / 180
+  const dLat = toRad(to.lat - from.lat)
+  const dLng = toRad(to.lng - from.lng)
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(from.lat)) * Math.cos(toRad(to.lat)) * Math.sin(dLng / 2) ** 2
+  return 2 * R * Math.asin(Math.sqrt(a))
+}
+
+const formatDistance = (
+  user: { lat: number; lng: number },
+  r: { lat: number; lng: number }
+) => {
+  const m = distanceMeters(user, r)
+  return m < 1000
+    ? `à ${Math.round(m)} m`
+    : `à ${(m / 1000).toFixed(1).replace('.', ',')} km`
+}
+
+const directionsUrl = (
+  user: { lat: number; lng: number } | null,
+  r: { lat: number; lng: number }
+) => {
+  const dest = `${r.lat},${r.lng}`
+  return user
+    ? `https://www.google.com/maps/dir/?api=1&origin=${user.lat},${user.lng}&destination=${dest}`
+    : `https://www.google.com/maps/dir/?api=1&destination=${dest}`
+}
+
 const MapController = ({
   resellers, selectedReseller, userLocation,
 }: {
@@ -143,10 +178,51 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
             eventHandlers={{ click: () => onSelectReseller(reseller) }}
           >
             <Popup>
-              <div className="min-w-[200px]">
-                <h3 className="font-semibold text-neutral-900 mb-1">{reseller.name}</h3>
-                <p className="text-sm text-neutral-600 mb-2">{reseller.address}</p>
-                <span className="px-2 py-1 bg-neutral-100 rounded-lg text-xs">{reseller.type}</span>
+              <div className="min-w-[210px] max-w-[240px]">
+                <h3 className="font-semibold text-neutral-900 text-[15px] leading-snug mb-1">{reseller.name}</h3>
+
+                <div className="flex items-center gap-x-2 gap-y-1 flex-wrap mb-1.5">
+                  <span className="px-2 py-0.5 bg-neutral-100 rounded-md text-[11px] text-neutral-700">{reseller.type}</span>
+                  {userLocation && (
+                    <span className="text-[11px] font-semibold text-primary">{formatDistance(userLocation, reseller)}</span>
+                  )}
+                  {reseller.business_status && (
+                    <span className={`text-[11px] font-semibold ${reseller.business_status.isOpen ? 'text-emerald-600' : 'text-red-500'}`}>
+                      {reseller.business_status.isOpen ? 'Ouvert' : 'Fermé'}
+                    </span>
+                  )}
+                </div>
+
+                <p className="text-[12px] text-neutral-500 leading-snug mb-2">{reseller.address}</p>
+
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <a
+                    href={directionsUrl(userLocation, reseller)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 min-w-[72px] text-center px-2 py-1.5 rounded-lg bg-primary text-white text-[12px] font-semibold no-underline"
+                  >
+                    Itinéraire
+                  </a>
+                  {reseller.phone && (
+                    <a
+                      href={`tel:${reseller.phone}`}
+                      className="flex-1 min-w-[72px] text-center px-2 py-1.5 rounded-lg bg-neutral-100 text-neutral-800 text-[12px] font-semibold no-underline"
+                    >
+                      Appeler
+                    </a>
+                  )}
+                  {reseller.whatsapp && (
+                    <a
+                      href={`https://wa.me/${reseller.whatsapp.replace(/[^0-9]/g, '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 min-w-[72px] text-center px-2 py-1.5 rounded-lg bg-[#25D366] text-white text-[12px] font-semibold no-underline"
+                    >
+                      WhatsApp
+                    </a>
+                  )}
+                </div>
               </div>
             </Popup>
           </Marker>
