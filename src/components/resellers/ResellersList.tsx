@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import { ResellerCard } from '@/components/resellers/ResellerCard'
 import type { Reseller } from '@/types/reseller'
 import type { DistanceResult } from '@/lib/hooks/useDistanceMatrix'
@@ -23,6 +24,15 @@ export const ResellersList: React.FC<ResellersListProps> = ({
   hasGps = false,
   isLoading = false,
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Sync carte -> liste : défile jusqu'au revendeur sélectionné
+  useEffect(() => {
+    if (!selectedReseller || !containerRef.current) return
+    const el = containerRef.current.querySelector(`[data-reseller-id="${selectedReseller.id}"]`)
+    el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+  }, [selectedReseller])
+
   if (isLoading) {
     return (
       <div className="p-4 space-y-4">
@@ -47,16 +57,17 @@ export const ResellersList: React.FC<ResellersListProps> = ({
   }
 
   return (
-    <div className="p-4 space-y-4">
+    <div ref={containerRef} className="p-4 space-y-4">
       {resellers.map((reseller, index) => (
-        <ResellerCard
-          key={reseller.id}
-          reseller={reseller}
-          isSelected={selectedReseller?.id === reseller.id}
-          onClick={() => onSelectReseller(reseller)}
-          delay={index * 0.05}
-          distance={distances?.[reseller.id]}
-        />
+        <div key={reseller.id} data-reseller-id={reseller.id}>
+          <ResellerCard
+            reseller={reseller}
+            isSelected={selectedReseller?.id === reseller.id}
+            onClick={() => onSelectReseller(reseller)}
+            delay={index * 0.05}
+            distance={distances?.[reseller.id]}
+          />
+        </div>
       ))}
 
       {resellers.length === 0 && (
