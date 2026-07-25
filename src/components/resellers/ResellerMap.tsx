@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import type { Reseller } from '@/types/reseller'
+import type { DistanceResult } from '@/lib/hooks/useDistanceMatrix'
 
 interface ResellerMapProps {
   resellers: Reseller[]
   selectedReseller: Reseller | null
   onSelectReseller: (reseller: Reseller) => void
   userLocation: { lat: number; lng: number } | null
+  distances?: Record<string, DistanceResult>
 }
 
 const getColorForType = (type: Reseller['type']) => {
@@ -92,6 +94,7 @@ const MapController = ({
   resellers: Reseller[]
   selectedReseller: Reseller | null
   userLocation: { lat: number; lng: number } | null
+  distances?: Record<string, DistanceResult>
 }) => {
   const map = useMap()
   const [hasInitialCentering, setHasInitialCentering] = useState(false)
@@ -132,7 +135,7 @@ const MapController = ({
 }
 
 export const ResellerMap: React.FC<ResellerMapProps> = ({
-  resellers, selectedReseller, onSelectReseller, userLocation,
+  resellers, selectedReseller, onSelectReseller, userLocation, distances,
 }) => {
   const [isClient, setIsClient] = useState(false)
   useEffect(() => { setIsClient(true) }, [])
@@ -183,8 +186,10 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
 
                 <div className="flex items-center gap-x-2 gap-y-1 flex-wrap mb-1.5">
                   <span className="px-2 py-0.5 bg-neutral-100 rounded-md text-[11px] text-neutral-700">{reseller.type}</span>
-                  {userLocation && (
-                    <span className="text-[11px] font-semibold text-primary">{formatDistance(userLocation, reseller)}</span>
+                  {(distances?.[reseller.id]?.distance || userLocation) && (
+                    <span className="text-[11px] font-semibold text-primary">
+                      à {distances?.[reseller.id]?.distance || (userLocation ? formatDistance(userLocation, reseller).replace('à ', '') : '')}
+                    </span>
                   )}
                   {reseller.business_status && (
                     <span className={`text-[11px] font-semibold ${reseller.business_status.isOpen ? 'text-emerald-600' : 'text-red-500'}`}>
@@ -200,14 +205,14 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
                     href={directionsUrl(userLocation, reseller)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 min-w-[72px] text-center px-2 py-1.5 rounded-lg bg-primary text-white text-[12px] font-semibold no-underline"
+                    className="flex-1 min-w-[72px] text-center px-2 py-1.5 rounded-lg bg-primary !text-white text-[12px] font-semibold no-underline"
                   >
                     Itinéraire
                   </a>
                   {reseller.phone && (
                     <a
                       href={`tel:${reseller.phone}`}
-                      className="flex-1 min-w-[72px] text-center px-2 py-1.5 rounded-lg bg-neutral-100 text-neutral-800 text-[12px] font-semibold no-underline"
+                      className="flex-1 min-w-[72px] text-center px-2 py-1.5 rounded-lg bg-neutral-100 !text-neutral-800 text-[12px] font-semibold no-underline"
                     >
                       Appeler
                     </a>
@@ -217,7 +222,7 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
                       href={`https://wa.me/${reseller.whatsapp.replace(/[^0-9]/g, '')}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 min-w-[72px] text-center px-2 py-1.5 rounded-lg bg-[#25D366] text-white text-[12px] font-semibold no-underline"
+                      className="flex-1 min-w-[72px] text-center px-2 py-1.5 rounded-lg bg-[#25D366] !text-white text-[12px] font-semibold no-underline"
                     >
                       WhatsApp
                     </a>
