@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import {
-  ArrowLeft, QrCode, Star, CheckCircle, Phone, User, Mail,
-  Sparkles, Clock, AlertTriangle, Gift, CreditCard,
-} from 'lucide-react'
+  ArrowLeft, QrCode, Star, CheckCircle, Phone, User, Envelope as Mail,
+  Sparkle as Sparkles, Clock, Warning as AlertTriangle, Gift, CreditCard,
+} from '@phosphor-icons/react'
 
 const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
 const PWA_PHONE_KEY = 'vito-user-phone'

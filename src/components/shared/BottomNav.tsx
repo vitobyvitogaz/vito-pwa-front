@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { MapPin, Sparkles, BookOpen, Settings } from 'lucide-react'
+import { MapPin, Sparkle as Sparkles, BookOpen, Gear as Settings } from '@phosphor-icons/react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 import { IOSInstallModal } from '@/components/shared/IOSInstallModal'
 

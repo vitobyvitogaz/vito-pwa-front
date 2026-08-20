@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import type { Reseller } from '@/types/reseller'
-import { RefreshCw } from 'lucide-react'
+import { ArrowsClockwise as RefreshCw } from '@phosphor-icons/react'
 
 interface MapFiltersProps {
   resellers: Reseller[]

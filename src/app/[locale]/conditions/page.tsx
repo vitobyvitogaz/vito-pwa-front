@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useParams } from 'next/navigation'
-import { ArrowLeft, Shield } from 'lucide-react'
+import { ArrowLeft, Shield } from '@phosphor-icons/react'
 
 const VITOGAZ_GREEN = '#008B7F'
 

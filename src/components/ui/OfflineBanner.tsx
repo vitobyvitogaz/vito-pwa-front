@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { WifiOff } from 'lucide-react'
+import { WifiSlash as WifiOff } from '@phosphor-icons/react'
 
 export const OfflineBanner: React.FC = () => {
   const [isOnline, setIsOnline] = useState(true)

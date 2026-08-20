@@ -1,6 +1,6 @@
 'use client'
 
-import { Shield, Truck, Clock, Sparkles } from 'lucide-react'
+import { Shield, Truck, Clock, Sparkle as Sparkles } from '@phosphor-icons/react'
 import { useState } from 'react'
 
 export const TrustBadges: React.FC = () => {

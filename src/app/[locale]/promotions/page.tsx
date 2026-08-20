@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { PromotionCard } from '@/components/promotions/PromotionsCard'
 import { PromotionPopup } from '@/components/promotions/PromotionPopup'
 import { usePromotionPopup } from '@/lib/hooks/usePromotionPopup'
-import { Sparkles, Building2 } from 'lucide-react'
+import { Sparkle as Sparkles, Buildings as Building2 } from '@phosphor-icons/react'
 import type { Promotion } from '@/types/promotion'
 
 const API_URL    = 'https://vito-backend-supabase.onrender.com/api/v1'

@@ -1,6 +1,6 @@
 'use client'
 
-import { Truck, User } from 'lucide-react'
+import { Truck, User } from '@phosphor-icons/react'
 import type { TravelMode } from '@/lib/hooks/useDistanceMatrix'
 
 interface TravelModeSelectorProps {

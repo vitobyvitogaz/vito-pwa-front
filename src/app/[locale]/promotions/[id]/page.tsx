@@ -4,9 +4,9 @@ import { useEffect, useState, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import type { Promotion } from '@/types/promotion'
 import {
-  ArrowLeft, Share2, MapPin, Globe, Clock, AlertTriangle, CheckCircle,
-  CalendarDays, Tag, Store, Check, Package, ChevronRight,
-} from 'lucide-react'
+  ArrowLeft, ShareNetwork as Share2, MapPin, Globe, Clock, Warning as AlertTriangle, CheckCircle,
+  CalendarDots as CalendarDays, Tag, Storefront as Store, Check, Package, CaretRight as ChevronRight,
+} from '@phosphor-icons/react'
 
 // ── Icône bouteille de gaz ────────────────────────────────────────────────────
 const GasBottleIcon = ({ className }: { className?: string }) => (

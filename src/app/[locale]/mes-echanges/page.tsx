@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ChevronLeft, ChevronRight, Gift, CheckCircle, XCircle, Clock, Package, X } from "lucide-react";
+import { ArrowLeft, CaretLeft as ChevronLeft, CaretRight as ChevronRight, Gift, CheckCircle, XCircle, Clock, Package, X } from "@phosphor-icons/react";
 
 const VITOGAZ_GREEN = "#008B7F";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://vito-backend-supabase.onrender.com/api/v1";

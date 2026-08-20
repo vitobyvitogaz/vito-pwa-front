@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  Settings, Moon, Sun, Bell, BellOff, MapPin, LocateFixed, RefreshCw,
-  Tag, Building2, Truck, Megaphone, Info, Trash2,
-  ChevronRight, Loader2, CheckCircle, Shield,
-} from 'lucide-react'
+  Gear as Settings, Moon, Sun, Bell, BellSlash as BellOff, MapPin, Crosshair as LocateFixed, ArrowsClockwise as RefreshCw,
+  Tag, Buildings as Building2, Truck, Megaphone, Info, Trash as Trash2,
+  CaretRight as ChevronRight, CircleNotch as Loader2, CheckCircle, Shield,
+} from '@phosphor-icons/react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 type Preferences = {

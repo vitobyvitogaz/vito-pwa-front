@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useGeolocation } from '@/lib/hooks/useGeolocation'
-import { MapPin, AlertCircle } from 'lucide-react'
+import { MapPin, WarningCircle as AlertCircle } from '@phosphor-icons/react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 interface GeolocationButtonProps {

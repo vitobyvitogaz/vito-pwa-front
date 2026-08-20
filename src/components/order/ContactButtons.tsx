@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Phone, MessageSquare } from 'lucide-react'
+import { Phone, ChatText as MessageSquare } from '@phosphor-icons/react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 const VITOGAZ_PHONE = '+261340000000'

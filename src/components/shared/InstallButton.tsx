@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Download } from 'lucide-react'
+import { Download } from '@phosphor-icons/react'
 import { IOSInstallModal } from '@/components/shared/IOSInstallModal'
 
 export const InstallButton: React.FC = () => {

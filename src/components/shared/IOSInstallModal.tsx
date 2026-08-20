@@ -1,6 +1,6 @@
 'use client'
 
-import { X, Share, Plus, ArrowDown } from 'lucide-react'
+import { X, ShareNetwork as Share, Plus, ArrowDown } from '@phosphor-icons/react'
 
 interface IOSInstallModalProps {
   onClose: () => void

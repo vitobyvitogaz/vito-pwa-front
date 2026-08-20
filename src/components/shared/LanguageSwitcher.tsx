@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import { Globe } from 'lucide-react'
+import { Globe } from '@phosphor-icons/react'
 
 const languages = [
   { code: 'fr', label: 'Français' },

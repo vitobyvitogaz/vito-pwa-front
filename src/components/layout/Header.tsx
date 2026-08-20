@@ -4,14 +4,14 @@ import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { MapPin, ShoppingCart, Sparkles, BookOpen, Bell, Settings, Gift } from 'lucide-react'
+import { MapPin, ShoppingCart, Sparkle, BookOpen, Bell, Gear, Gift } from '@phosphor-icons/react'
 import { InstallButton } from '@/components/shared/InstallButton'
 import { getUnreadCount, clearUnreadCount } from '@/lib/webpush'
 
 const navItems = [
   { href: '/fr/revendeurs', label: 'Revendeurs', icon: MapPin },
   { href: '/fr/commander',  label: 'Commander',  icon: ShoppingCart },
-  { href: '/fr/promotions', label: 'Promotions', icon: Sparkles },
+  { href: '/fr/promotions', label: 'Promotions', icon: Sparkle },
   { href: '/fr/documents',  label: 'Documents',  icon: BookOpen },
 ]
 
@@ -132,7 +132,7 @@ export const Header: React.FC = () => {
                       : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-dark-border/20 hover:text-neutral-900 dark:hover:text-white'
                   }`}
                 >
-                  <Icon className="w-4 h-4" strokeWidth={1.5} />
+                  <Icon className="w-4 h-4" />
                   {item.label}
                 </Link>
               )
@@ -146,7 +146,7 @@ export const Header: React.FC = () => {
                   : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-dark-border/20 hover:text-neutral-900 dark:hover:text-white'
               }`}
             >
-              <Settings className="w-4 h-4" strokeWidth={1.5} />
+              <Gear className="w-4 h-4" />
               Paramètres
             </Link>
           </nav>
@@ -160,7 +160,7 @@ export const Header: React.FC = () => {
               className="relative w-10 h-10 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:shadow-md transition-all duration-300 hover:scale-105 flex items-center justify-center"
               aria-label="Mes avantages"
             >
-              <Gift className="w-5 h-5 text-amber-500" strokeWidth={1.5} />
+              <Gift className="w-5 h-5 text-amber-500" />
               {exchangesCount > 0 && (
                 <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
                   {exchangesCount > 9 ? '9+' : exchangesCount}
@@ -174,7 +174,7 @@ export const Header: React.FC = () => {
               className="relative w-10 h-10 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:shadow-md transition-all duration-300 hover:scale-105 flex items-center justify-center"
               aria-label="Notifications et paramètres"
             >
-              <Bell className="w-5 h-5 text-neutral-600 dark:text-neutral-300" strokeWidth={1.5} />
+              <Bell className="w-5 h-5 text-neutral-600 dark:text-neutral-300" />
               {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
                   {unreadCount > 9 ? '9+' : unreadCount}

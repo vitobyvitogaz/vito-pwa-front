@@ -9,7 +9,7 @@ import { OfflineBanner } from '@/components/ui/OfflineBanner'
 import { PromotionPopup } from '@/components/promotions/PromotionPopup'
 import { usePromotionPopup } from '@/lib/hooks/usePromotionPopup'
 import { useHeroContent } from '@/lib/hooks/useAppSettings'
-import { X, Info, ShieldCheck, Award, Users } from 'lucide-react'
+import { X, Info, ShieldCheck, Medal as Award, Users } from '@phosphor-icons/react'
 
 const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
 

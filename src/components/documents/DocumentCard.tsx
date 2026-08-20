@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import type { Document } from '@/types/document'
-import { Download, Eye, FileText, Cloud, Play } from 'lucide-react'
+import { Download, Eye, FileText, Cloud, Play } from '@phosphor-icons/react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 interface DocumentCardProps {

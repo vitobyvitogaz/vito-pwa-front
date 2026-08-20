@@ -1,6 +1,6 @@
 'use client'
 
-import { Phone, MapPin, ChevronRight, Briefcase, Mail, X, FileText } from 'lucide-react'
+import { Phone, MapPin, CaretRight as ChevronRight, Briefcase, Envelope as Mail, X, FileText } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { hapticFeedback } from '@/lib/utils/haptic'

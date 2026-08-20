@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Gift, Star, Clock, ChevronRight, Phone, ArrowLeft, Sparkles, Lock, ChevronLeft } from 'lucide-react'
+import { Gift, Star, Clock, CaretRight as ChevronRight, Phone, ArrowLeft, Sparkle as Sparkles, Lock, CaretLeft as ChevronLeft } from '@phosphor-icons/react'
 
 const API_URL       = 'https://vito-backend-supabase.onrender.com/api/v1'
 const PWA_PHONE_KEY = 'vito-user-phone'

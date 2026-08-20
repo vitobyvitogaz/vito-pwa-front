@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { MapPin, X, CheckCircle, TrendingUp, Target } from 'lucide-react'
+import { MapPin, X, CheckCircle, TrendUp as TrendingUp, Target } from '@phosphor-icons/react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 interface GeolocationPromptProps {

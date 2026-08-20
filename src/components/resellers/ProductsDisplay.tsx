@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Package, ChevronDown, ChevronUp, Flame, Wrench } from 'lucide-react'
+import { Package, CaretDown as ChevronDown, CaretUp as ChevronUp, Flame, Wrench } from '@phosphor-icons/react'
 import type { Reseller } from '@/types/reseller'
 import Image from 'next/image'
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Image from 'next/image'
 import type { Promotion } from '@/types/promotion'
-import { ArrowRight, MapPin, Globe, Clock, AlertTriangle, CheckCircle, Star } from 'lucide-react'
+import { ArrowRight, MapPin, Globe, Clock, Warning as AlertTriangle, CheckCircle, Star } from '@phosphor-icons/react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 interface PromotionCardProps {

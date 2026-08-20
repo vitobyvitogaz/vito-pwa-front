@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Phone, Mail, User, MessageSquare, Tag, ArrowLeft, Send, CheckCircle, Clock, Facebook, ChevronDown, ChevronUp } from 'lucide-react'
+import { Phone, Envelope as Mail, User, ChatText as MessageSquare, Tag, ArrowLeft, PaperPlaneTilt as Send, CheckCircle, Clock, FacebookLogo as Facebook, CaretDown as ChevronDown, CaretUp as ChevronUp } from '@phosphor-icons/react'
 
 const SUBJECTS = [
   'Commande de gaz',
