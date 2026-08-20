@@ -414,7 +414,7 @@ export default function ParametresPage() {
 
   if (!mounted) {
     return (
-      <main className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16 pb-24 md:pb-8">
+      <main className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-[65px] pb-24 md:pb-8">
         <div className="container mx-auto px-4 sm:px-6 max-w-2xl py-6">
           <div className="flex items-center gap-3 mb-6">
             <Settings className="w-6 h-6 text-neutral-300" strokeWidth={1.5} />
@@ -432,7 +432,7 @@ export default function ParametresPage() {
   }
 
   return (
-    <main className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16 pb-24 md:pb-8">
+    <main className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-[65px] pb-24 md:pb-8">
       <div className="container mx-auto px-4 sm:px-6 max-w-2xl py-6">
 
         <div className="flex items-center gap-3 mb-6">

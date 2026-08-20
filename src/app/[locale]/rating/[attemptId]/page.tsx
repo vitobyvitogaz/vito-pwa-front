@@ -156,7 +156,7 @@ export default function RatingPage() {
 
   // ── Formulaire de notation ────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg pt-14 sm:pt-16 pb-24">
+    <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg pt-[65px] pb-24">
       <div className="container mx-auto px-4 max-w-sm pt-8">
 
         <button

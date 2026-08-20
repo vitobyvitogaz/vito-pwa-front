@@ -107,7 +107,7 @@ export const Header: React.FC = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-[1001] bg-white/95 dark:bg-dark-surface/95 backdrop-blur-xl backdrop-saturate-150 border-b border-neutral-200/60 dark:border-dark-border/60 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-[70px]">
+        <div className="flex items-center justify-between h-[65px]">
 
           {/* Logo */}
           <Link href="/fr" className="flex items-center transition-all duration-300 hover:opacity-90 flex-shrink-0">

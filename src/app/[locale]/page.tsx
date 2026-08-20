@@ -121,7 +121,7 @@ export default function HomePage() {
   )
 
   return (
-    <main className="min-h-screen bg-neutral-25 dark:bg-dark-bg pt-14 sm:pt-16 pb-20 md:pb-0">
+    <main className="min-h-screen bg-neutral-25 dark:bg-dark-bg pt-[65px] pb-20 md:pb-0">
       <OfflineBanner />
       <InstallPrompt />
 

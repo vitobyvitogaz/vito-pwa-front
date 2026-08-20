@@ -95,7 +95,7 @@ export default function ContactProPage() {
 
   return (
     // ── pb-20 md:pb-0 : espace pour la bottom nav sur mobile ──
-    <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16 pb-20 md:pb-0">
+    <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-[65px] pb-20 md:pb-0">
       {/* Header */}
       <div className="bg-white dark:bg-dark-surface border-b border-neutral-200 dark:border-neutral-800">
         <div className="container mx-auto px-4 py-8">

@@ -104,7 +104,7 @@ export default function NotificationsPage() {
   if (!mounted) return null
 
   return (
-    <main className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16 pb-24 md:pb-8">
+    <main className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-[65px] pb-24 md:pb-8">
       <div className="container mx-auto px-4 sm:px-6 max-w-2xl py-6">
 
         {/* En-tête */}

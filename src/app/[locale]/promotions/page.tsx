@@ -88,7 +88,7 @@ export default function PromotionsPage() {
   const expired = promotions.filter(p => !p.is_active || new Date(p.valid_until) <= new Date())
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-neutral-25 via-white to-neutral-25 dark:from-dark-bg dark:via-dark-surface/95 dark:to-dark-bg pt-16 pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-neutral-25 via-white to-neutral-25 dark:from-dark-bg dark:via-dark-surface/95 dark:to-dark-bg pt-[65px] pb-20">
 
       {showPopup && selectedPromotion && (
         <PromotionPopup

@@ -139,7 +139,7 @@ export default function ScanPage() {
   // ── Chargement ──────────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg flex items-center justify-center pt-16">
+      <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg flex items-center justify-center pt-[65px]">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
           <p className="text-sm text-neutral-500 font-sans">Chargement de la promotion...</p>
@@ -151,7 +151,7 @@ export default function ScanPage() {
   // ── Erreur / Promo invalide ─────────────────────────────────────────────
   if (error || !promo) {
     return (
-      <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg flex flex-col items-center justify-center p-6 pt-16 text-center">
+      <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg flex flex-col items-center justify-center p-6 pt-[65px] text-center">
         <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
           <AlertTriangle className="w-10 h-10 text-red-500" strokeWidth={1.5} />
         </div>
@@ -172,7 +172,7 @@ export default function ScanPage() {
   // ── Confirmation après participation ────────────────────────────────────
   if (submitted) {
     return (
-      <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg flex flex-col items-center justify-center p-6 pt-16 text-center">
+      <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg flex flex-col items-center justify-center p-6 pt-[65px] text-center">
         <div className="w-24 h-24 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
           <CheckCircle className="w-12 h-12 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
         </div>
@@ -219,7 +219,7 @@ export default function ScanPage() {
 
   // ── Page principale de participation ────────────────────────────────────
   return (
-    <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg pt-14 pb-24">
+    <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg pt-[65px] pb-24">
 
       {/* Header */}
       <div className="sticky top-14 z-40 bg-white/80 dark:bg-dark-surface/80 backdrop-blur-md border-b border-neutral-200/60 dark:border-neutral-800">

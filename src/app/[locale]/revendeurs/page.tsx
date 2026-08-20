@@ -196,7 +196,7 @@ export default function ResellersPage() {
 
   if (isLoadingResellers) {
     return (
-      <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 sm:pt-16 flex items-center justify-center">
+      <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-[65px] flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-4" strokeWidth={1.5} />
           <p className="text-sm text-neutral-600 dark:text-neutral-400">Chargement des revendeurs...</p>
@@ -219,7 +219,7 @@ export default function ResellersPage() {
       {/* ═══════════════════════════════════════════════════════════
           DESKTOP
       ═══════════════════════════════════════════════════════════ */}
-      <div className="hidden lg:block pt-14 sm:pt-16">
+      <div className="hidden lg:block pt-[65px]">
         {userLocation && (
           <div className="bg-primary/5 border-b border-primary/10 px-4 py-2">
             <div className="container mx-auto flex items-center gap-2">

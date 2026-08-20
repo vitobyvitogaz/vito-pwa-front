@@ -50,9 +50,8 @@ const AssistanceModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       {/* Conteneur — bottom sheet mobile / modal centré desktop */}
       <div
         className="w-full sm:max-w-lg rounded-t-3xl sm:rounded-2xl overflow-hidden shadow-2xl
-          sm:animate-[modalIn_0.2s_ease-out]"
+          bg-primary sm:animate-[modalIn_0.2s_ease-out]"
         style={{
-          backgroundColor: '#008B7F',
           paddingBottom: 'env(safe-area-inset-bottom)',
         }}
       >
@@ -81,10 +80,10 @@ const AssistanceModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
         {/* Titre */}
         <div className="flex flex-col items-center pb-6 pt-1 sm:pt-2 px-6">
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-widest uppercase font-display">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-widest uppercase font-display">
             Assistance
           </h2>
-          <div style={{ width: 56, height: 4, backgroundColor: '#E53E3E', borderRadius: 2, marginTop: 10 }} />
+          <div className="w-14 h-1 rounded-full bg-accent mt-2.5" />
           <p className="text-white/60 text-sm font-sans mt-3 text-center hidden sm:block">
             Vitogaz Madagascar — Leader du gaz depuis plus de 25 ans
           </p>
@@ -106,9 +105,8 @@ const AssistanceModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                   onClick={() => hapticFeedback('light')}
                   className="flex items-center gap-4 active:opacity-70 transition-opacity"
                 >
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: '#F6C90E' }}>
-                    <Icon className="w-5 h-5" style={{ color: '#008B7F' }} strokeWidth={2} />
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 bg-gold">
+                    <Icon className="w-5 h-5 text-primary" />
                   </div>
                   <p className="text-white font-semibold text-sm font-sans truncate">{c.value}</p>
                 </a>
@@ -130,9 +128,8 @@ const AssistanceModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                   className="flex flex-col items-center gap-3 p-5 rounded-xl transition-all duration-200 active:scale-95 hover:opacity-90 group"
                   style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
                 >
-                  <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"
-                    style={{ backgroundColor: '#F6C90E' }}>
-                    <Icon className="w-7 h-7" style={{ color: '#008B7F' }} strokeWidth={2} />
+                  <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform bg-gold">
+                    <Icon className="w-7 h-7 text-primary" />
                   </div>
                   <div className="text-center">
                     <p className="text-white/60 text-xs font-sans mb-1">{c.label}</p>
@@ -245,7 +242,7 @@ export const QuickActions: React.FC = () => {
                 }}
                 onMouseEnter={() => setHoveredId(action.id)}
                 onMouseLeave={() => setHoveredId(null)}
-                className="group relative overflow-hidden bg-white dark:bg-dark-surface rounded-xl p-5 text-left transition-all duration-300 border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-600"
+                className="group relative overflow-hidden bg-white dark:bg-dark-surface rounded-2xl p-5 text-left transition-all duration-300 border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-600"
                 style={{
                   animationDelay: `${index * 0.05}s`,
                   transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
