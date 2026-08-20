@@ -1,7 +1,7 @@
 'use client'
 
 import { DocumentsList } from '@/components/documents/DocumentsList'
-import { FileText } from 'lucide-react'
+import { FileText } from '@phosphor-icons/react'
 
 export default function DocumentsPage() {
   return (

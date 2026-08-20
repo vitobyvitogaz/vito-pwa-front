@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
-import { ArrowLeft, Package, Lock, CheckCircle, AlertCircle } from "lucide-react";
+import { ArrowLeft, Package, Lock, CheckCircle, WarningCircle as AlertCircle } from "@phosphor-icons/react";
 
 const VITOGAZ_GREEN = "#008B7F";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://vito-backend-supabase.onrender.com/api/v1";

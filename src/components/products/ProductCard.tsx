@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { Package, Star, Tag } from 'lucide-react'
+import { Package, Star, Tag } from '@phosphor-icons/react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 interface Product {

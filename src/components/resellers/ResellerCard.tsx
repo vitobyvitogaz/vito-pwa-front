@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import type { Reseller } from '@/types/reseller'
-import { Phone, MapPin, Clock, Navigation, MessageCircle, Wrench, ShoppingBag, Truck, Store, Fuel, ShoppingCart, Home } from 'lucide-react'
+import { Phone, MapPin, Clock, NavigationArrow as Navigation, ChatCircle as MessageCircle, Wrench, ShoppingBag, Truck, Storefront as Store, GasPump as Fuel, ShoppingCart, House as Home } from '@phosphor-icons/react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 import type { DistanceResult } from '@/lib/hooks/useDistanceMatrix'
 import { BusinessHoursCompact } from './BusinessHoursCompact'

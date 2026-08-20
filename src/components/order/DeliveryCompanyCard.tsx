@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Phone, Mail, MapPin, Clock, CheckCircle, ChevronDown, ChevronUp, ExternalLink, ThumbsUp, Star, MessageSquare } from 'lucide-react'
+import { Phone, Envelope as Mail, MapPin, Clock, CheckCircle, CaretDown as ChevronDown, CaretUp as ChevronUp, ArrowSquareOut as ExternalLink, ThumbsUp, Star, ChatText as MessageSquare } from '@phosphor-icons/react'
 import type { DeliveryCompany } from '@/data/deliveryCompanies'
 import { RatingStars } from './RatingStars'
 import Image from 'next/image'

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Star, CheckCircle, ArrowLeft, User, MessageSquare, AlertCircle } from 'lucide-react'
+import { Star, CheckCircle, ArrowLeft, User, ChatText as MessageSquare, WarningCircle as AlertCircle } from '@phosphor-icons/react'
 
 const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
 

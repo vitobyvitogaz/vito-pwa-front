@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { PromotionCard } from '@/components/promotions/PromotionsCard'
-import { Filter, ChevronLeft, ChevronRight, MapPin, X, Loader2, Tag as TagIcon, WifiOff } from 'lucide-react'
+import { Funnel as Filter, CaretLeft as ChevronLeft, CaretRight as ChevronRight, MapPin, X, CircleNotch as Loader2, Tag as TagIcon, WifiSlash as WifiOff } from '@phosphor-icons/react'
 import type { Promotion } from '@/types/promotion'
 import { filters, zones, sortOptions, ITEMS_PER_PAGE } from '@/data/promotions'
 

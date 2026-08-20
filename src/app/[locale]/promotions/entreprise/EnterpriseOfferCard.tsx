@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Phone } from 'lucide-react'
+import { Phone } from '@phosphor-icons/react'
 
 const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
 

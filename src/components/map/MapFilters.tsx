@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import type { Reseller } from '@/types/reseller'
-import { MapPin, SlidersHorizontal } from 'lucide-react'
+import { MapPin, Sliders as SlidersHorizontal } from '@phosphor-icons/react'
 
 interface MapFiltersProps {
   resellers: Reseller[]

@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { ChevronRight, Home } from 'lucide-react'
+import { CaretRight as ChevronRight, House as Home } from '@phosphor-icons/react'
 
 export const Breadcrumb: React.FC = () => {
   const pathname = usePathname()

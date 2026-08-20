@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { MapPin, ShoppingCart, Sparkles, ChevronRight } from 'lucide-react'
+import { MapPin, ShoppingCart, Sparkle as Sparkles, CaretRight as ChevronRight } from '@phosphor-icons/react'
 import { GasBottleIcon } from '@/components/icons/GasBottleIcon'
 import { useState } from 'react'
 import { hapticFeedback } from '@/lib/utils/haptic'

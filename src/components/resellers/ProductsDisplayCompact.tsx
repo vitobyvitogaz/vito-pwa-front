@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Package, ChevronRight, ShoppingCart } from 'lucide-react'
+import { Package, CaretRight as ChevronRight, ShoppingCart } from '@phosphor-icons/react'
 import type { Reseller } from '@/types/reseller'
 import Image from 'next/image'
 

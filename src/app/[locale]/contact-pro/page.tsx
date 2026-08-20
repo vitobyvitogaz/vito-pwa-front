@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Briefcase, Building2, Mail, Phone, MapPin, MessageSquare, User, Loader2, CheckCircle, AlertCircle, ArrowLeft } from 'lucide-react'
+import { Briefcase, Buildings as Building2, Envelope as Mail, Phone, MapPin, ChatText as MessageSquare, User, CircleNotch as Loader2, CheckCircle, WarningCircle as AlertCircle, ArrowLeft } from '@phosphor-icons/react'
 import Link from 'next/link'
 
 type RequestType = 'revendeur' | 'client_pro'

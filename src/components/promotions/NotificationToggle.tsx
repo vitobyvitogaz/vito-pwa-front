@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Bell, BellOff, MapPin, ChevronRight, Zap, LocateFixed, Loader2 } from 'lucide-react'
+import { Bell, BellSlash as BellOff, MapPin, CaretRight as ChevronRight, Lightning as Zap, Crosshair as LocateFixed, CircleNotch as Loader2 } from '@phosphor-icons/react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 import {
   isPushSupported,

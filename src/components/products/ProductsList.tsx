@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { ProductCard } from '@/components/products/ProductCard'
-import { ChevronLeft, ChevronRight, Loader2, Package } from 'lucide-react'
+import { CaretLeft as ChevronLeft, CaretRight as ChevronRight, CircleNotch as Loader2, Package } from '@phosphor-icons/react'
 
 const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1';
 const ITEMS_PER_PAGE = 12;

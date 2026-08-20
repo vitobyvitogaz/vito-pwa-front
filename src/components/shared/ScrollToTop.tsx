@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ArrowUp } from 'lucide-react'
+import { ArrowUp } from '@phosphor-icons/react'
 
 export const ScrollToTop: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false)

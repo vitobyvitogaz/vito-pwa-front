@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Package, Gift, ChevronRight, Filter } from "lucide-react";
+import { Package, Gift, CaretRight as ChevronRight, Funnel as Filter } from "@phosphor-icons/react";
 
 const VITOGAZ_GREEN = "#008B7F";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://vito-backend-supabase.onrender.com/api/v1";

@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation'
 import { EnterpriseOffersList } from './EnterpriseOffersList'
-import { Sparkles, Building2 } from 'lucide-react'
+import { Sparkle as Sparkles, Buildings as Building2 } from '@phosphor-icons/react'
 
 export default function EntrepriseOffresPage() {
   const router = useRouter()

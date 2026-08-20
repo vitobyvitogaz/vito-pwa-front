@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 import { ResellerCard } from '@/components/resellers/ResellerCard'
 import type { Reseller } from '@/types/reseller'
 import type { DistanceResult } from '@/lib/hooks/useDistanceMatrix'
-import { MapPin, SlidersHorizontal } from 'lucide-react'
+import { MapPin, Sliders as SlidersHorizontal } from '@phosphor-icons/react'
 
 interface ResellersListProps {
   resellers: Reseller[]

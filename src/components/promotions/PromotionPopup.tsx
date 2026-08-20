@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Image from 'next/image'
 import type { Promotion } from '@/types/promotion'
-import { X, Sparkles, ArrowRight, Calendar } from 'lucide-react'
+import { X, Sparkle as Sparkles, ArrowRight, Calendar } from '@phosphor-icons/react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 interface PromotionPopupProps {

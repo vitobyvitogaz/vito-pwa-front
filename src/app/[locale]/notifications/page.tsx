@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  Bell, BellOff, Tag, Building2, Truck, Megaphone,
-  ChevronRight, Sparkles, Clock,
-} from 'lucide-react'
+  Bell, BellSlash as BellOff, Tag, Buildings as Building2, Truck, Megaphone,
+  CaretRight as ChevronRight, Sparkle as Sparkles, Clock,
+} from '@phosphor-icons/react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 
 interface StoredNotification {

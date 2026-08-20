@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Truck, Loader2, WifiOff, Phone, MessageCircle } from 'lucide-react'
+import { Truck, CircleNotch as Loader2, WifiSlash as WifiOff, Phone, ChatCircle as MessageCircle } from '@phosphor-icons/react'
 import { DeliveryCompanyCard } from '@/components/order/DeliveryCompanyCard'
 import { type DeliveryCompany, sortCompanies } from '@/data/deliveryCompanies'
 

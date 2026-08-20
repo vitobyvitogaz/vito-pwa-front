@@ -24,9 +24,9 @@ import { GeolocationButton } from '@/components/resellers/GeolocationButton'
 import { TravelModeSelector } from '@/components/resellers/TravelModeSelector'
 import { GeolocationPrompt } from '@/components/resellers/GeolocationPrompt'
 import {
-  MapPin, List, Grid3x3, AlertCircle, CheckCircle, Loader2,
-  SlidersHorizontal, X, ChevronUp, Navigation, Search
-} from 'lucide-react'
+  MapPin, List, SquaresFour as Grid3x3, WarningCircle as AlertCircle, CheckCircle, CircleNotch as Loader2,
+  Sliders as SlidersHorizontal, X, CaretUp as ChevronUp, NavigationArrow as Navigation, MagnifyingGlass as Search
+} from '@phosphor-icons/react'
 import type { Reseller } from '@/types/reseller'
 import { useResellerStore } from '@/store/useResellerStore'
 import { useOptimizedDistances, type TravelMode } from '@/lib/hooks/useOptimizedDistances'

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { DocumentCard } from '@/components/documents/DocumentCard'
 import { PDFViewer } from '@/components/documents/PDFViewer'
-import { FileText, Loader2 } from 'lucide-react'
+import { FileText, CircleNotch as Loader2 } from '@phosphor-icons/react'
 import type { Document } from '@/types/document'
 
 const categories = [

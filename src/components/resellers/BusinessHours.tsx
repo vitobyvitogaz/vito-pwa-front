@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Clock, ChevronDown, ChevronUp } from 'lucide-react'
+import { Clock, CaretDown as ChevronDown, CaretUp as ChevronUp } from '@phosphor-icons/react'
 import type { BusinessHours as BusinessHoursType } from '@/types/reseller'
 
 interface BusinessHoursProps {

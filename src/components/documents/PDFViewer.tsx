@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import type { Document as DocumentType } from '@/types/document'
-import { X, Download, FileText } from 'lucide-react'
+import { X, Download, FileText } from '@phosphor-icons/react'
 
 interface PDFViewerProps {
   document: DocumentType
