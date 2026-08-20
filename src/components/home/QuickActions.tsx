@@ -183,8 +183,8 @@ export const QuickActions: React.FC = () => {
       icon: MapPin,
       title: 'Ma position',
       subtitle: 'Activer GPS',
-      color: 'text-violet-600 dark:text-violet-400',
-      bg: 'bg-violet-50 dark:bg-violet-900/20',
+      color: 'text-primary',
+      bg: 'bg-primary/10',
       action: () => {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
@@ -199,8 +199,8 @@ export const QuickActions: React.FC = () => {
       icon: Briefcase,
       title: 'Devenir partenaire',
       subtitle: 'Rejoignez notre réseau',
-      color: 'text-purple-600 dark:text-purple-400',
-      bg: 'bg-purple-50 dark:bg-purple-900/20',
+      color: 'text-navy',
+      bg: 'bg-navy/10',
       action: () => router.push(`/${locale}/contact-pro`),
     },
     {
@@ -208,8 +208,8 @@ export const QuickActions: React.FC = () => {
       icon: FileText,
       title: 'Documents',
       subtitle: 'Guides et conseils',
-      color: 'text-neutral-600 dark:text-neutral-400',
-      bg: 'bg-neutral-100 dark:bg-neutral-800/50',
+      color: 'text-primary',
+      bg: 'bg-primary/10',
       action: () => router.push(`/${locale}/documents`),
     },
     {
@@ -217,8 +217,8 @@ export const QuickActions: React.FC = () => {
       icon: Phone,
       title: 'Assistance',
       subtitle: '020 22 364 64',
-      color: 'text-blue-600 dark:text-blue-400',
-      bg: 'bg-blue-50 dark:bg-blue-900/20',
+      color: 'text-navy',
+      bg: 'bg-navy/10',
       action: () => setShowAssistance(true),
     },
   ]

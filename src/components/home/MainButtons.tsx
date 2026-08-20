@@ -29,10 +29,10 @@ export const MainButtons: React.FC = () => {
       description: 'Livraison à domicile',
       icon: ShoppingCart,
       href: '/fr/commander',
-      color: 'text-blue-600 dark:text-blue-400',
-      bg: 'bg-blue-50 dark:bg-blue-900/20',
-      border: 'border-blue-200 dark:border-blue-800',
-      hover: 'hover:bg-blue-100 dark:hover:bg-blue-900/30',
+      color: 'text-navy',
+      bg: 'bg-navy/10',
+      border: 'border-navy/20',
+      hover: 'hover:bg-navy/20 dark:hover:bg-navy/20',
       pulse: true,
     },
     {
@@ -41,10 +41,10 @@ export const MainButtons: React.FC = () => {
       description: 'Bonnes affaires du moment',
       icon: Sparkles,
       href: '/fr/promotions',
-      color: 'text-amber-600 dark:text-amber-400',
-      bg: 'bg-amber-50 dark:bg-amber-900/20',
-      border: 'border-amber-200 dark:border-amber-800',
-      hover: 'hover:bg-amber-100 dark:hover:bg-amber-900/30',
+      color: 'text-primary',
+      bg: 'bg-primary/10',
+      border: 'border-primary/20',
+      hover: 'hover:bg-primary/20 dark:hover:bg-primary/20',
       pulse: true,
     },
     {
@@ -128,11 +128,11 @@ export const MainButtons: React.FC = () => {
                     {button.description}
                   </p>
                   <div className="hidden sm:flex items-center gap-2 pt-1">
-                    <span className={`text-sm font-display font-semibold ${button.pulse ? 'text-blue-600 dark:text-blue-400' : 'text-primary'}`}>
+                    <span className="text-sm font-display font-semibold text-primary">
                       Découvrir
                     </span>
                     <ChevronRight
-                      className={`w-4 h-4 ${button.pulse ? 'text-blue-600 dark:text-blue-400' : 'text-primary'} transition-transform duration-300 group-hover:translate-x-1`}
+                      className="w-4 h-4 text-primary transition-transform duration-300 group-hover:translate-x-1"
                       strokeWidth={1.5}
                     />
                   </div>
