@@ -158,7 +158,7 @@ export default function HomePage() {
                     <X className="w-5 h-5 text-white group-hover:rotate-90 transition-transform duration-200" />
                   </button>
                   {title && (
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold text-white mb-4 tracking-tight animate-slide-up drop-shadow-2xl text-center">
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold font-editorial text-white mb-4 tracking-tight animate-slide-up drop-shadow-2xl text-center">
                       {title}
                     </h1>
                   )}
@@ -232,7 +232,7 @@ export default function HomePage() {
                   <X className="w-4 h-4 text-white group-hover:rotate-90 transition-transform duration-200" />
                 </button>
                 {title && (
-                  <h1 className="text-3xl font-semibold text-white mb-3 tracking-tight animate-slide-up drop-shadow-2xl text-center pr-8">
+                  <h1 className="text-3xl font-semibold font-editorial text-white mb-3 tracking-tight animate-slide-up drop-shadow-2xl text-center pr-8">
                     {title}
                   </h1>
                 )}

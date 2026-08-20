@@ -13,7 +13,7 @@ export default function DocumentsPage() {
             <FileText className="w-10 h-10 text-white" strokeWidth={1.5} />
           </div>
           
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-neutral-900 dark:text-white mb-4 tracking-tight font-sans">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold font-editorial text-neutral-900 dark:text-white mb-4 tracking-tight">
             Documents & Ressources
           </h1>
           

@@ -332,7 +332,7 @@ export default function PromotionDetailPage() {
 
             {/* Titre visible sous l'image — mobile uniquement */}
             <div className="lg:hidden mt-4 space-y-1">
-              <h1 className="text-2xl font-bold text-neutral-900 dark:text-white font-sans leading-tight">{promotion.title}</h1>
+              <h1 className="text-2xl font-semibold font-editorial text-neutral-900 dark:text-white leading-tight">{promotion.title}</h1>
               {promo.subtitle && <p className="text-base text-neutral-500 dark:text-neutral-400 font-sans">{promo.subtitle}</p>}
             </div>
           </div>
@@ -342,7 +342,7 @@ export default function PromotionDetailPage() {
 
             {/* Titre — desktop uniquement */}
             <div className="hidden lg:block space-y-1">
-              <h1 className="text-3xl font-bold text-neutral-900 dark:text-white font-sans leading-tight">{promotion.title}</h1>
+              <h1 className="text-3xl font-semibold font-editorial text-neutral-900 dark:text-white leading-tight">{promotion.title}</h1>
               {promo.subtitle && <p className="text-lg text-neutral-500 dark:text-neutral-400 font-sans">{promo.subtitle}</p>}
             </div>
 
