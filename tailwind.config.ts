@@ -92,8 +92,12 @@ const config: Config = {
         }
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
-        display: ['var(--font-montserrat)', 'system-ui', 'sans-serif'],
+        // ── Police UI par défaut : Poppins ──
+        sans: ['var(--font-poppins)', 'system-ui', 'sans-serif'],
+        // ── Titres d'interface : Poppins (même famille, différenciée par graisse/tracking) ──
+        display: ['var(--font-poppins)', 'system-ui', 'sans-serif'],
+        // ── Titres éditoriaux uniquement : EB Garamond (hero, promotions, documents) ──
+        editorial: ['var(--font-eb-garamond)', 'Georgia', 'serif'],
       },
       fontSize: {
         xs: '0.75rem',

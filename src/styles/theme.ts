@@ -91,8 +91,12 @@ export const colors = {
 
 export const typography = {
   fontFamily: {
-    sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-    display: ['Montserrat', 'Inter', 'sans-serif'],
+    // Police UI principale : Poppins (police officielle groupe Rubis)
+    sans: ['Poppins', 'system-ui', '-apple-system', 'sans-serif'],
+    // Titres d'interface : Poppins
+    display: ['Poppins', 'system-ui', 'sans-serif'],
+    // Titres éditoriaux uniquement : EB Garamond
+    editorial: ['EB Garamond', 'Georgia', 'serif'],
   },
   fontSize: {
     xs: '0.75rem',      // 12px
