@@ -119,7 +119,7 @@ export default function ConditionsPage() {
   const locale = params?.locale as string || 'fr'
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-14 pb-24">
+    <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-[65px] pb-24">
 
       {/* ── Barre nav sticky ── */}
       <div className="sticky top-14 z-40 bg-white/80 dark:bg-dark-surface/80 backdrop-blur-md border-b border-neutral-200/60 dark:border-neutral-800">

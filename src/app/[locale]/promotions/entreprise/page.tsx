@@ -14,7 +14,7 @@ export default function EntrepriseOffresPage() {
   const isGrandPublic = !isEntreprise
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-neutral-25 via-white to-neutral-25 dark:from-dark-bg dark:via-dark-surface/95 dark:to-dark-bg pt-16 pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-neutral-25 via-white to-neutral-25 dark:from-dark-bg dark:via-dark-surface/95 dark:to-dark-bg pt-[65px] pb-20">
       <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
 
         {/* Header */}

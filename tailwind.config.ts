@@ -36,6 +36,13 @@ const config: Config = {
           800: '#0C1628',
           900: '#060B14',
         },
+        // Jaune chaud — accent parcimonieux (pastilles d'icônes, mises en avant)
+        gold: {
+          DEFAULT: '#F6C90E',
+          50: '#FEFAE6',
+          500: '#F6C90E',
+          600: '#D4AB08',
+        },
         accent: {
           DEFAULT: '#C8102E',
           50: '#FEE7EB',

@@ -118,7 +118,7 @@ export default function MesAvantagesPage() {
   // ── Saisie téléphone + PIN ───────────────────────────────────────────────
   if (!phone) {
     return (
-      <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg pt-14 pb-24 flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg pt-[65px] pb-24 flex flex-col items-center justify-center p-6">
         <div className="w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center mb-6">
           <Gift className="w-10 h-10 text-primary" strokeWidth={1.5} />
         </div>
@@ -166,7 +166,7 @@ export default function MesAvantagesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg pt-14 pb-24">
+    <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg pt-[65px] pb-24">
 
       {/* Header */}
       <div className="sticky top-14 z-40 bg-white/80 dark:bg-dark-surface/80 backdrop-blur-md border-b border-neutral-200/60 dark:border-neutral-800">

@@ -89,7 +89,7 @@ export default function DeliveryPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-neutral-25 via-white to-neutral-25 dark:from-dark-bg dark:via-dark-surface/95 dark:to-dark-bg pt-16 pb-20 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-neutral-25 via-white to-neutral-25 dark:from-dark-bg dark:via-dark-surface/95 dark:to-dark-bg pt-[65px] pb-20 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-12 h-12 text-primary animate-spin" />
           <p className="text-neutral-600 dark:text-neutral-400">Chargement des sociétés de livraison...</p>
@@ -104,7 +104,7 @@ export default function DeliveryPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-neutral-25 via-white to-neutral-25 dark:from-dark-bg dark:via-dark-surface/95 dark:to-dark-bg pt-16 pb-20 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-neutral-25 via-white to-neutral-25 dark:from-dark-bg dark:via-dark-surface/95 dark:to-dark-bg pt-[65px] pb-20 flex items-center justify-center">
         <div className="text-center px-4">
           <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900 dark:to-red-800 flex items-center justify-center">
             <WifiOff className="w-10 h-10 text-red-500" strokeWidth={1} />
@@ -127,7 +127,7 @@ export default function DeliveryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-neutral-25 via-white to-neutral-25 dark:from-dark-bg dark:via-dark-surface/95 dark:to-dark-bg pt-16 pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-neutral-25 via-white to-neutral-25 dark:from-dark-bg dark:via-dark-surface/95 dark:to-dark-bg pt-[65px] pb-20">
       <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
 
         {/* Header — wording corrigé */}

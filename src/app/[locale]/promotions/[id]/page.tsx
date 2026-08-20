@@ -75,7 +75,7 @@ const fmtDate = (d: Date | string, opts?: Intl.DateTimeFormatOptions) =>
 
 // ── Skeleton ──────────────────────────────────────────────────────────────────
 const Skeleton = () => (
-  <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-16 pb-20 animate-pulse">
+  <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-[65px] pb-20 animate-pulse">
     <div className="container mx-auto px-4 max-w-6xl pt-6">
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="w-full lg:w-[45%] bg-neutral-200 dark:bg-neutral-800 rounded-3xl" style={{ aspectRatio: '4/5' }} />
@@ -224,7 +224,7 @@ export default function PromotionDetailPage() {
   if (loading) return <Skeleton />
 
   if (notFound || !promotion) return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg flex flex-col items-center justify-center p-6 text-center pt-16">
+    <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg flex flex-col items-center justify-center p-6 text-center pt-[65px]">
       <p className="text-5xl mb-4">🔍</p>
       <h1 className="text-xl font-bold text-neutral-900 dark:text-white mb-2 font-sans">Promotion introuvable</h1>
       <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6 font-sans">Cette offre n'existe pas ou a été supprimée.</p>
@@ -249,7 +249,7 @@ export default function PromotionDetailPage() {
   const urgency = getUrgency()
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-16 pb-28 lg:pb-10">
+    <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-[65px] pb-28 lg:pb-10">
 
       {/* ── BARRE NAV STICKY ── */}
       <div className="sticky top-16 z-40 bg-white/80 dark:bg-dark-surface/80 backdrop-blur-md border-b border-neutral-200/60 dark:border-neutral-800">

@@ -93,7 +93,7 @@ export const MainButtons: React.FC = () => {
               className={`
                 group relative
                 bg-white dark:bg-dark-surface
-                rounded-xl p-5 text-left aspect-square
+                rounded-2xl p-5 text-left aspect-square
                 transition-all duration-300
                 border border-neutral-200/60 dark:border-neutral-800
                 hover:border-primary/40
