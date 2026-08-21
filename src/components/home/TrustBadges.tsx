@@ -51,7 +51,7 @@ export const TrustBadges: React.FC = () => {
             key={index}
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}
-            className="group relative bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 sm:p-5 text-center transition-all duration-300"
+            className="group relative bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 rounded-2xl p-4 sm:p-5 text-center transition-all duration-300"
             style={{ 
               animationDelay: `${index * 0.05}s`,
               transform: hoveredIndex === index ? 'translateY(-4px)' : 'translateY(0)',

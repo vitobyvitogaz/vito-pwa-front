@@ -81,7 +81,7 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={`
-        group relative overflow-hidden bg-white dark:bg-dark-surface rounded-xl p-5 cursor-pointer
+        group relative overflow-hidden bg-white dark:bg-dark-surface rounded-2xl p-5 cursor-pointer
         transition-all duration-300 animate-slide-up border
         ${isSelected ? 'ring-2 ring-primary shadow-sm' : 'border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-600'}
       `}

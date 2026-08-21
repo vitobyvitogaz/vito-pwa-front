@@ -4,7 +4,7 @@ import React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 const cardVariants = cva(
-  'rounded-xl transition-all duration-300',
+  'rounded-2xl transition-all duration-300',
   {
     variants: {
       variant: {
