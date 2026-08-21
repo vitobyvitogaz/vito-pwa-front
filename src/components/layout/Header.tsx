@@ -160,9 +160,9 @@ export const Header: React.FC = () => {
               className="relative w-10 h-10 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:shadow-md transition-all duration-300 hover:scale-105 flex items-center justify-center"
               aria-label="Mes avantages"
             >
-              <Gift className="w-5 h-5 text-amber-500" />
+              <Gift className="w-5 h-5 text-gold" />
               {exchangesCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
                   {exchangesCount > 9 ? '9+' : exchangesCount}
                 </span>
               )}
@@ -176,7 +176,7 @@ export const Header: React.FC = () => {
             >
               <Bell className="w-5 h-5 text-neutral-600 dark:text-neutral-300" />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}
