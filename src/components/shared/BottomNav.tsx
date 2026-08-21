@@ -6,18 +6,7 @@ import Link from 'next/link'
 import { MapPin, Sparkle as Sparkles, BookOpen, Gear as Settings } from '@phosphor-icons/react'
 import { hapticFeedback } from '@/lib/utils/haptic'
 import { IOSInstallModal } from '@/components/shared/IOSInstallModal'
-
-const GasBottleIcon = ({ className, strokeWidth }: { className?: string; strokeWidth?: number }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
-    <path d="M10 2h4" />
-    <path d="M12 2v2" />
-    <path d="M8 6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2z" />
-    <path d="M8 10h8" />
-    <path d="M8 14h8" />
-    <circle cx="12" cy="17" r="1" fill="currentColor" stroke="none" />
-  </svg>
-)
+import { GasBottleIcon } from '@/components/icons/GasBottleIcon'
 
 const navItems = [
   { href: '/fr/revendeurs', label: 'Revendeurs', icon: MapPin,               featured: true  },

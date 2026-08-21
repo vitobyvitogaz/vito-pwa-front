@@ -19,7 +19,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   
   const variantClasses = {
     text: 'rounded-xl h-4',
-    circular: 'rounded-xl',
+    circular: 'rounded-full',
     rectangular: 'rounded-xl',
   }
 
@@ -38,7 +38,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
 }
 
 export const SkeletonCard: React.FC = () => (
-  <div className="bg-white dark:bg-dark-surface rounded-xl p-6 border border-neutral-200 dark:border-neutral-800">
+  <div className="bg-white dark:bg-dark-surface rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
     <Skeleton variant="circular" width={48} height={48} className="mb-4" />
     <Skeleton variant="text" className="mb-3" width="70%" />
     <Skeleton variant="text" width="90%" />

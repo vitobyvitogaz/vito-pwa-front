@@ -8,17 +8,7 @@ import {
   CalendarDots as CalendarDays, Tag, Storefront as Store, Check, Package, CaretRight as ChevronRight,
 } from '@phosphor-icons/react'
 
-// ── Icône bouteille de gaz ────────────────────────────────────────────────────
-const GasBottleIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-    <path d="M10 2h4" />
-    <path d="M12 2v2" />
-    <path d="M8 6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2z" />
-    <path d="M8 10h8" />
-    <path d="M8 14h8" />
-    <circle cx="12" cy="17" r="1" fill="currentColor" stroke="none" />
-  </svg>
-)
+import { GasBottleIcon } from '@/components/icons/GasBottleIcon'
 
 // ── Mapping slug DB → label affiché ──────────────────────────────────────────
 const CATEGORY_LABELS: Record<string, string> = {
