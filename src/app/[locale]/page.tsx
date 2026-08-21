@@ -149,7 +149,7 @@ export default function HomePage() {
           {hasContent && showGlassCard && desktopImageLoaded && (
             <div className="absolute inset-0 flex items-center justify-center animate-fade-in">
               <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="relative max-w-2xl mx-auto backdrop-blur-md bg-white/10 dark:bg-black/20 p-8 md:p-10 rounded-2xl border border-white/20 shadow-2xl">
+                <div className="relative max-w-2xl mx-auto backdrop-blur-sm bg-black/40 dark:bg-black/50 p-8 md:p-10 rounded-2xl border border-white/15 shadow-xl">
                   <button
                     onClick={() => setShowGlassCard(false)}
                     className="absolute top-4 right-4 p-2 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 transition-all duration-200 group"
@@ -158,29 +158,29 @@ export default function HomePage() {
                     <X className="w-5 h-5 text-white group-hover:rotate-90 transition-transform duration-200" />
                   </button>
                   {title && (
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold font-editorial text-white mb-4 tracking-tight animate-slide-up drop-shadow-2xl text-center">
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold font-editorial text-white mb-4 tracking-tight text-center">
                       {title}
                     </h1>
                   )}
                   {subtitle && (
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-medium text-white mb-6 tracking-tight animate-slide-up drop-shadow-lg text-center" style={{ animationDelay: '0.05s' }}>
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-medium text-white/90 mb-6 tracking-tight text-center">
                       {subtitle}
                     </h2>
                   )}
                   {description && (
-                    <p className="text-base text-white/95 leading-relaxed mb-8 animate-slide-up drop-shadow-lg text-center max-w-xl mx-auto" style={{ animationDelay: '0.1s' }}>
+                    <p className="text-base text-white/90 leading-relaxed mb-8 text-center max-w-xl mx-auto">
                       {description}
                     </p>
                   )}
                   {(title || subtitle || description) && stats.length > 0 && (
-                    <div className="w-16 h-1 bg-white mb-8 rounded-full animate-slide-up drop-shadow-lg mx-auto" style={{ animationDelay: '0.15s' }} />
+                    <div className="w-16 h-1 bg-white/80 mb-8 rounded-full mx-auto" />
                   )}
                   {stats.length > 0 && (
-                    <div className="flex flex-wrap justify-center gap-6 sm:gap-8 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                    <div className="flex flex-wrap justify-center gap-6 sm:gap-8">
                       {stats.map((stat, index) => (
                         <div key={index} className="text-center">
-                          <div className="text-xl sm:text-2xl font-semibold text-white mb-1 drop-shadow-lg">{stat.value}</div>
-                          <div className="text-xs font-medium text-white/90 drop-shadow-md">{stat.label}</div>
+                          <div className="text-xl sm:text-2xl font-semibold text-white mb-1">{stat.value}</div>
+                          <div className="text-xs font-medium text-white/80">{stat.label}</div>
                         </div>
                       ))}
                     </div>
@@ -223,7 +223,7 @@ export default function HomePage() {
 
           {hasContent && showGlassCard && mobileImageLoaded && (
             <div className="absolute inset-0 flex items-center justify-center px-4 animate-fade-in">
-              <div className="relative w-full max-w-sm backdrop-blur-md bg-white/10 dark:bg-black/20 p-6 rounded-2xl border border-white/20 shadow-2xl">
+              <div className="relative w-full max-w-sm backdrop-blur-sm bg-black/40 dark:bg-black/50 p-6 rounded-2xl border border-white/15 shadow-xl">
                 <button
                   onClick={() => setShowGlassCard(false)}
                   className="absolute top-3 right-3 p-2 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 transition-all duration-200 group"
@@ -232,29 +232,29 @@ export default function HomePage() {
                   <X className="w-4 h-4 text-white group-hover:rotate-90 transition-transform duration-200" />
                 </button>
                 {title && (
-                  <h1 className="text-3xl font-semibold font-editorial text-white mb-3 tracking-tight animate-slide-up drop-shadow-2xl text-center pr-8">
+                  <h1 className="text-3xl font-semibold font-editorial text-white mb-3 tracking-tight text-center pr-8">
                     {title}
                   </h1>
                 )}
                 {subtitle && (
-                  <h2 className="text-base font-medium text-white mb-4 tracking-tight animate-slide-up drop-shadow-lg text-center" style={{ animationDelay: '0.05s' }}>
+                  <h2 className="text-base font-medium text-white/90 mb-4 tracking-tight text-center">
                     {subtitle}
                   </h2>
                 )}
                 {description && (
-                  <p className="text-sm text-white/95 leading-relaxed mb-6 animate-slide-up drop-shadow-lg text-center" style={{ animationDelay: '0.1s' }}>
+                  <p className="text-sm text-white/90 leading-relaxed mb-6 text-center">
                     {description}
                   </p>
                 )}
                 {(title || subtitle || description) && stats.length > 0 && (
-                  <div className="w-12 h-1 bg-white mb-6 rounded-full animate-slide-up drop-shadow-lg mx-auto" style={{ animationDelay: '0.15s' }} />
+                  <div className="w-12 h-1 bg-white/80 mb-6 rounded-full mx-auto" />
                 )}
                 {stats.length > 0 && (
-                  <div className="flex flex-wrap justify-center gap-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                  <div className="flex flex-wrap justify-center gap-4">
                     {stats.map((stat, index) => (
                       <div key={index} className="text-center">
-                        <div className="text-lg font-semibold text-white mb-0.5 drop-shadow-lg">{stat.value}</div>
-                        <div className="text-xs font-medium text-white/90 drop-shadow-md">{stat.label}</div>
+                        <div className="text-lg font-semibold text-white mb-0.5">{stat.value}</div>
+                        <div className="text-xs font-medium text-white/80">{stat.label}</div>
                       </div>
                     ))}
                   </div>
@@ -280,21 +280,7 @@ export default function HomePage() {
       {!heroLoading && <TrustBadge />}
 
       {/* BOUTONS PRINCIPAUX + ACTIONS RAPIDES — dot pattern étendu */}
-      <div className="relative bg-gradient-to-b from-primary/10 to-transparent dark:from-primary/20 dark:to-transparent overflow-hidden">
-        {/* Dot pattern subtil */}
-        {/* Grain irrégulier style sable */}
-        <svg className="absolute inset-0 w-full h-full opacity-[0.06] dark:opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
-          <filter id="grain">
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.85"
-              numOctaves="4"
-              stitchTiles="stitch"
-            />
-            <feColorMatrix type="saturate" values="0" />
-          </filter>
-          <rect width="100%" height="100%" filter="url(#grain)" fill="#008B7F" />
-        </svg>
+      <div className="relative bg-gradient-to-b from-primary/10 to-transparent dark:from-primary/20 dark:to-transparent">
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-12 sm:pb-16">
           {!contentReady ? <MainButtonsSkeleton /> : <MainButtons />}
         </div>
