@@ -48,17 +48,6 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
     )
   }
 
-  const getBadgeColor = () => {
-    switch (reseller.type) {
-      case 'Quincaillerie':   return '#C8102E'
-      case 'Épicerie':        return '#008B7F'
-      case 'Station Service': return '#FF8C00'
-      case 'Libre Service':   return '#7C3AED'
-      case 'Maison du gaz':   return '#0EA5E9'
-      default:                return '#4B5563'
-    }
-  }
-
   const getTypeIcon = () => {
     switch (reseller.type) {
       case 'Quincaillerie':   return Wrench
@@ -92,10 +81,7 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
     >
       {/* Badge type */}
       <div className="absolute top-4 right-4">
-        <div
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/40 text-white"
-          style={{ backgroundColor: getBadgeColor() }}
-        >
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-white/40 text-white bg-navy">
           <TypeIcon className="w-3.5 h-3.5" strokeWidth={1.5} />
           <span>{reseller.type}</span>
         </div>
