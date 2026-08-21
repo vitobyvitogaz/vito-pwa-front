@@ -44,15 +44,15 @@ Deux familles chargées via `next/font/google` dans `src/app/layout.tsx`, décla
 La marque, c'est **teal + navy + neutres**, avec des accents chauds **parcimonieux**. C'est tout.
 
 - **Primary (teal)** : `#008B7F` (+ échelle `primary-50…900` déjà en config). Couleur de travail principale.
-- **Navy** : `#1F3864` — profondeur, certains titres, éléments de structure.
-- **Accents chauds, en accent seulement** : jaune `#F6C90E` (mises en avant, pastilles d'icônes) et rouge `#C8102E` (urgence, emphase CTA). Jamais comme code couleur systématique.
+- **Navy** : `#1F3864` — profondeur, certains titres, éléments de structure. Token Tailwind `navy` (échelle 50→900).
+- **Accents chauds, en accent seulement** : jaune `#F6C90E` (token `gold`) (mises en avant, pastilles d'icônes) et rouge `#C8102E` (token `accent`) (urgence, emphase CTA). Jamais comme code couleur systématique — toujours via token, jamais de hex en dur.
 - **Neutres** : échelle `neutral-*` pour texte, bordures, surfaces ; `neutral-25` (#FAFAF9) en fond doux.
 
 **Interdit — le tell n°1 « IA » :** le code couleur arc-en-ciel où chaque carte reçoit sa propre teinte pastel sans lien avec la marque (bleu, violet, purple, ambre, emerald, indigo…). Ces couleurs ne sont **pas** dans l'identité Vitogaz. Une grille de cartes se différencie par l'icône et le libellé, pas par une couleur de bonbon par tuile. Toute couleur doit venir d'un token Tailwind — **pas de hex en dur** dans `style={{}}` (bannir `#7C3AED`, `#FF8C00`, `#E53E3E`, etc. ; `#E53E3E` ≠ l'accent token `#C8102E`).
 
 ## Formes, icônes, profondeur
 - **Rayons** : `rounded-2xl` pour les conteneurs/cartes ; `rounded-full` pour badges, pastilles, filtres, boutons ronds. Unifier — ne pas mélanger `rounded-xl` / `rounded-2xl` / `rounded-3xl` au hasard sur des éléments de même nature.
-- **Icônes** : lucide-react, style outline, `strokeWidth={2}` de façon cohérente (pas de 1.5 par endroits).
+- **Icônes** : **`@phosphor-icons/react`**, poids **`regular`** par défaut (ne pas passer `weight` sauf besoin). Les icônes rendent via `fill` + `currentColor` → **pas de `strokeWidth`** (inopérant chez Phosphor). Les icônes renommées côté Phosphor sont importées avec un **alias vers leur ancien nom** pour un JSX stable (ex. `CaretRight as ChevronRight`, `MagnifyingGlass as Search`, `Envelope as Mail`, `CircleNotch as Loader2`). `lucide-react` a été retiré — ne plus l'utiliser. Icône métier bouteille : composant partagé unique `@/components/icons/GasBottleIcon` (SVG maison, `strokeWidth` 1.5) — ne pas redéfinir en local.
 - **Header** : hauteur unique `NAVBAR_HEIGHT = 65`. Le padding-top des pages doit correspondre exactement à la hauteur réelle du header — pas de valeurs divergentes (`h-16` / `h-[70px]` / `pt-14` / `pt-16`) qui créent un flottement de quelques px sous la barre.
 - **Ombres** : privilégier les ombres douces (`shadow-sm`, `shadow-md`, `subtle`). Réserver `shadow-2xl` aux vraies surélévations (modales), pas aux cartes courantes.
 
