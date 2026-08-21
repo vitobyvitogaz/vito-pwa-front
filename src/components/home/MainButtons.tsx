@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { MapPin, ShoppingCart, Sparkle as Sparkles, CaretRight as ChevronRight } from '@phosphor-icons/react'
+import { MapPin, ShoppingCart, Sparkle as Sparkles } from '@phosphor-icons/react'
 import { GasBottleIcon } from '@/components/icons/GasBottleIcon'
 import { useState } from 'react'
 import { hapticFeedback } from '@/lib/utils/haptic'
@@ -111,15 +111,6 @@ export const MainButtons: React.FC = () => {
                   <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 leading-snug line-clamp-2 h-8 sm:h-10">
                     {button.description}
                   </p>
-                  <div className="hidden sm:flex items-center gap-2 pt-1">
-                    <span className="text-sm font-display font-semibold text-primary">
-                      Découvrir
-                    </span>
-                    <ChevronRight
-                      className="w-4 h-4 text-primary transition-transform duration-300 group-hover:translate-x-1"
-                      strokeWidth={1.5}
-                    />
-                  </div>
                 </div>
               </div>
             </button>
