@@ -63,19 +63,8 @@ export const MainButtons: React.FC = () => {
 
   return (
     <>
-      <style>{`
-        @keyframes vito-pulse-ring {
-          0% { transform: scale(1); opacity: 0.6; }
-          70% { transform: scale(1.18); opacity: 0; }
-          100% { transform: scale(1.18); opacity: 0; }
-        }
-        .vito-pulse-ring {
-          animation: vito-pulse-ring 2.5s ease-out infinite;
-        }
-      `}</style>
-
-      <div className="grid grid-cols-2 gap-6 max-w-3xl mx-auto">
-        {buttons.map((button, index) => {
+      <div className="grid grid-cols-2 gap-6 max-w-3xl mx-auto animate-fade-in">
+        {buttons.map((button) => {
           const Icon = button.icon
 
           return (
@@ -101,15 +90,10 @@ export const MainButtons: React.FC = () => {
                 hover:shadow-lg hover:shadow-primary/10 dark:hover:shadow-primary/15
                 ${button.hover}
                 ${activeId === button.id ? 'scale-95' : ''}
-                animate-slide-up
               `}
-              style={{ animationDelay: `${index * 0.05}s` }}
             >
               <div className="flex flex-col h-full justify-between">
                 <div className="relative w-14 h-14">
-                  {button.pulse && activeId !== button.id && (
-                    <div className={`vito-pulse-ring absolute inset-0 rounded-full ${button.bg} border ${button.border}`} />
-                  )}
                   <div className={`
                     w-14 h-14 rounded-full ${button.bg} ${button.border}
                     flex items-center justify-center
