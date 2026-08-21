@@ -82,7 +82,7 @@ export const MainButtons: React.FC = () => {
               className={`
                 group relative
                 bg-white dark:bg-dark-surface
-                rounded-2xl p-5 text-left aspect-square
+                rounded-2xl p-5 text-left
                 transition-all duration-300
                 border border-neutral-200/60 dark:border-neutral-800
                 hover:border-primary/40
@@ -92,7 +92,7 @@ export const MainButtons: React.FC = () => {
                 ${activeId === button.id ? 'scale-95' : ''}
               `}
             >
-              <div className="flex flex-col h-full justify-between">
+              <div className="flex flex-col gap-4">
                 <div className="relative w-14 h-14">
                   <div className={`
                     w-14 h-14 rounded-full ${button.bg} ${button.border}
@@ -104,7 +104,7 @@ export const MainButtons: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="space-y-2 p-3 max-w-full overflow-hidden">
+                <div className="space-y-1.5 max-w-full overflow-hidden">
                   <h3 className="text-base sm:text-lg font-semibold font-display text-neutral-900 dark:text-white leading-snug tracking-tight truncate min-h-[24px] sm:min-h-[28px]">
                     {button.title}
                   </h3>

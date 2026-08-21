@@ -88,7 +88,7 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
       </div>
 
       {/* Nom */}
-      <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2 pr-28 tracking-tight leading-tight">
+      <h3 className="text-lg sm:text-xl font-semibold text-neutral-900 dark:text-white mb-2 pr-28 tracking-tight leading-tight">
         {reseller.name}
       </h3>
 
@@ -149,7 +149,7 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
       {Array.isArray(reseller.services) && reseller.services.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">
           {reseller.services.map(service => (
-            <span key={service} className="px-2.5 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl text-xs font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700">
+            <span key={service} className="px-2.5 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-full text-xs font-medium text-neutral-600 dark:text-neutral-400 border border-neutral-200 dark:border-neutral-700">
               {service}
             </span>
           ))}
@@ -157,7 +157,7 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
       )}
 
       {/* Actions */}
-      <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+      <div className="flex gap-2 pt-4 mt-1 border-t border-neutral-100 dark:border-neutral-800" onClick={(e) => e.stopPropagation()}>
 
         {/* ── Bouton Appeler : <a href="tel:"> natif — garantit l'ouverture de l'app téléphone ── */}
         {reseller.phone ? (
