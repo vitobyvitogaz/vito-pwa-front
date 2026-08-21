@@ -64,8 +64,8 @@ export const GeolocationPrompt: React.FC<GeolocationPromptProps> = ({
               {/* Avantages */}
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <CheckCircle className="w-4 h-4 text-primary" strokeWidth={1.5} />
                   </div>
                   <div>
                     <p className="font-medium text-neutral-900 dark:text-white text-sm">Distances précises</p>
@@ -74,8 +74,8 @@ export const GeolocationPrompt: React.FC<GeolocationPromptProps> = ({
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                    <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" strokeWidth={1.5} />
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <TrendingUp className="w-4 h-4 text-primary" strokeWidth={1.5} />
                   </div>
                   <div>
                     <p className="font-medium text-neutral-900 dark:text-white text-sm">Tri par proximité</p>
@@ -84,8 +84,8 @@ export const GeolocationPrompt: React.FC<GeolocationPromptProps> = ({
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
-                    <Target className="w-4 h-4 text-purple-600 dark:text-purple-400" strokeWidth={1.5} />
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Target className="w-4 h-4 text-primary" strokeWidth={1.5} />
                   </div>
                   <div>
                     <p className="font-medium text-neutral-900 dark:text-white text-sm">Carte centrée</p>
