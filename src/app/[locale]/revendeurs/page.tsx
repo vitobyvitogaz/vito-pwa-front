@@ -298,9 +298,9 @@ export default function ResellersPage() {
                         <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">GPS activé</span>
                       </div>
                     ) : isGeolocationLoading ? (
-                      <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-                        <Loader2 className="w-3 h-3 text-blue-600 dark:text-blue-400 animate-spin" strokeWidth={1.5} />
-                        <span className="text-xs font-medium text-blue-700 dark:text-blue-300">En cours...</span>
+                      <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-full border border-primary/20">
+                        <Loader2 className="w-3 h-3 text-primary animate-spin" />
+                        <span className="text-xs font-medium text-primary">En cours...</span>
                       </div>
                     ) : !hasSkippedGeolocation ? (
                       <button onClick={handleEnableGeolocation} className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 rounded-xl border border-primary/20 transition-all duration-300">
@@ -319,13 +319,13 @@ export default function ResellersPage() {
                 </div>
                 <div className="space-y-2 pt-2">
                   {isGeolocationLoading && (
-                    <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800 animate-pulse">
-                      <div className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-800 flex items-center justify-center">
-                        <Loader2 className="w-4 h-4 text-blue-600 animate-spin" strokeWidth={1.5} />
+                    <div className="flex items-center gap-3 p-3 bg-primary/5 dark:bg-primary/10 rounded-2xl border border-primary/20 animate-pulse">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                        <Loader2 className="w-4 h-4 text-primary animate-spin" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-blue-800 dark:text-blue-300">Détection de votre position</p>
-                        <p className="text-xs text-blue-700/80 dark:text-blue-400/80">Autorisez l'accès à votre position dans le navigateur</p>
+                        <p className="text-sm font-medium text-primary">Détection de votre position</p>
+                        <p className="text-xs text-primary/70 dark:text-primary/70">Autorisez l'accès à votre position dans le navigateur</p>
                       </div>
                     </div>
                   )}
@@ -542,9 +542,9 @@ export default function ResellersPage() {
                   </button>
                 )}
                 {isGeolocationLoading && (
-                  <div className="flex items-center gap-1.5 px-3 h-11 rounded-full bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-                    <Loader2 className="w-3.5 h-3.5 text-blue-600 animate-spin" strokeWidth={1.5} />
-                    <span className="text-xs font-medium text-blue-700 dark:text-blue-300">Localisation...</span>
+                  <div className="flex items-center gap-1.5 px-3 h-11 rounded-full bg-primary/10 border border-primary/20">
+                    <Loader2 className="w-3.5 h-3.5 text-primary animate-spin" />
+                    <span className="text-xs font-medium text-primary">Localisation...</span>
                   </div>
                 )}
 
