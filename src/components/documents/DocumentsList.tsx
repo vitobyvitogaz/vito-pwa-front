@@ -5,7 +5,7 @@ import { DocumentCard } from '@/components/documents/DocumentCard'
 import { PDFViewer } from '@/components/documents/PDFViewer'
 import { FileText, CircleNotch as Loader2 } from '@phosphor-icons/react'
 import type { Document } from '@/types/document'
-import { fetchDocuments, isPdfCached } from '@/lib/documents'
+import { canPrefetch, fetchDocuments, fetchPdfBlob, isPdfCached } from '@/lib/documents'
 
 const categories = [
   { id: 'video', label: 'Vidéos' },
@@ -54,22 +54,39 @@ export const DocumentsList: React.FC = () => {
   }, [loadDocuments])
 
   // Le badge « Disponible hors ligne » n'est affiché que pour les PDF réellement présents dans un
-  // cache du navigateur. Aujourd'hui aucun service worker n'en met en cache : le badge reste masqué
-  // plutôt que de promettre une lecture hors ligne qui ne fonctionnerait pas.
+  // cache du navigateur. Les documents marqués « hors ligne » par l'administration sont préchargés,
+  // seulement sur Wi-Fi et hors économie de données, pour ne pas consommer le forfait mobile.
   useEffect(() => {
     if (documents.length === 0) return
     let cancelled = false
 
-    const detectCached = async () => {
+    const pdfs = documents.filter((doc) => doc.category !== 'video' && doc.is_active && doc.file_url)
+
+    const run = async () => {
       const cached = new Set<string>()
-      for (const doc of documents) {
-        if (doc.category === 'video' || !doc.is_active || !doc.file_url) continue
+      for (const doc of pdfs) {
         if (await isPdfCached(doc.file_url)) cached.add(doc.id)
       }
-      if (!cancelled) setCachedIds(cached)
+      if (cancelled) return
+      setCachedIds(new Set(cached))
+
+      if (!canPrefetch()) return
+      for (const doc of pdfs) {
+        if (cancelled) return
+        if (!doc.is_offline || cached.has(doc.id)) continue
+        try {
+          await fetchPdfBlob(doc.file_url) // passe par le service worker, qui le met en cache
+          if (await isPdfCached(doc.file_url)) {
+            cached.add(doc.id)
+            if (!cancelled) setCachedIds(new Set(cached))
+          }
+        } catch {
+          // Échec silencieux : le document sera mis en cache à la première ouverture
+        }
+      }
     }
 
-    void detectCached()
+    void run()
     return () => {
       cancelled = true
     }

@@ -5,7 +5,6 @@ import Image from 'next/image'
 import { MainButtons } from '@/components/home/MainButtons'
 import { QuickActions } from '@/components/home/QuickActions'
 import { InstallPrompt } from '@/components/layout/InstallPrompt'
-import { OfflineBanner } from '@/components/ui/OfflineBanner'
 import { PromotionPopup } from '@/components/promotions/PromotionPopup'
 import { usePromotionPopup } from '@/lib/hooks/usePromotionPopup'
 import { useHeroContent } from '@/lib/hooks/useAppSettings'
@@ -122,7 +121,6 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-neutral-25 dark:bg-dark-bg pt-[65px] pb-20 md:pb-0">
-      <OfflineBanner />
       <InstallPrompt />
 
       {showPopup && selectedPromotion && (

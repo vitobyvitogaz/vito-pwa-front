@@ -43,7 +43,7 @@ export async function fetchPdfBlob(url: string): Promise<Blob> {
 
 /**
  * Le PDF est-il dans un cache du navigateur (donc lisible hors ligne) ?
- * Aujourd'hui aucun service worker ne met les PDF en cache : la réponse est « non ».
+ * Le service worker met en cache les PDF ouverts ou préchargés (cache « vito-pdf-… »).
  */
 export async function isPdfCached(url: string): Promise<boolean> {
   if (typeof caches === 'undefined') return false
@@ -52,6 +52,27 @@ export async function isPdfCached(url: string): Promise<boolean> {
   } catch {
     return false
   }
+}
+
+interface NetworkInformationLike {
+  saveData?: boolean
+  type?: string
+  effectiveType?: string
+}
+
+/**
+ * Précharger des PDF sans consommer le forfait mobile : uniquement si le service worker
+ * contrôle la page (sinon rien ne serait mis en cache), hors mode « économie de données »
+ * et sur Wi-Fi / Ethernet (ou connexion 4G quand le navigateur ne distingue pas le type
+ * de réseau, par exemple sur ordinateur).
+ */
+export function canPrefetch(): boolean {
+  if (typeof navigator === 'undefined' || !navigator.onLine) return false
+  if (!('serviceWorker' in navigator) || !navigator.serviceWorker.controller) return false
+  const connection = (navigator as Navigator & { connection?: NetworkInformationLike }).connection
+  if (!connection || connection.saveData) return false
+  if (connection.type) return connection.type === 'wifi' || connection.type === 'ethernet'
+  return connection.effectiveType === '4g'
 }
 
 export async function downloadPdf(doc: Pick<Document, 'id' | 'title' | 'file_url'>): Promise<void> {

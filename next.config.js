@@ -153,6 +153,13 @@ const nextConfig = {
   async headers() {
     return [
       {
+        // Le service worker doit toujours être revérifié par le navigateur
+        source: '/sw.js',
+        headers: [
+          { key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' },
+        ],
+      },
+      {
         source: '/(.*)',
         headers: [
           { key: 'X-DNS-Prefetch-Control', value: 'on' },
