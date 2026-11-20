@@ -19,6 +19,8 @@ interface Review {
 
 interface DeliveryCompanyCardProps {
   company: DeliveryCompany
+  /** Réserve la place du bouton « Visiter le site web » quand une autre carte de la liste en a un : les pieds de carte restent alignés. */
+  reserveWebsiteSlot?: boolean
 }
 
 const recordContactAttempt = async (
@@ -52,7 +54,7 @@ const formatReviewDate = (dateStr: string): string => {
   } catch { return '' }
 }
 
-export const DeliveryCompanyCard: React.FC<DeliveryCompanyCardProps> = ({ company }) => {
+export const DeliveryCompanyCard: React.FC<DeliveryCompanyCardProps> = ({ company, reserveWebsiteSlot = false }) => {
   const [descExpanded, setDescExpanded]     = useState(false)
   const [showReviews, setShowReviews]       = useState(false)
   const [reviews, setReviews]               = useState<Review[]>([])
@@ -104,7 +106,7 @@ export const DeliveryCompanyCard: React.FC<DeliveryCompanyCardProps> = ({ compan
     <div className="flex flex-col bg-white dark:bg-dark-surface rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 hover:border-primary/50 hover:shadow-md transition-all duration-300 h-full">
 
       {/* Header */}
-      <div className="px-5 pt-5 pb-4 border-b border-neutral-100 dark:border-neutral-800">
+      <div className="min-h-[7rem] px-5 pt-5 pb-4 border-b border-neutral-100 dark:border-neutral-800">
         <div className="flex items-start gap-4">
           <div className="w-16 h-16 rounded-full overflow-hidden border border-neutral-200 dark:border-neutral-700 bg-white flex-shrink-0">
             {company.logo_url ? (
@@ -149,7 +151,7 @@ export const DeliveryCompanyCard: React.FC<DeliveryCompanyCardProps> = ({ compan
       <div className="flex-1 flex flex-col p-5 gap-4">
 
         {/* Description */}
-        <div className="min-h-[56px]">
+        <div className="min-h-[71px]">
           <p className={`text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed ${descExpanded ? '' : 'line-clamp-2'}`}>
             {company.description || 'Société de livraison de gaz à Madagascar.'}
           </p>
@@ -161,7 +163,7 @@ export const DeliveryCompanyCard: React.FC<DeliveryCompanyCardProps> = ({ compan
         </div>
 
         {/* Délai + Couverture */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3 min-h-[125px]">
           <div className="bg-neutral-50 dark:bg-neutral-800/50 rounded-xl p-3">
             <div className="flex items-center gap-1.5 mb-2">
               <Clock className="w-3.5 h-3.5 text-blue-500" strokeWidth={1.5} />
@@ -275,6 +277,7 @@ export const DeliveryCompanyCard: React.FC<DeliveryCompanyCardProps> = ({ compan
 
       {/* Footer */}
       <div className="px-5 pb-5 pt-4 border-t border-neutral-100 dark:border-neutral-800 space-y-3">
+        {!company.website && reserveWebsiteSlot && <div aria-hidden="true" className="h-[43px]" />}
         {company.website && (
           <a href={company.website} target="_blank" rel="noopener noreferrer"
             className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-full border border-primary/30 bg-primary/5 hover:bg-primary/10 dark:bg-primary/10 dark:hover:bg-primary/20 text-primary transition-all duration-200 group">

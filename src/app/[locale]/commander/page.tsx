@@ -247,7 +247,7 @@ export default function DeliveryPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredCompanies.map((company, index) => (
                 <div key={company.id} className="animate-slide-up" style={{ animationDelay: `${index * 0.05}s` }}>
-                  <DeliveryCompanyCard company={company} />
+                  <DeliveryCompanyCard company={company} reserveWebsiteSlot={filteredCompanies.some((c) => Boolean(c.website))} />
                 </div>
               ))}
             </div>
