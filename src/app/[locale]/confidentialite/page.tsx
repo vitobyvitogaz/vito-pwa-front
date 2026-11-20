@@ -103,10 +103,6 @@ const sections: Section[] = [
         text: "fonds de carte, nom du lieu et calcul d'itinéraire à partir de coordonnées GPS.",
       },
       {
-        label: 'ip-api.com',
-        text: "estimation de votre ville à partir de votre adresse IP, uniquement si vous n'avez pas partagé votre position (affichage des promotions de votre zone).",
-      },
-      {
         label: 'Google Maps',
         text: "uniquement si vous ouvrez un itinéraire : Google reçoit alors la destination et votre position.",
       },
