@@ -113,7 +113,9 @@ export const DocumentsList: React.FC = () => {
         <div
           role="tablist"
           aria-label="Catégories de documents"
-          className="flex gap-2 mb-8 sm:mb-12 pb-2 justify-center flex-wrap"
+          // Mobile : onglets répartis sur une seule ligne ; à partir de sm : centrés
+          className="grid sm:flex gap-1 sm:gap-2 mb-8 sm:mb-12 pb-2 sm:justify-center"
+          style={{ gridTemplateColumns: `repeat(${visibleCategories.length}, minmax(0, 1fr))` }}
         >
           {visibleCategories.map((category, index) => {
             const isActive = activeCategory === category.id
@@ -132,14 +134,14 @@ export const DocumentsList: React.FC = () => {
                 onClick={() => setSelectedCategory(category.id)}
                 onKeyDown={(e) => handleTabKeyDown(e, index)}
                 className={`
-                  relative px-6 py-3 rounded-xl font-medium text-sm transition-all duration-300
+                  relative px-2 sm:px-6 py-3 rounded-full font-medium text-sm transition-colors duration-200
                   after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2
-                  after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300
+                  after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-200
                   hover:after:w-full font-sans
                   ${
                     isActive
-                      ? 'text-primary after:w-full'
-                      : 'text-neutral-600 dark:text-neutral-400 hover:text-primary hover:bg-neutral-50 dark:hover:bg-neutral-900'
+                      ? 'text-primary-600 dark:text-primary-300 after:w-full'
+                      : 'text-neutral-600 dark:text-neutral-400 hover:text-primary-600 hover:bg-neutral-50 dark:hover:bg-neutral-900'
                   }
                 `}
               >
@@ -169,7 +171,7 @@ export const DocumentsList: React.FC = () => {
       {error && !loading && (
         <div role="alert" className="text-center py-16">
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-            <FileText className="w-8 h-8 text-red-500" strokeWidth={1} />
+            <FileText className="w-8 h-8 text-red-500" />
           </div>
           <p className="text-red-500 dark:text-red-400 text-lg font-sans mb-6">{error}</p>
           <button
@@ -189,12 +191,11 @@ export const DocumentsList: React.FC = () => {
           aria-labelledby={activeCategory ? `tab-${activeCategory}` : undefined}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-            {filteredDocs.map((doc, index) => (
+            {filteredDocs.map((doc) => (
               <DocumentCard
                 key={doc.id}
                 document={doc}
                 onClick={() => setSelectedDoc(doc)}
-                delay={index * 0.05}
                 isCached={cachedIds.has(doc.id)}
               />
             ))}
@@ -203,7 +204,7 @@ export const DocumentsList: React.FC = () => {
           {filteredDocs.length === 0 && (
             <div className="text-center py-16">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-neutral-100 dark:bg-neutral-900 flex items-center justify-center">
-                <FileText className="w-8 h-8 text-neutral-400" strokeWidth={1} />
+                <FileText className="w-8 h-8 text-neutral-400" />
               </div>
               <p className="text-neutral-500 dark:text-neutral-400 text-lg font-sans">
                 Aucun document disponible dans cette catégorie
