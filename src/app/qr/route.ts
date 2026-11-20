@@ -8,13 +8,30 @@ export async function GET(request: NextRequest) {
               request.headers.get('x-real-ip') ||
               'unknown';
 
+  // Position approximative du visiteur, fournie par Vercel (en-têtes x-vercel-ip-*, présents
+  // seulement une fois déployé). Elle est transmise au backend, qui n'a ainsi plus besoin
+  // d'envoyer l'adresse IP du visiteur à un service de géolocalisation tiers.
+  const decode = (value: string | null): string | undefined => {
+    if (!value) return undefined
+    try {
+      return decodeURIComponent(value)
+    } catch {
+      return value
+    }
+  }
+  const geo = {
+    countryCode: request.headers.get('x-vercel-ip-country') || undefined,
+    region: request.headers.get('x-vercel-ip-country-region') || undefined,
+    city: decode(request.headers.get('x-vercel-ip-city')),
+  }
+
   try {
     await fetch(`${apiUrl}/qr/scan`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ userAgent, ip }),
+      body: JSON.stringify({ userAgent, ip, geo }),
     });
   } catch (error) {
     console.error('❌ QR scan error:', error);

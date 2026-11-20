@@ -91,7 +91,10 @@ const sections: Section[] = [
       "Vos données sont accessibles à l'équipe Vitogaz habilitée (accès protégé par identifiant) et aux prestataires techniques ci-dessous, qui les traitent pour fournir leur service :",
     ],
     items: [
-      { label: 'Vercel', text: "hébergement de l'application." },
+      {
+        label: 'Vercel',
+        text: "hébergement de l'application ; estimation du pays, de la région et de la ville à partir de votre adresse IP lors de l'ouverture d'un QR code (statistiques).",
+      },
       { label: 'Render', text: "serveurs de l'application, situés à Francfort (Allemagne)." },
       { label: 'Supabase', text: 'base de données et stockage des fichiers.' },
       { label: 'Resend', text: "envoi des e-mails des formulaires de contact." },
@@ -101,7 +104,7 @@ const sections: Section[] = [
       },
       {
         label: 'ip-api.com',
-        text: "estimation du pays et de la ville à partir de l'adresse IP (statistiques des QR codes, zone des promotions).",
+        text: "estimation de votre ville à partir de votre adresse IP, uniquement si vous n'avez pas partagé votre position (affichage des promotions de votre zone).",
       },
       {
         label: 'Google Maps',
