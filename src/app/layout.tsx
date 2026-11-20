@@ -5,6 +5,7 @@ import { Footer } from '@/components/layout/Footer'
 import { Breadcrumb } from '@/components/shared/Breadcrumb'
 import { ScrollToTop } from '@/components/shared/ScrollToTop'
 import { ServiceWorkerRegister } from '@/components/shared/ServiceWorkerRegister'
+import { OfflineNavigation } from '@/components/shared/OfflineNavigation'
 import { OfflineBanner } from '@/components/ui/OfflineBanner'
 import '@/styles/globals.css'
 import 'leaflet/dist/leaflet.css'
@@ -70,6 +71,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <ScrollToTop />
         <OfflineBanner />
         <ServiceWorkerRegister />
+        <OfflineNavigation />
       </body>
     </html>
   )
