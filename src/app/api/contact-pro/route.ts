@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { EMAIL_PATTERN, escapeHtml, singleLine } from '@/lib/utils/escapeHtml'
+import { parseRecipients } from '@/lib/utils/recipients'
 
 // Expéditeur et destinataire configurables (variables Vercel). Sans CONTACT_FROM_EMAIL, on garde
 // l'adresse de test de Resend, qui n'envoie qu'à l'e-mail du compte Resend.
 const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || 'onboarding@resend.dev'
-const TO_EMAIL = process.env.CONTACT_TO_EMAIL || 'vitobyvitogaz@gmail.com'
+// CONTACT_TO_EMAIL accepte plusieurs adresses séparées par des virgules
+const TO_EMAILS = parseRecipients(process.env.CONTACT_TO_EMAIL, ['vitobyvitogaz@gmail.com'])
 
 export async function POST(request: NextRequest) {
   const resend = new Resend(process.env.RESEND_API_KEY)
@@ -28,7 +30,7 @@ export async function POST(request: NextRequest) {
 
     const { error: sendError } = await resend.emails.send({
       from: `Contact Pro Vitogaz Madagascar <${FROM_EMAIL}>`,
-      to: TO_EMAIL,
+      to: TO_EMAILS,
       replyTo: email,
       subject: `[VITO] ${typeLabel} — ${singleLine(fullName)}`,
       html: `
