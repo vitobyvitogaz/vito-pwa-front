@@ -41,7 +41,7 @@ export const IOSInstallModal: React.FC<IOSInstallModalProps> = ({ onClose }) => 
         {/* Instructions */}
         <div className="px-6 py-5 space-y-4">
           <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300 font-sans mb-5">
-            Suivez ces 3 étapes dans Safari pour installer l'application :
+            Suivez ces 3 étapes dans Safari pour installer l&apos;application :
           </p>
 
           {/* Étape 1 */}
@@ -77,7 +77,7 @@ export const IOSInstallModal: React.FC<IOSInstallModalProps> = ({ onClose }) => 
                 Faites défiler et appuyez sur
               </p>
               <p className="text-sm font-bold text-neutral-900 dark:text-white font-sans">
-                "Sur l'écran d'accueil"
+                &quot;Sur l&apos;écran d&apos;accueil&quot;
               </p>
             </div>
             <div className="w-9 h-9 rounded-xl bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center flex-shrink-0">
@@ -97,10 +97,10 @@ export const IOSInstallModal: React.FC<IOSInstallModalProps> = ({ onClose }) => 
             </div>
             <div className="flex-1 pt-1">
               <p className="text-sm font-medium text-neutral-900 dark:text-white font-sans">
-                Appuyez sur <span className="font-bold">"Ajouter"</span> en haut à droite
+                Appuyez sur <span className="font-bold">&quot;Ajouter&quot;</span> en haut à droite
               </p>
               <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans mt-0.5">
-                L'application apparaîtra sur votre écran d'accueil
+                L&apos;application apparaîtra sur votre écran d&apos;accueil
               </p>
             </div>
           </div>

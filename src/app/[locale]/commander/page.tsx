@@ -195,7 +195,7 @@ export default function DeliveryPage() {
               >
                 <option value="rating">Meilleures notes</option>
                 <option value="deliveryTime">Plus rapide</option>
-                <option value="reviewCount">Plus d'avis</option>
+                <option value="reviewCount">Plus d&apos;avis</option>
                 <option value="name">Ordre alphabétique</option>
               </select>
             </div>
@@ -309,7 +309,7 @@ export default function DeliveryPage() {
                 Recevez votre gaz
               </h3>
               <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed font-sans">
-                La société vous livre à domicile et peut même installer l'équipement si besoin.
+                La société vous livre à domicile et peut même installer l&apos;équipement si besoin.
               </p>
             </div>
           </div>

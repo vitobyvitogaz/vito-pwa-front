@@ -140,7 +140,7 @@ export const DeliveryCompanyCard: React.FC<DeliveryCompanyCardProps> = ({ compan
                   </span>
                 </div>
               ) : (
-                <span className="text-xs text-neutral-400 dark:text-neutral-500 font-sans">Pas encore d'avis</span>
+                <span className="text-xs text-neutral-400 dark:text-neutral-500 font-sans">Pas encore d&apos;avis</span>
               )}
             </div>
           </div>
@@ -256,7 +256,7 @@ export const DeliveryCompanyCard: React.FC<DeliveryCompanyCardProps> = ({ compan
                               ))}
                             </div>
                             {review.comment && (
-                              <p className="text-xs text-neutral-600 dark:text-neutral-400 italic leading-relaxed">"{review.comment}"</p>
+                              <p className="text-xs text-neutral-600 dark:text-neutral-400 italic leading-relaxed">&quot;{review.comment}&quot;</p>
                             )}
                           </div>
                         </div>

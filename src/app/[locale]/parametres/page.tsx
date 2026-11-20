@@ -485,7 +485,7 @@ export default function ParametresPage() {
               {pushSubscribed && (
                 <div className="bg-neutral-50 dark:bg-neutral-900/40 border-t border-neutral-100 dark:border-neutral-800">
                   <p className="text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-widest px-4 pt-3 pb-1">
-                    Types d'alertes
+                    Types d&apos;alertes
                   </p>
                   {notifTypes.map((t) => (
                     <div key={t.key} className="pl-4 border-l-2 border-primary/20 ml-4 mr-2 rounded-l">
@@ -546,6 +546,11 @@ export default function ParametresPage() {
             icon={<Shield className="w-4 h-4 text-neutral-500" strokeWidth={1.5} />}
             label="Conditions d'utilisation"
             onClick={() => router.push('/fr/conditions')}
+          />
+          <ChevronRow
+            icon={<Shield className="w-4 h-4 text-neutral-500" strokeWidth={1.5} />}
+            label="Politique de confidentialité"
+            onClick={() => router.push('/fr/confidentialite')}
           />
         </Section>
 

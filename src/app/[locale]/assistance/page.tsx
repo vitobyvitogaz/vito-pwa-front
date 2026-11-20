@@ -129,7 +129,7 @@ export default function AssistancePage() {
             className="flex items-center gap-2 text-white/70 hover:text-white transition-colors mb-6"
           >
             <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
-            <span className="text-sm font-medium">Retour à l'accueil</span>
+            <span className="text-sm font-medium">Retour à l&apos;accueil</span>
           </button>
 
           <p className="text-3xl font-bold text-white tracking-tight mb-1">

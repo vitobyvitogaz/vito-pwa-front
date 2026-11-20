@@ -325,7 +325,7 @@ export default function ResellersPage() {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-primary">Détection de votre position</p>
-                        <p className="text-xs text-primary/70 dark:text-primary/70">Autorisez l'accès à votre position dans le navigateur</p>
+                        <p className="text-xs text-primary/70 dark:text-primary/70">Autorisez l&apos;accès à votre position dans le navigateur</p>
                       </div>
                     </div>
                   )}
@@ -527,7 +527,7 @@ export default function ResellersPage() {
                   <span className="text-xs text-emerald-600 dark:text-emerald-400">• triés par distance</span>
                 )}
                 {searchQuery && (
-                  <span className="text-xs text-primary font-medium">• "{searchQuery}"</span>
+                  <span className="text-xs text-primary font-medium">• &quot;{searchQuery}&quot;</span>
                 )}
               </div>
 

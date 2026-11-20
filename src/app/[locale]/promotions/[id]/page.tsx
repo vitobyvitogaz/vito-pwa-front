@@ -217,7 +217,7 @@ export default function PromotionDetailPage() {
     <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg flex flex-col items-center justify-center p-6 text-center pt-[65px]">
       <p className="text-5xl mb-4">🔍</p>
       <h1 className="text-xl font-bold text-neutral-900 dark:text-white mb-2 font-sans">Promotion introuvable</h1>
-      <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6 font-sans">Cette offre n'existe pas ou a été supprimée.</p>
+      <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6 font-sans">Cette offre n&apos;existe pas ou a été supprimée.</p>
       <button onClick={() => router.push(`/${locale}/promotions`)}
         className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-full font-semibold text-sm">
         <ArrowLeft className="w-4 h-4" />Voir toutes les offres
@@ -509,7 +509,7 @@ export default function PromotionDetailPage() {
                 {daysLeft > 0 ? `${daysLeft}j restants` : "Expire aujourd'hui"}
               </p>
               <p className="text-[10px] text-neutral-400 font-sans">
-                jusqu'au {fmtDate(promotion.valid_until, { day: 'numeric', month: 'short' })}
+                jusqu&apos;au {fmtDate(promotion.valid_until, { day: 'numeric', month: 'short' })}
               </p>
             </div>
             <button

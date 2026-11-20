@@ -45,7 +45,7 @@ export const BusinessHoursCompact: React.FC<BusinessHoursCompactProps> = ({
         <div className="flex items-center gap-2">
           <Clock className="w-4 h-4 text-neutral-500 dark:text-neutral-400" strokeWidth={1.5} />
           <span className="text-sm text-neutral-600 dark:text-neutral-400">
-            Fermé aujourd'hui
+            Fermé aujourd&apos;hui
           </span>
         </div>
       )
@@ -56,7 +56,7 @@ export const BusinessHoursCompact: React.FC<BusinessHoursCompactProps> = ({
         <Clock className="w-4 h-4 text-primary" strokeWidth={1.5} />
         <div className="flex flex-col gap-0.5">
           <span className="text-sm font-medium text-neutral-900 dark:text-white">
-            Aujourd'hui : {formatTime(todaySchedule.open!)} - {formatTime(todaySchedule.close!)}
+            Aujourd&apos;hui : {formatTime(todaySchedule.open!)} - {formatTime(todaySchedule.close!)}
           </span>
           {todaySchedule.breaks && todaySchedule.breaks.length > 0 && (
             // ── text-xs → text-sm : info de pause lisible sur petit écran ──

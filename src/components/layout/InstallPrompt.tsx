@@ -46,7 +46,7 @@ export const InstallPrompt: React.FC = () => {
               Installer VitoByVitogaz
             </h3>
             <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-3">
-              Accès rapide depuis votre écran d'accueil
+              Accès rapide depuis votre écran d&apos;accueil
             </p>
             <div className="flex gap-2">
               <button

@@ -101,7 +101,7 @@ export const BusinessHours: React.FC<BusinessHoursProps> = ({ hours, currentDay,
           <div className="w-8 h-8 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
             <Clock className="w-4 h-4 text-primary" strokeWidth={2} />
           </div>
-          <h4 className="font-semibold text-neutral-900 dark:text-white">Horaires d'ouverture</h4>
+          <h4 className="font-semibold text-neutral-900 dark:text-white">Horaires d&apos;ouverture</h4>
         </div>
         
         {todaySchedule && (

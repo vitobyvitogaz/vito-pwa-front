@@ -175,7 +175,7 @@ export default function RatingPage() {
             Votre avis compte
           </h1>
           <p className="text-neutral-600 dark:text-neutral-400 font-sans text-sm leading-relaxed">
-            Comment s'est passée votre expérience avec cette société de livraison ?
+            Comment s&apos;est passée votre expérience avec cette société de livraison ?
           </p>
         </div>
 
