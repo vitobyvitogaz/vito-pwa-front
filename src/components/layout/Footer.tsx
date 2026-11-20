@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { PhoneIcon, EnvelopeIcon, MapPinIcon } from '@heroicons/react/24/solid'
 
 export const Footer: React.FC = () => {
@@ -104,10 +105,10 @@ export const Footer: React.FC = () => {
           <div>
             <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4 font-display">Liens rapides</h3>
             <ul className="space-y-2">
-              <li><a href="/fr/revendeurs" className="text-neutral-600 dark:text-neutral-400 hover:text-primary transition-colors">Nos revendeurs</a></li>
-              <li><a href="/fr/commander" className="text-neutral-600 dark:text-neutral-400 hover:text-primary transition-colors">Commander</a></li>
-              <li><a href="/fr/promotions" className="text-neutral-600 dark:text-neutral-400 hover:text-primary transition-colors">Promotions</a></li>
-              <li><a href="/fr/documents" className="text-neutral-600 dark:text-neutral-400 hover:text-primary transition-colors">Documents PAMF</a></li>
+              <li><Link href="/fr/revendeurs" prefetch={false} className="text-neutral-600 dark:text-neutral-400 hover:text-primary transition-colors">Nos revendeurs</Link></li>
+              <li><Link href="/fr/commander" prefetch={false} className="text-neutral-600 dark:text-neutral-400 hover:text-primary transition-colors">Commander</Link></li>
+              <li><Link href="/fr/promotions" prefetch={false} className="text-neutral-600 dark:text-neutral-400 hover:text-primary transition-colors">Promotions</Link></li>
+              <li><Link href="/fr/documents" prefetch={false} className="text-neutral-600 dark:text-neutral-400 hover:text-primary transition-colors">Documents PAMF</Link></li>
             </ul>
           </div>
 
