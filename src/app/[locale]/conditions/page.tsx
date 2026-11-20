@@ -61,7 +61,7 @@ Ces données sont collectées dans le but de :
 — Réaliser des analyses statistiques anonymisées ;
 — Prévenir la fraude et les abus.
 
-Conformément aux lois malgaches applicables en matière de protection des données personnelles, l'utilisateur dispose d'un droit d'accès, de rectification et de suppression de ses données en contactant Vitogaz Madagascar à l'adresse indiquée à l'article 10.`,
+Conformément aux lois malgaches applicables en matière de protection des données personnelles, l'utilisateur dispose d'un droit d'accès, de rectification et de suppression de ses données en contactant Vitogaz Madagascar à l'adresse indiquée à l'article 11.`,
   },
   {
     title: '6. Géolocalisation',
