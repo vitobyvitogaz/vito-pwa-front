@@ -104,7 +104,7 @@ export default function ContactProPage() {
             className="inline-flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-primary dark:hover:text-primary transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
-            Retour à l'accueil
+            Retour à l&apos;accueil
           </Link>
           
           <div className="flex items-center gap-4 mb-2">
@@ -297,7 +297,7 @@ export default function ContactProPage() {
             <div className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
               <div>
-                <p className="text-sm font-semibold text-red-800 dark:text-red-300">Erreur d'envoi</p>
+                <p className="text-sm font-semibold text-red-800 dark:text-red-300">Erreur d&apos;envoi</p>
                 <p className="text-sm text-red-700 dark:text-red-400 mt-0.5">Veuillez réessayer ou nous contacter directement</p>
               </div>
             </div>

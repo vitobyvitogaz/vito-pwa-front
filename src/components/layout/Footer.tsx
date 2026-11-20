@@ -142,7 +142,7 @@ export const Footer: React.FC = () => {
               © {new Date().getFullYear()} Vitogaz Madagascar. Tous droits réservés.
             </p>
             <div className="flex gap-4 text-sm">
-              <a href="#" className="text-neutral-500 dark:text-neutral-400 hover:text-primary transition-colors">Conditions d'utilisation</a>
+              <a href="#" className="text-neutral-500 dark:text-neutral-400 hover:text-primary transition-colors">Conditions d&apos;utilisation</a>
               <a href="#" className="text-neutral-500 dark:text-neutral-400 hover:text-primary transition-colors">Confidentialité</a>
             </div>
           </div>

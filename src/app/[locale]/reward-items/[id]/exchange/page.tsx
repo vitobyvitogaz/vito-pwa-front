@@ -208,7 +208,7 @@ export default function ExchangePage() {
           </div>
           <h2 className="text-xl font-bold text-gray-900 mb-2">Demande envoyée !</h2>
           <p className="text-sm text-gray-600 mb-6">
-            Votre demande d'échange a été enregistrée. Un administrateur va la valider sous peu.
+            Votre demande d&apos;échange a été enregistrée. Un administrateur va la valider sous peu.
           </p>
           <p className="text-xs text-gray-400">Redirection en cours...</p>
         </div>
@@ -231,7 +231,7 @@ export default function ExchangePage() {
               <ArrowLeft className="w-5 h-5 text-gray-700" />
             </button>
             <div>
-              <h1 className="text-lg font-bold text-gray-900">Confirmer l'échange</h1>
+              <h1 className="text-lg font-bold text-gray-900">Confirmer l&apos;échange</h1>
               <p className="text-xs text-gray-500">Vérifiez les détails</p>
             </div>
           </div>

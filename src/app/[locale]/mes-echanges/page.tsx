@@ -380,7 +380,7 @@ export default function MesEchangesPage() {
               className="w-full py-3 rounded-full text-white font-medium"
               style={{ backgroundColor: VITOGAZ_GREEN }}
             >
-              J'ai compris
+              J&apos;ai compris
             </button>
           </div>
         </div>

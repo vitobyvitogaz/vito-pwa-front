@@ -154,7 +154,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
             {urgency.label}
           </div>
           <span className="text-[10px] text-neutral-400 dark:text-neutral-500 font-sans truncate">
-            jusqu'au {fmtDate(promotion.valid_until)}
+            jusqu&apos;au {fmtDate(promotion.valid_until)}
           </span>
         </div>
 
@@ -181,7 +181,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
           className="mt-auto w-full flex items-center justify-center gap-2 py-2.5 bg-primary hover:bg-primary/90 active:scale-[0.98] text-white rounded-full font-semibold text-sm transition-all duration-200 shadow-sm shadow-primary/20 group/btn"
           onClick={e => { e.stopPropagation(); handleClick() }}
         >
-          Voir l'offre
+          Voir l&apos;offre
           <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-0.5 transition-transform" strokeWidth={2} />
         </button>
       </div>

@@ -97,7 +97,7 @@ export const ResellersList: React.FC<ResellersListProps> = ({
               </p>
               <div className="flex items-center justify-center gap-1.5 text-xs text-primary font-sans">
                 <MapPin className="w-3.5 h-3.5" strokeWidth={1.5} />
-                Utilisez le filtre "Toutes les zones" pour choisir votre ville
+                Utilisez le filtre &quot;Toutes les zones&quot; pour choisir votre ville
               </div>
             </div>
           )}

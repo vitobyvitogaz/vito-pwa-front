@@ -143,7 +143,7 @@ export default function ConditionsPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-neutral-900 dark:text-white font-display leading-tight">
-              Conditions d'utilisation
+              Conditions d&apos;utilisation
             </h1>
             <p className="text-sm text-neutral-500 dark:text-neutral-400 font-sans mt-1">
               Vito by Vitogaz · Dernière mise à jour : {lastUpdated}
@@ -154,7 +154,7 @@ export default function ConditionsPage() {
         {/* ── Encart intro ── */}
         <div className="rounded-2xl p-4 mb-8 border" style={{ backgroundColor: `${VITOGAZ_GREEN}08`, borderColor: `${VITOGAZ_GREEN}25` }}>
           <p className="text-sm font-sans leading-relaxed" style={{ color: VITOGAZ_GREEN }}>
-            En utilisant l'application Vito by Vitogaz, vous acceptez les présentes conditions d'utilisation.
+            En utilisant l&apos;application Vito by Vitogaz, vous acceptez les présentes conditions d&apos;utilisation.
             Veuillez les lire attentivement avant toute utilisation des services.
           </p>
         </div>

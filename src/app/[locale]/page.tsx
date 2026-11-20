@@ -66,7 +66,7 @@ const TrustBadge = () => (
   <div className="flex items-center justify-center gap-3 sm:gap-6 flex-wrap px-4 py-3 bg-primary/5 dark:bg-primary/10 border-y border-primary/10 dark:border-primary/20">
     <div className="flex items-center gap-2">
       <Award className="w-4 h-4 text-primary flex-shrink-0" strokeWidth={1.5} />
-      <span className="text-sm font-semibold text-primary font-sans">25 ans d'expérience</span>
+      <span className="text-sm font-semibold text-primary font-sans">25 ans d&apos;expérience</span>
     </div>
     <div className="w-px h-4 bg-primary/20 hidden sm:block" />
     <div className="flex items-center gap-2">
