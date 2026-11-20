@@ -36,8 +36,8 @@ const AssistanceModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     {
       icon: MapPin,
       label: 'Adresse',
-      value: '122, rue Rainandriamampandry — B.P. 3984',
-      href: 'https://maps.google.com/?q=122+rue+Rainandriamampandry+Faravohitra+Antananarivo',
+      value: 'Route digue\u00A02, Andohatapenaka\u00A0II, Andranoabo, 101\u00A0Antananarivo – B.P.\u00A03984',
+      href: 'https://maps.app.goo.gl/9szwguV9XpuNhU7M7',
     },
   ]
 
