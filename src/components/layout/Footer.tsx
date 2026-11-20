@@ -137,13 +137,13 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-neutral-200 dark:border-dark-border pt-6">
+        <div className="border-t border-neutral-200 dark:border-dark-border pt-6 pb-24 md:pb-0">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-neutral-500 dark:text-neutral-400">
               © {new Date().getFullYear()} Vitogaz Madagascar. Tous droits réservés.
             </p>
             <div className="flex gap-4 text-sm">
-              <a href="#" className="text-neutral-500 dark:text-neutral-400 hover:text-primary transition-colors">Conditions d&apos;utilisation</a>
+              <Link href="/fr/conditions" prefetch={false} className="text-neutral-500 dark:text-neutral-400 hover:text-primary transition-colors">Conditions d&apos;utilisation</Link>
               <a href="#" className="text-neutral-500 dark:text-neutral-400 hover:text-primary transition-colors">Confidentialité</a>
             </div>
           </div>
