@@ -4,14 +4,15 @@ import { useState } from 'react'
 import type { Document } from '@/types/document'
 import { Download, Eye, FileText, Cloud, Play } from '@phosphor-icons/react'
 import { hapticFeedback } from '@/lib/utils/haptic'
+import { downloadPdf, trackDocumentEvent } from '@/lib/documents'
 
 interface DocumentCardProps {
   document: Document
   onClick: () => void
   delay?: number
+  /** Le PDF est dans le cache du navigateur : il se lit sans connexion. */
+  isCached?: boolean
 }
-
-const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
 
 // Icône YouTube SVG
 const YoutubeIcon = ({ className }: { className?: string }) => (
@@ -20,29 +21,27 @@ const YoutubeIcon = ({ className }: { className?: string }) => (
   </svg>
 )
 
-export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, delay = 0 }) => {
+export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, delay = 0, isCached = false }) => {
   const [isHovered, setIsHovered] = useState(false)
 
   const isVideo = document.category === 'video'
   const videoUrl = document.video_url || document.file_url
 
   const handleDownload = (e: React.MouseEvent) => {
+    // Le bouton est dans la carte cliquable : on empêche le clic de remonter
     e.stopPropagation()
     hapticFeedback('medium')
-    // Incrémenter le compteur de téléchargements
-    fetch(`${API_URL}/documents/${document.id}/download`, { method: 'POST' }).catch(() => {})
-    const link = window.document.createElement('a')
-    link.href = document.file_url
-    link.download = `${document.title}.pdf`
-    link.click()
+    void downloadPdf(document)
   }
 
+  // Unique point d'entrée : le clic sur la carte (le bouton « Consulter / Regarder »
+  // n'a plus de gestionnaire propre, son clic remonte jusqu'ici). Avant, les deux
+  // gestionnaires s'exécutaient : vue comptée deux fois et deux onglets YouTube.
   const handleView = () => {
     hapticFeedback('light')
     if (isVideo && videoUrl) {
-      // Incrémenter le compteur de vues
-      fetch(`${API_URL}/documents/${document.id}/view`, { method: 'POST' }).catch(() => {})
-      window.open(videoUrl, '_blank')
+      trackDocumentEvent(document.id, 'view')
+      window.open(videoUrl, '_blank', 'noopener,noreferrer')
     } else {
       onClick()
     }
@@ -88,7 +87,8 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
             }
           </div>
 
-          {!isVideo && document.is_offline && (
+          {/* Badge affiché seulement si le PDF est réellement disponible sans connexion */}
+          {!isVideo && isCached && (
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900 text-emerald-700 dark:text-emerald-400 text-xs font-medium font-sans">
               <Cloud className="w-3.5 h-3.5" strokeWidth={1.5} />
               <span>Disponible hors ligne</span>
@@ -127,9 +127,10 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
         {isVideo && <div className="mb-6" />}
 
         <div className="flex gap-3">
-          {/* Bouton Consulter/Regarder — rounded-full */}
+          {/* Bouton Consulter/Regarder — rounded-full. Pas de onClick : le clic remonte à la carte. */}
           <button
-            onClick={handleView}
+            type="button"
+            aria-label={isVideo ? `Regarder la vidéo ${document.title}` : `Consulter ${document.title}`}
             className={`flex-1 flex items-center justify-center gap-2.5 px-4 py-3 rounded-full font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 font-sans text-white ${
               isVideo
                 ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
@@ -145,7 +146,10 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, d
           {/* Bouton télécharger — rounded-full */}
           {!isVideo && (
             <button
+              type="button"
               onClick={handleDownload}
+              aria-label={`Télécharger ${document.title}`}
+              title="Télécharger"
               className="flex items-center justify-center w-12 h-12 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 hover:border-primary/50 hover:text-primary hover:bg-primary/5 transition-all duration-200 active:scale-95"
             >
               <Download className="w-5 h-5" strokeWidth={1.5} />
