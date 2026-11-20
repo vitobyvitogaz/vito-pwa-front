@@ -36,7 +36,7 @@ const AssistanceModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     {
       icon: MapPin,
       label: 'Adresse',
-      value: 'Route digue 2, Andohatapenaka II, Andranoabo, 101 Antananarivo – B.P. 3984',
+      value: 'Route digue\u00A02, Andohatapenaka\u00A0II, Andranoabo, 101\u00A0Antananarivo – B.P.\u00A03984',
       href: 'https://maps.google.com/?q=Route+digue+2+Andohatapenaka+II+Andranoabo+101+Antananarivo',
     },
   ]
