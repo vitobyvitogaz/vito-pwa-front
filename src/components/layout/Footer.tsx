@@ -129,7 +129,7 @@ export const Footer: React.FC = () => {
               </li>
               <li className="flex items-start gap-2">
                 <MapPinIcon className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-neutral-600 dark:text-neutral-400">122, rue Rainandriamampandry – Faravohitra B.P 3984</p>
+                <p className="text-sm text-neutral-600 dark:text-neutral-400">Route digue 2, Andohatapenaka II, Andranoabo, 101 Antananarivo – B.P. 3984</p>
               </li>
             </ul>
           </div>

@@ -19,7 +19,7 @@ export default function DocumentsPage() {
           
           <div className="max-w-2xl mx-auto">
             <p className="text-lg sm:text-xl text-neutral-600 dark:text-neutral-400 leading-relaxed tracking-wide font-sans">
-              Guides PAMF, consignes de sécurité et documentation technique disponible hors ligne
+              Vidéos, consignes de sécurité, guides et documentation PAMF
             </p>
             <div className="h-px w-24 mx-auto mt-6 bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent"></div>
           </div>

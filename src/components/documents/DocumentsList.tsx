@@ -7,17 +7,17 @@ import { FileText, CircleNotch as Loader2 } from '@phosphor-icons/react'
 import type { Document } from '@/types/document'
 
 const categories = [
-  { id: 'pamf', label: 'PAMF' },
+  { id: 'video', label: 'Vidéos' },
   { id: 'security', label: 'Sécurité' },
   { id: 'guides', label: 'Guides' },
-  { id: 'video', label: 'Vidéos' },
+  { id: 'pamf', label: 'PAMF' },
 ]
 
 // ✅ TEMPORAIRE : URL hardcodée pour débug
 const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
 
 export const DocumentsList: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState('pamf')
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null)
   const [documents, setDocuments] = useState<Document[]>([])
   const [loading, setLoading] = useState(true)
@@ -48,23 +48,31 @@ export const DocumentsList: React.FC = () => {
     fetchDocuments()
   }, [])
 
-  const filteredDocs = documents.filter(
-    (doc) => doc.category === activeCategory && doc.is_active
-  )
-
   // Masquer l'onglet Vidéos s'il n'y a aucun document vidéo
   const hasVideos = documents.some((doc) => doc.category === 'video' && doc.is_active)
   const visibleCategories = categories.filter(
     (cat) => cat.id !== 'video' || hasVideos
   )
 
+  // Onglet actif : le choix de l'utilisateur s'il est encore visible, sinon le premier onglet visible
+  const activeCategory =
+    selectedCategory && visibleCategories.some((cat) => cat.id === selectedCategory)
+      ? selectedCategory
+      : visibleCategories[0]?.id
+
+  const filteredDocs = documents.filter(
+    (doc) => doc.category === activeCategory && doc.is_active
+  )
+
   return (
     <div className="animate-slide-up">
+      {/* Onglets affichés après le chargement : l'onglet Vidéos n'existe qu'une fois les documents connus */}
+      {!loading && !error && (
       <div className="flex gap-2 mb-8 sm:mb-12 pb-2 justify-center flex-wrap">
         {visibleCategories.map((category) => (
           <button
             key={category.id}
-            onClick={() => setActiveCategory(category.id)}
+            onClick={() => setSelectedCategory(category.id)}
             className={`
               relative px-6 py-3 rounded-xl font-medium text-sm transition-all duration-300
               after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2
@@ -81,6 +89,7 @@ export const DocumentsList: React.FC = () => {
           </button>
         ))}
       </div>
+      )}
 
       {loading && (
         <div className="flex items-center justify-center py-16">
