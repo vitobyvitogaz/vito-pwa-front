@@ -8,8 +8,7 @@ import { usePromotionPopup } from '@/lib/hooks/usePromotionPopup'
 import { Sparkle as Sparkles, Buildings as Building2 } from '@phosphor-icons/react'
 import type { Promotion } from '@/types/promotion'
 
-const API_URL    = 'https://vito-backend-supabase.onrender.com/api/v1'
-const IP_API_URL = 'https://ip-api.com/json/'
+const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
 
 const SkeletonCard = () => (
   <div className="bg-white dark:bg-dark-surface rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 animate-pulse flex flex-row h-32">
@@ -48,9 +47,6 @@ export default function PromotionsPage() {
         const saved = localStorage.getItem('user-location')
         if (saved && !['Localisation non disponible', 'Géolocalisation non supportée', 'Localisation indisponible'].includes(saved)) {
           userCity = saved.split(',')[0].trim()
-        } else {
-          const geo = await fetch(IP_API_URL)
-          if (geo.ok) { const g = await geo.json(); if (g.status === 'success') userCity = g.city }
         }
       } catch {}
 
