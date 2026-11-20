@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import { EMAIL_PATTERN, escapeHtml, singleLine } from '@/lib/utils/escapeHtml'
 
 // Expéditeur et destinataire configurables (variables Vercel). Sans CONTACT_FROM_EMAIL, on garde
 // l'adresse de test de Resend, qui n'envoie qu'à l'e-mail du compte Resend.
@@ -15,14 +16,21 @@ export async function POST(request: NextRequest) {
     if (!fullName || !company || !phone || !email || !city) {
       return NextResponse.json({ error: 'Champs obligatoires manquants' }, { status: 400 })
     }
+    // Les valeurs doivent être du texte (un objet ou un nombre ferait échouer l'échappement)
+    if ([fullName, company, phone, email, city].some((v) => typeof v !== 'string') || (message && typeof message !== 'string')) {
+      return NextResponse.json({ error: 'Champs invalides' }, { status: 400 })
+    }
+    if (!EMAIL_PATTERN.test(email)) {
+      return NextResponse.json({ error: 'Adresse e-mail invalide' }, { status: 400 })
+    }
 
     const typeLabel = type === 'revendeur' ? 'Devenir Revendeur' : 'Devenir Client Professionnel'
 
-    await resend.emails.send({
+    const { error: sendError } = await resend.emails.send({
       from: `Contact Pro Vitogaz Madagascar <${FROM_EMAIL}>`,
       to: TO_EMAIL,
       replyTo: email,
-      subject: `[VITO] ${typeLabel} — ${fullName}`,
+      subject: `[VITO] ${typeLabel} — ${singleLine(fullName)}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: #7C3AED; padding: 24px; border-radius: 12px 12px 0 0;">
@@ -32,21 +40,28 @@ export async function POST(request: NextRequest) {
           <div style="background: #f9f9f9; padding: 24px; border-radius: 0 0 12px 12px; border: 1px solid #e5e5e5;">
             <table style="width: 100%; border-collapse: collapse;">
               <tr><td style="padding: 8px 0; color: #666; width: 140px;">Type</td><td style="padding: 8px 0; font-weight: 600;">${typeLabel}</td></tr>
-              <tr><td style="padding: 8px 0; color: #666;">Nom complet</td><td style="padding: 8px 0; font-weight: 600;">${fullName}</td></tr>
-              <tr><td style="padding: 8px 0; color: #666;">Entreprise</td><td style="padding: 8px 0; font-weight: 600;">${company}</td></tr>
-              <tr><td style="padding: 8px 0; color: #666;">Téléphone</td><td style="padding: 8px 0; font-weight: 600;">${phone}</td></tr>
-              <tr><td style="padding: 8px 0; color: #666;">Email</td><td style="padding: 8px 0; font-weight: 600;">${email}</td></tr>
-              <tr><td style="padding: 8px 0; color: #666;">Ville</td><td style="padding: 8px 0; font-weight: 600;">${city}</td></tr>
+              <tr><td style="padding: 8px 0; color: #666;">Nom complet</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(fullName)}</td></tr>
+              <tr><td style="padding: 8px 0; color: #666;">Entreprise</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(company)}</td></tr>
+              <tr><td style="padding: 8px 0; color: #666;">Téléphone</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(phone)}</td></tr>
+              <tr><td style="padding: 8px 0; color: #666;">Email</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(email)}</td></tr>
+              <tr><td style="padding: 8px 0; color: #666;">Ville</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(city)}</td></tr>
             </table>
             ${message ? `
             <div style="margin-top: 16px; padding: 16px; background: white; border-radius: 8px; border: 1px solid #e5e5e5;">
               <p style="color: #666; margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase;">Message</p>
-              <p style="margin: 0; line-height: 1.6;">${message.replace(/\n/g, '<br>')}</p>
+              <p style="margin: 0; line-height: 1.6;">${escapeHtml(message).replace(/\n/g, '<br>')}</p>
             </div>` : ''}
           </div>
         </div>
       `,
     })
+
+    // Le SDK Resend ne lève pas d'exception en cas de refus (domaine non vérifié, clé invalide…) :
+    // sans ce contrôle, le visiteur verrait « Message envoyé » alors que rien n'est parti.
+    if (sendError) {
+      console.error('❌ Erreur Resend contact-pro:', sendError)
+      return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
+    }
 
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {
