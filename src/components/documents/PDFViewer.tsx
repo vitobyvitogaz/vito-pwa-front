@@ -100,7 +100,7 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({ document: doc, onClose }) 
   const openLink = blobUrl ?? doc.file_url
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 animate-fade-in">
+    <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 animate-fade-in">
       <div
         ref={dialogRef}
         role="dialog"
