@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
+// Expéditeur et destinataire configurables (variables Vercel). Sans CONTACT_FROM_EMAIL, on garde
+// l'adresse de test de Resend, qui n'envoie qu'à l'e-mail du compte Resend.
+const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || 'onboarding@resend.dev'
+const TO_EMAIL = process.env.CONTACT_TO_EMAIL || 'vitobyvitogaz@gmail.com'
+
 export async function POST(request: NextRequest) {
   const resend = new Resend(process.env.RESEND_API_KEY)
   try {
@@ -12,8 +17,8 @@ export async function POST(request: NextRequest) {
     }
 
     await resend.emails.send({
-      from: 'Service Clients VitoGaz Madagascar <onboarding@resend.dev>',
-      to: 'vitobyvitogaz@gmail.com',
+      from: `Service Clients VitoGaz Madagascar <${FROM_EMAIL}>`,
+      to: TO_EMAIL,
       replyTo: email,
       subject: `[VITO] ${subject} — ${name}`,
       html: `
