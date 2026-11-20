@@ -213,7 +213,7 @@ export default function RewardItemsPage() {
               return (
                 <div
                   key={item.id}
-                  className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200"
+                  className="flex flex-col h-full bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200"
                 >
                   {/* Image */}
                   <div className="relative aspect-square bg-gray-100">
@@ -239,16 +239,21 @@ export default function RewardItemsPage() {
                   </div>
 
                   {/* Contenu */}
-                  <div className="p-3">
-                    <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 mb-1">
+                  <div className="flex flex-1 flex-col p-3">
+                    <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 min-h-[2.5em] mb-1">
                       {item.name}
                     </h3>
-                    {item.category && (
-                      <p className="text-xs text-gray-500 mb-2">{item.category}</p>
+                    {/* Toujours rendue : une ligne est réservée même sans catégorie (alignement des cartes) */}
+                    <p className="text-xs text-gray-500 mb-2 min-h-4">{item.category}</p>
+                    {item.stock_quantity <= 5 && (
+                      <p className="text-xs text-amber-600 mb-2">
+                        Plus que {item.stock_quantity} en stock
+                      </p>
                     )}
-                    <div className="flex items-center justify-between">
+                    {/* Points + bouton : ancrés en bas de la carte */}
+                    <div className="mt-auto flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
                       <span
-                        className="text-sm font-bold"
+                        className="text-sm font-bold whitespace-nowrap"
                         style={{ color: VITOGAZ_GREEN }}
                       >
                         {item.points_cost.toLocaleString()} pts
@@ -256,7 +261,7 @@ export default function RewardItemsPage() {
                       <button
                         onClick={() => handleExchange(item)}
                         disabled={!affordable}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1 transition-all ${
+                        className={`ml-auto px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1 transition-all ${
                           affordable
                             ? "text-white"
                             : "bg-gray-100 text-gray-400 cursor-not-allowed"
@@ -267,11 +272,6 @@ export default function RewardItemsPage() {
                         {affordable && <ChevronRight className="w-3 h-3" />}
                       </button>
                     </div>
-                    {item.stock_quantity <= 5 && (
-                      <p className="text-xs text-amber-600 mt-2">
-                        Plus que {item.stock_quantity} en stock
-                      </p>
-                    )}
                   </div>
                 </div>
               );
