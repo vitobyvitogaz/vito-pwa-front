@@ -144,7 +144,7 @@ export const Footer: React.FC = () => {
             </p>
             <div className="flex gap-4 text-sm">
               <Link href="/fr/conditions" prefetch={false} className="text-neutral-500 dark:text-neutral-400 hover:text-primary transition-colors">Conditions d&apos;utilisation</Link>
-              <a href="#" className="text-neutral-500 dark:text-neutral-400 hover:text-primary transition-colors">Confidentialité</a>
+              <Link href="/fr/confidentialite" prefetch={false} className="text-neutral-500 dark:text-neutral-400 hover:text-primary transition-colors">Confidentialité</Link>
             </div>
           </div>
         </div>

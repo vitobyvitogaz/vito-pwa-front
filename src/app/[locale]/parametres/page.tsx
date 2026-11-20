@@ -547,6 +547,11 @@ export default function ParametresPage() {
             label="Conditions d'utilisation"
             onClick={() => router.push('/fr/conditions')}
           />
+          <ChevronRow
+            icon={<Shield className="w-4 h-4 text-neutral-500" strokeWidth={1.5} />}
+            label="Politique de confidentialité"
+            onClick={() => router.push('/fr/confidentialite')}
+          />
         </Section>
 
         {/* À propos */}
