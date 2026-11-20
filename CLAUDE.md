@@ -9,13 +9,13 @@ Application publique, grand public malgache. Priorités : lisibilité en plein s
 - **React** : 19.2
 - **Style** : Tailwind CSS 3.4 (config dans `tailwind.config.ts`)
 - **Langage** : TypeScript strict — pas de `any`
-- **Type** : PWA via `next-pwa` (manifest + service worker)
+- **Type** : PWA — manifest + service worker écrit à la main (`public/sw.js` : notifications push + mode hors ligne)
 - **Internationalisation** : next-intl / i18next — routing `[locale]` (fr, mg, en)
 - **Cartes** : Leaflet + react-leaflet ; Google Maps JS API en complément
 - **Déploiement** : Vercel (auto-deploy sur push `main`) ; backend NestJS sur Render.com
 
 ## Points d'attention techniques
-- **Configs en double** : le fichier de config réel est `next.config.js` (il contient toute la logique PWA + `runtimeCaching` + images). `next.config.ts` est un stub vide généré par défaut — **ne rien mettre dedans** et ne pas le laisser prendre le dessus, sinon toute la config PWA saute silencieusement. Idem `postcss.config.js` (réel) vs `postcss.config.mjs`. À terme : supprimer les stubs vides.
+- **Service worker** : `public/sw.js` est écrit à la main (notifications + mise en cache hors ligne : voir `CACHE_VERSION` et `API_RULES`). `next-pwa` a été retiré : il ne fonctionnait pas avec Turbopack et risquait d'écraser ce fichier. Changer `CACHE_VERSION` à chaque modification de la logique de cache. Ne **jamais** mettre en cache de données liées à une personne (scan, points, échanges, notifications, avis). `public/offline.html` est la page de secours des pages jamais visitées. Le fichier de configuration est `next.config.js` (images, en-têtes) ; `postcss.config.js` configure PostCSS.
 - **Variables d'environnement** : définies sur Vercel ET en local dans `.env.local`. Ne jamais hardcoder de clé API.
 - **Appels API côté serveur** : `NEXT_PUBLIC_API_URL` est `undefined` dans les route handlers Next côté serveur. Pour les appels server-side, utiliser `API_URL` (sans le préfixe). Pour transmettre l'IP visiteur au backend, passer l'en-tête `x-forwarded-for` depuis le route handler (Vercel capture sinon sa propre IP serveur).
 - **Backend Render.com** : comportement de mise en veille — prévoir une logique de retry sur les premiers appels.
