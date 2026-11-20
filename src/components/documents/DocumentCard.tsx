@@ -48,7 +48,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, i
   return (
     <div
       onClick={handleView}
-      className="group relative overflow-hidden bg-white dark:bg-dark-surface rounded-2xl p-6 cursor-pointer border border-neutral-100 dark:border-neutral-800 shadow-sm hover:shadow-md hover:border-primary/30 transition-shadow duration-200"
+      className="group relative flex flex-col h-full overflow-hidden bg-white dark:bg-dark-surface rounded-2xl p-6 cursor-pointer border border-neutral-100 dark:border-neutral-800 shadow-sm hover:shadow-md hover:border-primary/30 transition-shadow duration-200"
     >
       <div className="flex items-start justify-between mb-5">
         {/* Icône — rounded-full */}
@@ -79,31 +79,30 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, i
         )}
       </div>
 
-      <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2.5 line-clamp-2 leading-snug tracking-tight group-hover:text-primary-600 transition-colors duration-200 font-sans">
+      <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2.5 line-clamp-2 min-h-[2.75em] leading-snug tracking-tight group-hover:text-primary-600 transition-colors duration-200 font-sans">
         {document.title}
       </h3>
 
-      {document.description && (
-        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-5 line-clamp-2 leading-relaxed font-sans">
-          {document.description}
-        </p>
-      )}
+      {/* Toujours rendue : 2 lignes sont réservées même sans description, pour que toutes les cartes aient la même hauteur */}
+      <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-5 line-clamp-2 min-h-[3.25em] leading-relaxed font-sans">
+        {document.description}
+      </p>
 
       {/* Métadonnées — seulement si elles existent (jamais « N/A ») */}
-      {hasMeta ? (
-        <div className="flex items-center justify-between text-sm text-neutral-500 dark:text-neutral-400 mb-6 font-medium font-sans tabular-nums">
-          {document.page_count ? <span>{document.page_count} pages</span> : <span />}
-          {fileSize && (
-            <span className="px-2.5 py-1 rounded-md bg-neutral-50 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400">
-              {fileSize}
-            </span>
-          )}
-        </div>
-      ) : (
-        <div className="mb-6" />
-      )}
+      <div className="flex items-center justify-between h-7 text-sm text-neutral-500 dark:text-neutral-400 mb-6 font-medium font-sans tabular-nums">
+        {hasMeta && (
+          <>
+            {document.page_count ? <span>{document.page_count} pages</span> : <span />}
+            {fileSize && (
+              <span className="px-2.5 py-1 rounded-md bg-neutral-50 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400">
+                {fileSize}
+              </span>
+            )}
+          </>
+        )}
+      </div>
 
-      <div className="flex gap-3">
+      <div className="flex gap-3 mt-auto">
         {/* Bouton Consulter/Regarder — rounded-full. Pas de onClick : le clic remonte à la carte. */}
         <button
           type="button"
