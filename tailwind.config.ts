@@ -11,13 +11,13 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#008B7F',
+          DEFAULT: '#007B71',
           50: '#E6F7F5',
           100: '#CCEFEB',
           200: '#99DFD7',
           300: '#66CFC3',
           400: '#33BFAF',
-          500: '#008B7F',
+          500: '#007B71',
           600: '#007066',
           700: '#00544D',
           800: '#003833',

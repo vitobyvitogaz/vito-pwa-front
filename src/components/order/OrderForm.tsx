@@ -106,7 +106,7 @@ export const OrderForm: React.FC = () => {
 
         <div>
           <label className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2">
-            Notes supplémentaires <span className="text-neutral-400">(facultatif)</span>
+            Notes supplémentaires <span className="text-neutral-600">(facultatif)</span>
           </label>
           <textarea
             value={formData.notes}

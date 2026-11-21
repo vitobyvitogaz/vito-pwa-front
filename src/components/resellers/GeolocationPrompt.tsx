@@ -114,7 +114,7 @@ export const GeolocationPrompt: React.FC<GeolocationPromptProps> = ({
                     <li>Centrer la carte sur votre position</li>
                     <li>Proposer des itinéraires précis</li>
                   </ul>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-500 mt-3">
+                  <p className="text-xs text-neutral-600 dark:text-neutral-500 mt-3">
                     Vos données de localisation sont traitées localement et ne sont pas stockées sur nos serveurs.
                   </p>
                 </div>
@@ -149,7 +149,7 @@ export const GeolocationPrompt: React.FC<GeolocationPromptProps> = ({
               </button>
             </div>
 
-            <p className="text-xs text-center text-neutral-500 dark:text-neutral-500 mt-4">
+            <p className="text-xs text-center text-neutral-600 dark:text-neutral-500 mt-4">
               Vous pourrez activer la géolocalisation à tout moment via le bouton en bas à droite de la carte.
             </p>
           </div>

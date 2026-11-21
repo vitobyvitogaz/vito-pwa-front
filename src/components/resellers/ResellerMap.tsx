@@ -192,13 +192,13 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
                     </span>
                   )}
                   {reseller.business_status && (
-                    <span className={`text-[11px] font-semibold ${reseller.business_status.isOpen ? 'text-emerald-600' : 'text-red-500'}`}>
+                    <span className={`text-[11px] font-semibold ${reseller.business_status.isOpen ? 'text-emerald-700' : 'text-red-500'}`}>
                       {reseller.business_status.isOpen ? 'Ouvert' : 'Fermé'}
                     </span>
                   )}
                 </div>
 
-                <p className="text-[12px] text-neutral-500 leading-snug mb-2">{reseller.address}</p>
+                <p className="text-[12px] text-neutral-600 leading-snug mb-2">{reseller.address}</p>
 
                 <div className="flex flex-wrap items-center gap-1.5">
                   <a

@@ -72,7 +72,7 @@ export const BottomNav: React.FC = () => {
                   <span className={`text-[10px] leading-none transition-colors duration-200 font-display ${
                     isActive
                       ? 'text-primary font-semibold'
-                      : 'text-neutral-500 dark:text-neutral-400 font-medium'
+                      : 'text-neutral-600 dark:text-neutral-400 font-medium'
                   }`}>
                     {item.label}
                   </span>
@@ -96,7 +96,7 @@ export const BottomNav: React.FC = () => {
                     className={`transition-all duration-200 ${
                       isActive
                         ? 'w-6 h-6 text-primary'
-                        : 'w-5 h-5 text-neutral-500 dark:text-neutral-400'
+                        : 'w-5 h-5 text-neutral-600 dark:text-neutral-400'
                     }`}
                     strokeWidth={isActive ? 2 : 1.5}
                   />
@@ -104,7 +104,7 @@ export const BottomNav: React.FC = () => {
                 <span className={`text-[10px] leading-none transition-colors duration-200 ${
                   isActive
                     ? 'text-primary font-semibold font-display'
-                    : 'text-neutral-500 dark:text-neutral-400 font-medium'
+                    : 'text-neutral-600 dark:text-neutral-400 font-medium'
                 }`}>
                   {item.label}
                 </span>

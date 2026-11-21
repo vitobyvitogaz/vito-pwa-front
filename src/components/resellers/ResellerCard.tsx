@@ -103,7 +103,7 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
             <span className={`w-2 h-2 rounded-full ${reseller.business_status.isOpen ? 'bg-green-500' : 'bg-red-500'}`} />
             {reseller.business_status.isOpen ? 'OUVERT' : 'FERMÉ'}
           </span>
-          <span className="text-xs text-neutral-500 dark:text-neutral-400">
+          <span className="text-xs text-neutral-600 dark:text-neutral-400">
             {reseller.business_status.message}
           </span>
         </div>
@@ -170,7 +170,7 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
             <span>Appeler</span>
           </a>
         ) : (
-          <div className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-full font-medium text-sm bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400 cursor-not-allowed">
+          <div className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-full font-medium text-sm bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400 cursor-not-allowed">
             <Phone className="w-4 h-4" strokeWidth={1.5} />
             <span>Appeler</span>
           </div>

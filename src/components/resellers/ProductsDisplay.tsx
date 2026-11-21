@@ -121,7 +121,7 @@ export const ProductsDisplay: React.FC<ProductsDisplayProps> = ({ reseller }) =>
 
                       {/* Description */}
                       {product.description && (
-                        <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-2 mt-1">
+                        <p className="text-xs text-neutral-600 dark:text-neutral-400 line-clamp-2 mt-1">
                           {product.description}
                         </p>
                       )}

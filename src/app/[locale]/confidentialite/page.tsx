@@ -196,7 +196,7 @@ export default function ConfidentialitePage() {
             <h1 className="text-2xl font-semibold text-neutral-900 dark:text-white font-display tracking-tight leading-tight">
               Politique de confidentialité
             </h1>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400 font-sans mt-1">
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 font-sans mt-1">
               Vito by Vitogaz · Dernière mise à jour : {lastUpdated}
             </p>
           </div>
@@ -255,7 +255,7 @@ export default function ConfidentialitePage() {
 
         {/* ── Pied de page ── */}
         <div className="mt-10 text-center space-y-2">
-          <p className="text-xs text-neutral-400 dark:text-neutral-500 font-sans">
+          <p className="text-xs text-neutral-600 dark:text-neutral-500 font-sans">
             © {new Date().getFullYear()} Vitogaz Madagascar — Tous droits réservés
           </p>
         </div>

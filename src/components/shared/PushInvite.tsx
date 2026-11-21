@@ -171,7 +171,7 @@ export function PushInvite() {
             ) : phase === 'failed' ? (
               <p role="status" className="text-sm text-neutral-700 dark:text-neutral-300">
                 L&apos;activation n&apos;a pas abouti. Vérifiez votre connexion, puis réessayez.{' '}
-                <span className="text-neutral-500 dark:text-neutral-400 tabular-nums">(code : {failedStep})</span>
+                <span className="text-neutral-600 dark:text-neutral-400 tabular-nums">(code : {failedStep})</span>
               </p>
             ) : phase === 'blocked' ? (
               <p role="status" className="text-sm text-neutral-700 dark:text-neutral-300">

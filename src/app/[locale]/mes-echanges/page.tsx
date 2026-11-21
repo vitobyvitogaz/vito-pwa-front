@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, CaretLeft as ChevronLeft, CaretRight as ChevronRight, Gift, CheckCircle, XCircle, Clock, Package, X } from "@phosphor-icons/react";
 
-const VITOGAZ_GREEN = "#008B7F";
+const VITOGAZ_GREEN = "#007B71";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://vito-backend-supabase.onrender.com/api/v1";
 const ITEMS_PER_PAGE = 10;
 
@@ -180,7 +180,7 @@ export default function MesEchangesPage() {
               <p className="text-lg font-bold text-amber-700">{pendingCount}</p>
             </div>
             <div className="bg-emerald-50 p-3 rounded-xl text-center">
-              <p className="text-xs text-emerald-600 mb-1">Validés</p>
+              <p className="text-xs text-emerald-700 mb-1">Validés</p>
               <p className="text-lg font-bold text-emerald-700">{approvedCount}</p>
             </div>
           </div>
@@ -191,7 +191,7 @@ export default function MesEchangesPage() {
       <div className="px-4 py-6">
         {loading ? (
           <div className="text-center py-12">
-            <div className="inline-block w-8 h-8 border-4 border-gray-200 border-t-[#008B7F] rounded-full animate-spin" />
+            <div className="inline-block w-8 h-8 border-4 border-gray-200 border-t-[#007B71] rounded-full animate-spin" />
             <p className="text-sm text-gray-500 mt-3">Chargement...</p>
           </div>
         ) : exchanges.length === 0 ? (

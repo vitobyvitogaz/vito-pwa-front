@@ -165,7 +165,7 @@ export const NotificationToggle: React.FC = () => {
                 : 'bg-neutral-100 dark:bg-neutral-800'
             }`}>
               {isEnabled ? (
-                <Bell className="w-6 h-6 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
+                <Bell className="w-6 h-6 text-emerald-700 dark:text-emerald-400" strokeWidth={1.5} />
               ) : (
                 <BellOff className="w-6 h-6 text-neutral-400 dark:text-neutral-500" strokeWidth={1.5} />
               )}
@@ -193,7 +193,7 @@ export const NotificationToggle: React.FC = () => {
             </div>
           </div>
 
-          <p className="text-sm text-neutral-500 dark:text-neutral-500 mb-3 font-sans">
+          <p className="text-sm text-neutral-600 dark:text-neutral-500 mb-3 font-sans">
             {!pushSupported
               ? 'Les notifications ne sont pas supportées sur ce navigateur'
               : isEnabled
@@ -237,7 +237,7 @@ export const NotificationToggle: React.FC = () => {
         <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
           <Zap className="w-4 h-4 text-primary" strokeWidth={1.5} />
         </div>
-        <p className="text-xs text-neutral-500 dark:text-neutral-500 flex-1 font-sans">
+        <p className="text-xs text-neutral-600 dark:text-neutral-500 flex-1 font-sans">
           Alertes en temps réel • Basées sur votre localisation • Notification push native
         </p>
         <ChevronRight className="w-4 h-4 text-neutral-300 dark:text-neutral-600" strokeWidth={1.5} />

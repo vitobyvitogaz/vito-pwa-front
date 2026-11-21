@@ -49,7 +49,7 @@ const TYPE_CONFIG: Record<string, {
   },
   FEEDBACK: {
     icon:  <Sparkles className="w-4 h-4" strokeWidth={1.5} />,
-    color: 'text-emerald-600 dark:text-emerald-400',
+    color: 'text-emerald-700 dark:text-emerald-400',
     bg:    'bg-emerald-100 dark:bg-emerald-900/30',
     label: 'Feedback',
   },
@@ -118,7 +118,7 @@ export default function NotificationsPage() {
           {notifications.length > 0 && (
             <button
               onClick={handleClear}
-              className="text-xs text-neutral-400 hover:text-red-500 dark:hover:text-red-400 transition-colors font-sans"
+              className="text-xs text-neutral-600 hover:text-red-500 dark:hover:text-red-400 transition-colors font-sans"
             >
               Tout effacer
             </button>
@@ -134,7 +134,7 @@ export default function NotificationsPage() {
             <p className="text-base font-semibold text-neutral-600 dark:text-neutral-400 font-sans">
               Aucune notification
             </p>
-            <p className="text-sm text-neutral-400 dark:text-neutral-500 font-sans mt-1">
+            <p className="text-sm text-neutral-600 dark:text-neutral-500 font-sans mt-1">
               Vos alertes apparaîtront ici
             </p>
           </div>
@@ -164,12 +164,12 @@ export default function NotificationsPage() {
                       </p>
                       <div className="flex items-center gap-1 flex-shrink-0">
                         <Clock className="w-3 h-3 text-neutral-400" strokeWidth={1.5} />
-                        <span className="text-[10px] text-neutral-400 font-sans whitespace-nowrap">
+                        <span className="text-[10px] text-neutral-600 font-sans whitespace-nowrap">
                           {fmtRelative(notif.receivedAt)}
                         </span>
                       </div>
                     </div>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans mt-0.5 leading-snug line-clamp-2">
+                    <p className="text-xs text-neutral-600 dark:text-neutral-400 font-sans mt-0.5 leading-snug line-clamp-2">
                       {notif.body}
                     </p>
                     <span className={`inline-block mt-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full ${config.bg} ${config.color}`}>

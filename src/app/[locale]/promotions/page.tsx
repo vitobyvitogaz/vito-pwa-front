@@ -120,7 +120,7 @@ export default function PromotionsPage() {
               className={`flex items-center gap-2 pb-3 text-sm font-semibold transition-all duration-200 border-b-2 -mb-px ${
                 isGrandPublic
                   ? 'border-primary text-primary'
-                  : 'border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
+                  : 'border-transparent text-neutral-600 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
               }`}
             >
               <Sparkles className="w-4 h-4" strokeWidth={1.5} />
@@ -131,7 +131,7 @@ export default function PromotionsPage() {
               className={`flex items-center gap-2 pb-3 text-sm font-semibold transition-all duration-200 border-b-2 -mb-px ${
                 isEntreprise
                   ? 'border-primary text-primary'
-                  : 'border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
+                  : 'border-transparent text-neutral-600 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
               }`}
             >
               <Building2 className="w-4 h-4" strokeWidth={1.5} />
@@ -155,7 +155,7 @@ export default function PromotionsPage() {
               <h2 className="text-lg font-semibold text-neutral-700 dark:text-neutral-300 mb-2 font-sans">
                 Aucune promotion disponible
               </h2>
-              <p className="text-neutral-400 dark:text-neutral-500 font-sans text-sm">
+              <p className="text-neutral-600 dark:text-neutral-500 font-sans text-sm">
                 Revenez bientôt pour découvrir nos prochaines offres
               </p>
             </div>
@@ -179,7 +179,7 @@ export default function PromotionsPage() {
               {/* Offres expirées */}
               {expired.length > 0 && (
                 <div>
-                  <p className="text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-4">
+                  <p className="text-xs font-semibold text-neutral-600 uppercase tracking-widest mb-4">
                     Offres expirées
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch opacity-50">

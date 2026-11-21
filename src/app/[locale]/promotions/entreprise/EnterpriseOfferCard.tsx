@@ -45,7 +45,7 @@ export const EnterpriseOfferCard: React.FC = () => {
     <div className="relative bg-white dark:bg-dark-surface rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-sm">
 
       {/* Header coloré */}
-      <div style={{ backgroundColor: '#008B7F' }} className="px-8 py-10 flex flex-col items-center text-center">
+      <div style={{ backgroundColor: '#007B71' }} className="px-8 py-10 flex flex-col items-center text-center">
 
         {/* Icône gaz */}
         <div className="w-16 h-16 rounded-2xl bg-white/15 flex items-center justify-center mb-6">

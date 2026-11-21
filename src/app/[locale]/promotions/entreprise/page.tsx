@@ -41,7 +41,7 @@ export default function EntrepriseOffresPage() {
               className={`flex items-center gap-2 pb-3 text-sm font-semibold transition-all duration-200 border-b-2 -mb-px ${
                 isGrandPublic
                   ? 'border-primary text-primary'
-                  : 'border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
+                  : 'border-transparent text-neutral-600 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
               }`}
             >
               <Sparkles className="w-4 h-4" strokeWidth={1.5} />
@@ -52,7 +52,7 @@ export default function EntrepriseOffresPage() {
               className={`flex items-center gap-2 pb-3 text-sm font-semibold transition-all duration-200 border-b-2 -mb-px ${
                 isEntreprise
                   ? 'border-primary text-primary'
-                  : 'border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
+                  : 'border-transparent text-neutral-600 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
               }`}
             >
               <Building2 className="w-4 h-4" strokeWidth={1.5} />

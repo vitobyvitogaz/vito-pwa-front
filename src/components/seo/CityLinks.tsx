@@ -27,7 +27,7 @@ export function CityLinks({ cities, title, exclude, limit }: CityLinksProps) {
             >
               <MapPin className="h-3.5 w-3.5" />
               {city.name}
-              <span className="tabular-nums text-neutral-500 dark:text-neutral-400">({city.count})</span>
+              <span className="tabular-nums text-neutral-600 dark:text-neutral-400">({city.count})</span>
             </Link>
           </li>
         ))}

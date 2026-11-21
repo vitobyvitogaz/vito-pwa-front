@@ -71,12 +71,12 @@ const TrustBadge = () => (
     <div className="w-px h-4 bg-primary/20 hidden sm:block" />
     <div className="flex items-center gap-2">
       <ShieldCheck className="w-4 h-4 text-primary flex-shrink-0" strokeWidth={1.5} />
-      <span className="text-sm font-medium text-primary/80 font-sans">Leader à Madagascar</span>
+      <span className="text-sm font-medium text-primary font-sans">Leader à Madagascar</span>
     </div>
     <div className="w-px h-4 bg-primary/20 hidden sm:block" />
     <div className="flex items-center gap-2">
       <Users className="w-4 h-4 text-primary flex-shrink-0" strokeWidth={1.5} />
-      <span className="text-sm font-medium text-primary/80 font-sans">Gaz de qualité certifiée</span>
+      <span className="text-sm font-medium text-primary font-sans">Gaz de qualité certifiée</span>
     </div>
   </div>
 )

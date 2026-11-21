@@ -178,7 +178,7 @@ export const DocumentsList: React.FC = () => {
             </span>
           </div>
           {slow && (
-            <p className="mt-3 max-w-sm text-sm text-neutral-500 dark:text-neutral-400 font-sans">
+            <p className="mt-3 max-w-sm text-sm text-neutral-600 dark:text-neutral-400 font-sans">
               Le serveur démarre, cela peut prendre quelques secondes. Merci de patienter.
             </p>
           )}
@@ -223,7 +223,7 @@ export const DocumentsList: React.FC = () => {
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-neutral-100 dark:bg-neutral-900 flex items-center justify-center">
                 <FileText className="w-8 h-8 text-neutral-400" />
               </div>
-              <p className="text-neutral-500 dark:text-neutral-400 text-lg font-sans">
+              <p className="text-neutral-600 dark:text-neutral-400 text-lg font-sans">
                 Aucun document disponible dans cette catégorie
               </p>
             </div>

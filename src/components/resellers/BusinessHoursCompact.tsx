@@ -60,7 +60,7 @@ export const BusinessHoursCompact: React.FC<BusinessHoursCompactProps> = ({
           </span>
           {todaySchedule.breaks && todaySchedule.breaks.length > 0 && (
             // ── text-xs → text-sm : info de pause lisible sur petit écran ──
-            <span className="text-sm text-neutral-500 dark:text-neutral-400">
+            <span className="text-sm text-neutral-600 dark:text-neutral-400">
               Pause : {todaySchedule.breaks.map(b => `${formatTime(b.start)}-${formatTime(b.end)}`).join(', ')}
             </span>
           )}
@@ -98,7 +98,7 @@ export const BusinessHoursCompact: React.FC<BusinessHoursCompactProps> = ({
 
               <div className="text-right">
                 {schedule.closed ? (
-                  <span className="text-sm text-neutral-500 dark:text-neutral-400 italic">Fermé</span>
+                  <span className="text-sm text-neutral-600 dark:text-neutral-400 italic">Fermé</span>
                 ) : (
                   <div className="space-y-0.5">
                     <div className="text-sm text-neutral-900 dark:text-neutral-100">
@@ -106,7 +106,7 @@ export const BusinessHoursCompact: React.FC<BusinessHoursCompactProps> = ({
                     </div>
                     {schedule.breaks && schedule.breaks.length > 0 && (
                       // ── text-xs → text-sm : info de pause lisible sur petit écran ──
-                      <div className="text-sm text-neutral-500 dark:text-neutral-400">
+                      <div className="text-sm text-neutral-600 dark:text-neutral-400">
                         Pause : {schedule.breaks.map(b => `${formatTime(b.start)}-${formatTime(b.end)}`).join(', ')}
                       </div>
                     )}

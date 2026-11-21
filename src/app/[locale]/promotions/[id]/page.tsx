@@ -47,7 +47,7 @@ const CategoryBlock = ({ raw }: { raw: string | string[] | null | undefined }) =
         <GasBottleIcon className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
       </div>
       <div>
-        <p className="text-[10px] text-neutral-400 font-sans uppercase tracking-wide">Catégorie</p>
+        <p className="text-[10px] text-neutral-600 font-sans uppercase tracking-wide">Catégorie</p>
         <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-200 font-sans">{label}</p>
       </div>
     </div>
@@ -90,7 +90,7 @@ const Section = ({ title, icon: Icon, children }: {
   <div className="space-y-3">
     <div className="flex items-center gap-2">
       {Icon && <Icon className="w-3.5 h-3.5 text-neutral-400" strokeWidth={1.5} />}
-      <p className="text-[10px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.12em]">
+      <p className="text-[10px] font-bold text-neutral-600 dark:text-neutral-500 uppercase tracking-[0.12em]">
         {title}
       </p>
     </div>
@@ -217,7 +217,7 @@ export default function PromotionDetailPage() {
     <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg flex flex-col items-center justify-center p-6 text-center pt-[65px]">
       <p className="text-5xl mb-4">🔍</p>
       <h1 className="text-xl font-bold text-neutral-900 dark:text-white mb-2 font-sans">Promotion introuvable</h1>
-      <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6 font-sans">Cette offre n&apos;existe pas ou a été supprimée.</p>
+      <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-6 font-sans">Cette offre n&apos;existe pas ou a été supprimée.</p>
       <button onClick={() => router.push(`/${locale}/promotions`)}
         className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-full font-semibold text-sm">
         <ArrowLeft className="w-4 h-4" />Voir toutes les offres
@@ -231,7 +231,7 @@ export default function PromotionDetailPage() {
   const daysLeft = Math.max(0, Math.floor((end - Date.now()) / 86400000))
 
   const getUrgency = () => {
-    if (isExpired)     return { text: 'text-neutral-500', bg: 'bg-neutral-100 dark:bg-neutral-800', border: 'border-neutral-200 dark:border-neutral-700', icon: Clock }
+    if (isExpired)     return { text: 'text-neutral-600', bg: 'bg-neutral-100 dark:bg-neutral-800', border: 'border-neutral-200 dark:border-neutral-700', icon: Clock }
     if (daysLeft > 7)  return { text: 'text-emerald-700 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20', border: 'border-emerald-200 dark:border-emerald-800', icon: CheckCircle }
     if (daysLeft > 3)  return { text: 'text-amber-700 dark:text-amber-400',     bg: 'bg-amber-50 dark:bg-amber-900/20',     border: 'border-amber-200 dark:border-amber-800',     icon: Clock }
     return               { text: 'text-red-700 dark:text-red-400',               bg: 'bg-red-50 dark:bg-red-900/20',         border: 'border-red-200 dark:border-red-800',         icon: AlertTriangle }
@@ -323,7 +323,7 @@ export default function PromotionDetailPage() {
             {/* Titre visible sous l'image — mobile uniquement */}
             <div className="lg:hidden mt-4 space-y-1">
               <h1 className="text-2xl font-semibold font-editorial text-neutral-900 dark:text-white leading-tight">{promotion.title}</h1>
-              {promo.subtitle && <p className="text-base text-neutral-500 dark:text-neutral-400 font-sans">{promo.subtitle}</p>}
+              {promo.subtitle && <p className="text-base text-neutral-600 dark:text-neutral-400 font-sans">{promo.subtitle}</p>}
             </div>
           </div>
 
@@ -333,7 +333,7 @@ export default function PromotionDetailPage() {
             {/* Titre — desktop uniquement */}
             <div className="hidden lg:block space-y-1">
               <h1 className="text-3xl font-semibold font-editorial text-neutral-900 dark:text-white leading-tight">{promotion.title}</h1>
-              {promo.subtitle && <p className="text-lg text-neutral-500 dark:text-neutral-400 font-sans">{promo.subtitle}</p>}
+              {promo.subtitle && <p className="text-lg text-neutral-600 dark:text-neutral-400 font-sans">{promo.subtitle}</p>}
             </div>
 
             {/* Countdown */}
@@ -364,7 +364,7 @@ export default function PromotionDetailPage() {
                   {promo.valid_from && (
                     <div className="flex items-center gap-2">
                       <CalendarDays className="w-3.5 h-3.5 text-neutral-400" strokeWidth={1.5} />
-                      <span className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">
+                      <span className="text-xs text-neutral-600 dark:text-neutral-400 font-sans">
                         Du {fmtDate(promo.valid_from, { day: 'numeric', month: 'long' })} au {fmtDate(promotion.valid_until, { day: 'numeric', month: 'long', year: 'numeric' })}
                       </span>
                     </div>
@@ -377,7 +377,7 @@ export default function PromotionDetailPage() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-400 font-sans">Offre expirée</p>
-                    <p className="text-xs text-neutral-400 font-sans">Le {fmtDate(promotion.valid_until)}</p>
+                    <p className="text-xs text-neutral-600 font-sans">Le {fmtDate(promotion.valid_until)}</p>
                   </div>
                 </div>
               )}
@@ -443,7 +443,7 @@ export default function PromotionDetailPage() {
                   {promotion.conditions.map((c, i) => (
                     <div key={i} className="flex items-start gap-3 px-4 py-3">
                       <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" strokeWidth={2.5} />
+                        <Check className="w-3 h-3 text-emerald-700 dark:text-emerald-400" strokeWidth={2.5} />
                       </div>
                       <p className="text-sm text-neutral-700 dark:text-neutral-300 font-sans leading-snug">{c}</p>
                     </div>
@@ -458,7 +458,7 @@ export default function PromotionDetailPage() {
                 <div className="bg-white dark:bg-dark-surface border-2 border-dashed border-primary/30 rounded-2xl overflow-hidden">
                   <div className="px-4 py-2.5 border-b border-dashed border-primary/20 bg-primary/5 dark:bg-primary/10 flex items-center gap-2">
                     <Store className="w-4 h-4 text-primary" strokeWidth={1.5} />
-                    <p className="text-xs font-medium text-primary/80 font-sans">Présentez ce code à votre revendeur</p>
+                    <p className="text-xs font-medium text-primary font-sans">Présentez ce code à votre revendeur</p>
                   </div>
                   <div className="px-4 py-5 flex items-center justify-between">
                     <span className="text-3xl font-black text-primary font-mono tracking-[0.2em]">
@@ -468,7 +468,7 @@ export default function PromotionDetailPage() {
                       onClick={handleCopyCode}
                       className={`flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm transition-all duration-300 ${
                         copied
-                          ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
+                          ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'
                           : 'bg-primary/10 text-primary hover:bg-primary/20 active:scale-95'
                       }`}
                     >
@@ -508,7 +508,7 @@ export default function PromotionDetailPage() {
                 )}
                 {daysLeft > 0 ? `${daysLeft}j restants` : "Expire aujourd'hui"}
               </p>
-              <p className="text-[10px] text-neutral-400 font-sans">
+              <p className="text-[10px] text-neutral-600 font-sans">
                 jusqu&apos;au {fmtDate(promotion.valid_until, { day: 'numeric', month: 'short' })}
               </p>
             </div>

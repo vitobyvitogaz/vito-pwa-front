@@ -3,7 +3,7 @@
 import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Shield } from '@phosphor-icons/react'
 
-const VITOGAZ_GREEN = '#008B7F'
+const VITOGAZ_GREEN = '#007B71'
 
 const lastUpdated = '1er avril 2026'
 
@@ -145,7 +145,7 @@ export default function ConditionsPage() {
             <h1 className="text-2xl font-bold text-neutral-900 dark:text-white font-display leading-tight">
               Conditions d&apos;utilisation
             </h1>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400 font-sans mt-1">
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 font-sans mt-1">
               Vito by Vitogaz · Dernière mise à jour : {lastUpdated}
             </p>
           </div>
@@ -184,10 +184,10 @@ export default function ConditionsPage() {
 
         {/* ── Pied de page ── */}
         <div className="mt-10 text-center space-y-2">
-          <p className="text-xs text-neutral-400 dark:text-neutral-500 font-sans">
+          <p className="text-xs text-neutral-600 dark:text-neutral-500 font-sans">
             © {new Date().getFullYear()} Vitogaz Madagascar — Tous droits réservés
           </p>
-          <p className="text-xs text-neutral-400 dark:text-neutral-500 font-sans">
+          <p className="text-xs text-neutral-600 dark:text-neutral-500 font-sans">
             Leader du gaz à Madagascar depuis plus de 25 ans
           </p>
         </div>

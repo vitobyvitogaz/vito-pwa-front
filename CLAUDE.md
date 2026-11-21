@@ -43,7 +43,7 @@ Deux familles chargées via `next/font/google` dans `src/app/layout.tsx`, décla
 ## Palette — discipline stricte
 La marque, c'est **teal + navy + neutres**, avec des accents chauds **parcimonieux**. C'est tout.
 
-- **Primary (teal)** : `#008B7F` (+ échelle `primary-50…900` déjà en config). Couleur de travail principale.
+- **Primary (teal)** : `#007B71` (+ échelle `primary-50…900` déjà en config). Couleur de travail principale. Choisi le 21/11/2026 à la place de `#008B7F` (4,2 : 1 avec du blanc, sous le seuil WCAG AA de 4,5 : 1) : `#007B71` donne 5,16 : 1 avec du blanc et 4,54 : 1 en texte sur fond teinté `primary-50`. La couleur de marque `#008B7F` reste utilisée pour `theme-color` (barre du navigateur) et `manifest.json`, hors texte.
 - **Navy** : `#1F3864` — profondeur, certains titres, éléments de structure. Token Tailwind `navy` (échelle 50→900).
 - **Accents chauds, en accent seulement** : jaune `#F6C90E` (token `gold`) (mises en avant, pastilles d'icônes) et rouge `#C8102E` (token `accent`) (urgence, emphase CTA). Jamais comme code couleur systématique — toujours via token, jamais de hex en dur.
 - **Neutres** : échelle `neutral-*` pour texte, bordures, surfaces ; `neutral-25` (#FAFAF9) en fond doux.

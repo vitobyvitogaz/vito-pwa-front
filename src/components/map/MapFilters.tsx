@@ -56,7 +56,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({
   return (
     <div className="flex flex-wrap items-center gap-3">
       {/* Icône indicateur */}
-      <div className="flex items-center gap-1.5 text-neutral-500 dark:text-neutral-400">
+      <div className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400">
         <SlidersHorizontal className="w-4 h-4" strokeWidth={1.5} />
         <span className="text-sm font-medium hidden sm:inline">Filtrer :</span>
       </div>

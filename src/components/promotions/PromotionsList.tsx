@@ -98,7 +98,7 @@ export const PromotionsList: React.FC = () => {
         <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2 font-sans">
           Oups, une erreur est survenue
         </h3>
-        <p className="text-neutral-500 dark:text-neutral-400 mb-6 max-w-sm mx-auto font-sans">
+        <p className="text-neutral-600 dark:text-neutral-400 mb-6 max-w-sm mx-auto font-sans">
           {error}
         </p>
         <button
@@ -119,7 +119,7 @@ export const PromotionsList: React.FC = () => {
           <h2 className="text-2xl font-semibold text-neutral-900 dark:text-white font-sans mb-2">
             {sortedPromos.length} promotion{sortedPromos.length !== 1 ? 's' : ''} disponible{sortedPromos.length !== 1 ? 's' : ''}
           </h2>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400 font-sans">
+          <p className="text-sm text-neutral-600 dark:text-neutral-400 font-sans">
             Filtrez par zone et triez par réduction
           </p>
         </div>
@@ -290,7 +290,7 @@ export const PromotionsList: React.FC = () => {
           <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2 font-sans">
             Aucune promotion trouvée
           </h3>
-          <p className="text-neutral-500 dark:text-neutral-400 mb-6 max-w-sm mx-auto font-sans">
+          <p className="text-neutral-600 dark:text-neutral-400 mb-6 max-w-sm mx-auto font-sans">
             Aucune offre ne correspond à vos filtres actuels. Essayez de les modifier.
           </p>
           <button

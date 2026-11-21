@@ -27,11 +27,12 @@ export const IOSInstallModal: React.FC<IOSInstallModalProps> = ({ onClose }) => 
             <img src="/icons/icon-96x96.png" alt="Vito" className="w-10 h-10 rounded-xl" />
             <div>
               <p className="font-bold text-neutral-900 dark:text-white font-sans">Installer Vito</p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">vitobyvitogaz.mg</p>
+              <p className="text-xs text-neutral-600 dark:text-neutral-400 font-sans">vitobyvitogaz.mg</p>
             </div>
           </div>
           <button
             onClick={onClose}
+            aria-label="Fermer"
             className="w-11 h-11 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center active:scale-90 transition-transform"
           >
             <X className="w-5 h-5 text-neutral-500" strokeWidth={1.5} />
@@ -53,7 +54,7 @@ export const IOSInstallModal: React.FC<IOSInstallModalProps> = ({ onClose }) => 
               <p className="text-sm font-medium text-neutral-900 dark:text-white font-sans">
                 Appuyez sur le bouton Partager
               </p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans mt-0.5">
+              <p className="text-xs text-neutral-600 dark:text-neutral-400 font-sans mt-0.5">
                 En bas de Safari (icône avec une flèche vers le haut)
               </p>
             </div>
@@ -99,7 +100,7 @@ export const IOSInstallModal: React.FC<IOSInstallModalProps> = ({ onClose }) => 
               <p className="text-sm font-medium text-neutral-900 dark:text-white font-sans">
                 Appuyez sur <span className="font-bold">&quot;Ajouter&quot;</span> en haut à droite
               </p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans mt-0.5">
+              <p className="text-xs text-neutral-600 dark:text-neutral-400 font-sans mt-0.5">
                 L&apos;application apparaîtra sur votre écran d&apos;accueil
               </p>
             </div>

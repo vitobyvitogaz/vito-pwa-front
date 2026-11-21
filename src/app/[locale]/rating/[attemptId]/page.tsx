@@ -80,7 +80,7 @@ export default function RatingPage() {
       <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-          <p className="text-sm text-neutral-500 font-sans">Chargement...</p>
+          <p className="text-sm text-neutral-600 font-sans">Chargement...</p>
         </div>
       </div>
     )
@@ -126,7 +126,7 @@ export default function RatingPage() {
       <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg flex items-center justify-center p-6">
         <div className="text-center max-w-sm">
           <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-10 h-10 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
+            <CheckCircle className="w-10 h-10 text-emerald-700 dark:text-emerald-400" strokeWidth={1.5} />
           </div>
           <h1 className="text-2xl font-semibold font-display text-neutral-900 dark:text-white mb-3">
             Merci pour votre avis !
@@ -161,7 +161,7 @@ export default function RatingPage() {
 
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-sm text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 mb-8 transition-colors"
+          className="flex items-center gap-2 text-sm text-neutral-600 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
           Retour
@@ -208,7 +208,7 @@ export default function RatingPage() {
             {activeRating > 0 && (
               <p className={`text-sm font-semibold font-display transition-all ${
                 activeRating >= 4
-                  ? 'text-emerald-600 dark:text-emerald-400'
+                  ? 'text-emerald-700 dark:text-emerald-400'
                   : activeRating >= 3
                   ? 'text-amber-600 dark:text-amber-400'
                   : 'text-red-500 dark:text-red-400'
@@ -248,7 +248,7 @@ export default function RatingPage() {
             <label className="flex items-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2 font-sans">
               <MessageSquare className="w-4 h-4 text-neutral-400" strokeWidth={1.5} />
               Commentaire
-              <span className="text-xs text-neutral-400 font-normal">(optionnel)</span>
+              <span className="text-xs text-neutral-600 font-normal">(optionnel)</span>
             </label>
             <textarea
               value={comment}
@@ -258,7 +258,7 @@ export default function RatingPage() {
               rows={3}
               className="w-full px-4 py-3 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800/50 text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all font-sans resize-none"
             />
-            <p className="text-xs text-neutral-400 text-right mt-1">{comment.length}/500</p>
+            <p className="text-xs text-neutral-600 text-right mt-1">{comment.length}/500</p>
           </div>
         </div>
 
@@ -276,7 +276,7 @@ export default function RatingPage() {
 
         <button
           onClick={() => router.push(`/${locale}/commander`)}
-          className="w-full mt-3 py-3 text-neutral-500 dark:text-neutral-400 text-sm font-sans hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors"
+          className="w-full mt-3 py-3 text-neutral-600 dark:text-neutral-400 text-sm font-sans hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors"
         >
           Passer
         </button>

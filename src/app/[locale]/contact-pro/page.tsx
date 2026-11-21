@@ -275,7 +275,7 @@ export default function ContactProPage() {
                   formData.message.length >= 500 ? 'text-red-500' :
                   formData.message.length >= 400 ? 'text-amber-500' :
                   formData.message.length > 0 ? 'text-emerald-500' :
-                  'text-neutral-400'
+                  'text-neutral-600'
                 }`}>
                   {formData.message.length}/500
                 </span>
@@ -285,7 +285,7 @@ export default function ContactProPage() {
 
           {submitStatus === 'success' && (
             <div className="mb-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 flex items-start gap-3 animate-slide-up">
-              <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+              <CheckCircle className="w-5 h-5 text-emerald-700 dark:text-emerald-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
               <div>
                 <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">Demande envoyée avec succès !</p>
                 <p className="text-sm text-emerald-700 dark:text-emerald-400 mt-0.5">Notre équipe vous recontactera sous 48h</p>
@@ -326,7 +326,7 @@ export default function ContactProPage() {
             )}
           </button>
 
-          <p className="text-xs text-neutral-500 dark:text-neutral-400 text-center mt-4">
+          <p className="text-xs text-neutral-600 dark:text-neutral-400 text-center mt-4">
             * Champs obligatoires
           </p>
         </form>

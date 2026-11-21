@@ -123,7 +123,7 @@ export default function MesAvantagesPage() {
           <Gift className="w-10 h-10 text-primary" strokeWidth={1.5} />
         </div>
         <h1 className="text-2xl font-semibold font-display text-neutral-900 dark:text-white mb-2 text-center">Mes Avantages</h1>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 font-sans text-center mb-8 max-w-xs">
+        <p className="text-sm text-neutral-600 dark:text-neutral-400 font-sans text-center mb-8 max-w-xs">
           Entrez votre numéro de téléphone et votre code PIN pour accéder à vos avantages.
         </p>
         <div className="w-full max-w-sm space-y-3">
@@ -157,7 +157,7 @@ export default function MesAvantagesPage() {
             {verifying ? 'Vérification...' : 'Accéder à mes avantages'}
           </button>
           
-          <p className="text-xs text-center text-neutral-400 font-sans">
+          <p className="text-xs text-center text-neutral-600 font-sans">
             Premier accès ? Votre code PIN sera créé lors de votre premier échange.
           </p>
         </div>
@@ -177,7 +177,7 @@ export default function MesAvantagesPage() {
             Retour
           </button>
           <button onClick={() => { setPhone(''); localStorage.removeItem(PWA_PHONE_KEY); setPinInput(''); setPhoneInput('') }}
-            className="text-xs text-neutral-400 hover:text-red-500 transition-colors font-sans">
+            className="text-xs text-neutral-600 hover:text-red-500 transition-colors font-sans">
             Déconnexion
           </button>
         </div>
@@ -221,7 +221,7 @@ export default function MesAvantagesPage() {
           ) : history.length === 0 ? (
             <div className="text-center py-10 bg-white dark:bg-dark-surface rounded-2xl">
               <Sparkles className="w-10 h-10 text-neutral-300 mx-auto mb-3" strokeWidth={1} />
-              <p className="text-sm text-neutral-500 font-sans">Aucune participation pour ce numéro.</p>
+              <p className="text-sm text-neutral-600 font-sans">Aucune participation pour ce numéro.</p>
               <button onClick={() => router.push(`/${locale}/promotions`)}
                 className="mt-3 text-sm text-primary font-medium font-sans hover:text-primary/80 transition-colors">
                 Voir les promotions →
@@ -239,7 +239,7 @@ export default function MesAvantagesPage() {
                       <p className="text-sm font-semibold text-neutral-900 dark:text-white font-display truncate">
                         {scan.promotions?.title || scan.promo_code}
                       </p>
-                      <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">{fmtDate(scan.scanned_at)}</p>
+                      <p className="text-xs text-neutral-600 dark:text-neutral-400 font-sans">{fmtDate(scan.scanned_at)}</p>
                     </div>
                     {scan.points_earned > 0 && (
                       <div className="flex items-center gap-1 px-2.5 py-1 bg-amber-50 dark:bg-amber-900/20 rounded-full flex-shrink-0">
@@ -274,7 +274,7 @@ export default function MesAvantagesPage() {
                 </div>
               )}
 
-              <p className="text-xs text-center text-neutral-400 font-sans mt-3">
+              <p className="text-xs text-center text-neutral-600 font-sans mt-3">
                 {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, history.length)} sur {history.length} participation(s)
               </p>
             </>

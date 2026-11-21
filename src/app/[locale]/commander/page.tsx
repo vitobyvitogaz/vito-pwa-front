@@ -94,7 +94,7 @@ export default function DeliveryPage() {
           <Loader2 className="w-12 h-12 text-primary animate-spin" />
           <p className="text-neutral-600 dark:text-neutral-400">Chargement des sociétés de livraison...</p>
           {/* ── Message cold start : affiché après 2s ── */}
-          <p className="text-sm text-neutral-400 dark:text-neutral-500 animate-fade-in font-sans text-center max-w-xs" style={{ animationDelay: '2s', opacity: 0, animationFillMode: 'forwards' }}>
+          <p className="text-sm text-neutral-600 dark:text-neutral-500 animate-fade-in font-sans text-center max-w-xs" style={{ animationDelay: '2s', opacity: 0, animationFillMode: 'forwards' }}>
             Démarrage du serveur en cours… Merci de patienter quelques secondes.
           </p>
         </div>
@@ -112,7 +112,7 @@ export default function DeliveryPage() {
           <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2 font-sans">
             Oups, une erreur est survenue
           </h3>
-          <p className="text-neutral-500 dark:text-neutral-400 mb-6 max-w-sm mx-auto font-sans">
+          <p className="text-neutral-600 dark:text-neutral-400 mb-6 max-w-sm mx-auto font-sans">
             {error}
           </p>
           <button
@@ -152,19 +152,19 @@ export default function DeliveryPage() {
         <div className="flex items-center justify-center gap-0 mb-6 bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 rounded-2xl overflow-hidden divide-x divide-neutral-100 dark:divide-neutral-800">
           <div className="flex-1 flex flex-col items-center py-3 px-2">
             <span className="text-lg font-bold text-primary leading-none">{stats.totalCompanies}</span>
-            <span className="text-[10px] text-neutral-500 dark:text-neutral-400 font-sans mt-0.5">Sociétés</span>
+            <span className="text-[10px] text-neutral-600 dark:text-neutral-400 font-sans mt-0.5">Sociétés</span>
           </div>
           <div className="flex-1 flex flex-col items-center py-3 px-2">
-            <span className="text-lg font-bold text-emerald-600 leading-none">{stats.averageRating}</span>
-            <span className="text-[10px] text-neutral-500 dark:text-neutral-400 font-sans mt-0.5">Note moy.</span>
+            <span className="text-lg font-bold text-emerald-700 leading-none">{stats.averageRating}</span>
+            <span className="text-[10px] text-neutral-600 dark:text-neutral-400 font-sans mt-0.5">Note moy.</span>
           </div>
           <div className="flex-1 flex flex-col items-center py-3 px-2">
             <span className="text-lg font-bold text-blue-600 leading-none">{stats.fastestDelivery}h</span>
-            <span className="text-[10px] text-neutral-500 dark:text-neutral-400 font-sans mt-0.5">+ rapide</span>
+            <span className="text-[10px] text-neutral-600 dark:text-neutral-400 font-sans mt-0.5">+ rapide</span>
           </div>
           <div className="flex-1 flex flex-col items-center py-3 px-2">
             <span className="text-lg font-bold text-purple-600 leading-none">{stats.verifiedCount}</span>
-            <span className="text-[10px] text-neutral-500 dark:text-neutral-400 font-sans mt-0.5">Vérifiées</span>
+            <span className="text-[10px] text-neutral-600 dark:text-neutral-400 font-sans mt-0.5">Vérifiées</span>
           </div>
         </div>
 
@@ -189,6 +189,7 @@ export default function DeliveryPage() {
             </div>
             <div className="sm:w-48">
               <select
+                aria-label="Trier les sociétés de livraison"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
                 className="w-full px-4 py-3 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all font-sans"
@@ -259,7 +260,7 @@ export default function DeliveryPage() {
               <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2 font-sans">
                 Aucune société trouvée
               </h3>
-              <p className="text-neutral-500 dark:text-neutral-400 mb-6 max-w-sm mx-auto font-sans">
+              <p className="text-neutral-600 dark:text-neutral-400 mb-6 max-w-sm mx-auto font-sans">
                 Aucune société ne correspond à votre recherche. Essayez avec des mots différents.
               </p>
               <button
@@ -291,7 +292,7 @@ export default function DeliveryPage() {
             </div>
             <div className="bg-white dark:bg-dark-surface rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
               <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mb-4">
-                <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">2</span>
+                <span className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">2</span>
               </div>
               <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">
                 {/* ── Étape 2 corrigée : plus concret pour le public malgache ── */}

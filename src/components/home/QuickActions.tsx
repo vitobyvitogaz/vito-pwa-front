@@ -256,7 +256,7 @@ export const QuickActions: React.FC = () => {
                     <p className="text-base font-semibold font-display text-neutral-900 dark:text-white mb-0.5 tracking-tight">
                       {action.title}
                     </p>
-                    <p className={`text-sm font-sans ${action.id === 'assistance' ? `font-bold ${action.color}` : 'text-neutral-500 dark:text-neutral-400'}`}>
+                    <p className={`text-sm font-sans ${action.id === 'assistance' ? `font-bold ${action.color}` : 'text-neutral-600 dark:text-neutral-400'}`}>
                       {action.subtitle}
                     </p>
                   </div>

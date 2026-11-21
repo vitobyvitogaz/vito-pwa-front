@@ -99,7 +99,7 @@ export default function AssistancePage() {
       <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-[65px] pb-20 md:pb-0 flex items-center justify-center p-4">
         <div className="w-full max-w-md text-center">
           <div className="w-20 h-20 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-10 h-10 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
+            <CheckCircle className="w-10 h-10 text-emerald-700 dark:text-emerald-400" strokeWidth={1.5} />
           </div>
           <p className="text-2xl font-semibold text-neutral-900 dark:text-white mb-2 tracking-tight">
             Message envoyé !
@@ -122,11 +122,11 @@ export default function AssistancePage() {
     <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-[65px] pb-20 md:pb-0">
 
       {/* Header teal */}
-      <div style={{ backgroundColor: '#008B7F' }} className="px-4 py-8">
+      <div style={{ backgroundColor: '#007B71' }} className="px-4 py-8">
         <div className="container mx-auto max-w-2xl">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-white/70 hover:text-white transition-colors mb-6"
+            className="flex items-center gap-2 text-white hover:underline transition-colors mb-6"
           >
             <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
             <span className="text-sm font-medium">Retour à l&apos;accueil</span>
@@ -142,7 +142,7 @@ export default function AssistancePage() {
           {/* ── Téléphone EN PREMIER — action prioritaire pour le public malgache ── */}
           <a
             href="tel:+261202236464"
-            className="flex items-center gap-4 group mb-4 p-3 rounded-2xl bg-white/15 hover:bg-white/25 transition-all duration-200 active:scale-95"
+            className="flex items-center gap-4 group mb-4 p-3 rounded-2xl bg-primary-800/30 hover:bg-primary-800/40 transition-all duration-200 active:scale-95"
           >
             <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center flex-shrink-0">
               <Phone className="w-6 h-6 text-primary" strokeWidth={2} />
@@ -152,18 +152,18 @@ export default function AssistancePage() {
               <p className="text-white font-bold text-xl leading-tight">
                 020 22 364 64
               </p>
-              <p className="text-white/70 text-sm font-sans">
+              <p className="text-white text-sm font-sans">
                 Appuyez pour appeler
               </p>
             </div>
             <div className="ml-auto">
               <div className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
                 open
-                  ? 'bg-emerald-400/20 text-emerald-200 border border-emerald-400/30'
-                  : 'bg-red-400/20 text-red-200 border border-red-400/30'
+                  ? 'bg-white text-primary-700'
+                  : 'bg-white text-accent-700'
               }`}>
                 <div className="flex items-center gap-1.5">
-                  <div className={`w-1.5 h-1.5 rounded-full ${open ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`} />
+                  <div className={`w-1.5 h-1.5 rounded-full ${open ? 'bg-primary animate-pulse' : 'bg-accent'}`} />
                   {open ? 'Ouvert' : 'Fermé'}
                 </div>
               </div>
@@ -173,7 +173,7 @@ export default function AssistancePage() {
           {/* Horaires */}
           <div className="flex items-center gap-3 mb-6">
             <Clock className="w-4 h-4 text-white/60 flex-shrink-0" strokeWidth={1.5} />
-            <p className="text-white/70 text-sm font-sans">Lun. au Ven. | 8h - 17h</p>
+            <p className="text-white text-sm font-sans">Lun. au Ven. | 8h - 17h</p>
           </div>
 
           {/* Autres contacts */}
@@ -280,7 +280,7 @@ export default function AssistancePage() {
               {/* Téléphone */}
               <div>
                 <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
-                  Téléphone <span className="text-neutral-400 font-normal">(optionnel)</span>
+                  Téléphone <span className="text-neutral-600 font-normal">(optionnel)</span>
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -346,7 +346,7 @@ export default function AssistancePage() {
                       form.message.length >= MAX_CHARS ? 'text-red-500' :
                       form.message.length >= MAX_CHARS * 0.8 ? 'text-amber-500' :
                       form.message.length >= 10 ? 'text-emerald-500' :
-                      'text-neutral-400'
+                      'text-neutral-600'
                     }`}>
                       {form.message.length}/{MAX_CHARS}
                     </span>
@@ -381,7 +381,7 @@ export default function AssistancePage() {
                 )}
               </button>
 
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 text-center">
+              <p className="text-xs text-neutral-600 dark:text-neutral-400 text-center">
                 Les champs marqués <span className="text-red-500">*</span> sont obligatoires
               </p>
             </form>

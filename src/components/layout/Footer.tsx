@@ -103,7 +103,7 @@ export const Footer: React.FC = () => {
 
           {/* Liens rapides */}
           <div>
-            <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4 font-display">Liens rapides</h3>
+            <h2 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4 font-display">Liens rapides</h2>
             <ul className="space-y-2">
               <li><Link href="/fr/revendeurs" prefetch={false} className="text-neutral-600 dark:text-neutral-400 hover:text-primary transition-colors">Nos revendeurs</Link></li>
               <li><Link href="/fr/commander" prefetch={false} className="text-neutral-600 dark:text-neutral-400 hover:text-primary transition-colors">Commander</Link></li>
@@ -114,14 +114,14 @@ export const Footer: React.FC = () => {
 
           {/* Contact */}
           <div>
-            <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4 font-display">Contact</h3>
+            <h2 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4 font-display">Contact</h2>
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
                 <PhoneIcon className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-sm font-medium text-neutral-900 dark:text-white">020 22 364 64</p>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400">Lun-Ven 8h-18h</p>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400">Sam 8h-13h</p>
+                  <p className="text-xs text-neutral-600 dark:text-neutral-400">Lun-Ven 8h-18h</p>
+                  <p className="text-xs text-neutral-600 dark:text-neutral-400">Sam 8h-13h</p>
                 </div>
               </li>
               <li className="flex items-start gap-2">
@@ -139,12 +139,12 @@ export const Footer: React.FC = () => {
         {/* Divider */}
         <div className="border-t border-neutral-200 dark:border-dark-border pt-6 pb-24 md:pb-0">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">
               © {new Date().getFullYear()} Vitogaz Madagascar. Tous droits réservés.
             </p>
             <div className="flex gap-4 text-sm">
-              <Link href="/fr/conditions" prefetch={false} className="text-neutral-500 dark:text-neutral-400 hover:text-primary transition-colors">Conditions d&apos;utilisation</Link>
-              <Link href="/fr/confidentialite" prefetch={false} className="text-neutral-500 dark:text-neutral-400 hover:text-primary transition-colors">Confidentialité</Link>
+              <Link href="/fr/conditions" prefetch={false} className="text-neutral-600 dark:text-neutral-400 hover:text-primary transition-colors">Conditions d&apos;utilisation</Link>
+              <Link href="/fr/confidentialite" prefetch={false} className="text-neutral-600 dark:text-neutral-400 hover:text-primary transition-colors">Confidentialité</Link>
             </div>
           </div>
         </div>
