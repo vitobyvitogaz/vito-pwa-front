@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useCallback, useEffect } from 'react'
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
 
 const ResellerMap = dynamic(
@@ -31,6 +31,7 @@ import type { Reseller } from '@/types/reseller'
 import { useResellerStore } from '@/store/useResellerStore'
 import { useOptimizedDistances, type TravelMode } from '@/lib/hooks/useOptimizedDistances'
 import { useGeolocation } from '@/lib/hooks/useGeolocation'
+import { useIsDesktop } from '@/lib/hooks/useIsDesktop'
 
 const PAGE_SIZE = 10
 type SheetState = 'quarter' | 'half' | 'full'
@@ -44,6 +45,7 @@ const normalize = (str: string) =>
 
 export default function ResellersPage() {
   const { resellers, loading: isLoadingResellers, fetchResellers } = useResellerStore()
+  const isDesktop = useIsDesktop()
   const { latitude: geoLat, longitude: geoLng, error: geoError, getCurrentPosition } = useGeolocation()
   const [view, setView] = useState<'split' | 'list' | 'map'>('split')
   const [sheetState, setSheetState] = useState<SheetState>('half')
@@ -172,9 +174,27 @@ export default function ResellersPage() {
     return sortedResellers.slice(start, start + PAGE_SIZE)
   }, [sortedResellers, currentPage])
 
+  // Sélection depuis la carte : affiche la page de la liste qui contient ce revendeur.
+  const sortedRef = useRef(sortedResellers)
+  useEffect(() => { sortedRef.current = sortedResellers }, [sortedResellers])
+  useEffect(() => {
+    if (!selectedReseller) return
+    const index = sortedRef.current.findIndex(r => r.id === selectedReseller.id)
+    if (index >= 0) setCurrentPage(Math.floor(index / PAGE_SIZE) + 1)
+  }, [selectedReseller])
+
   const handleTravelModeChange = useCallback((mode: TravelMode) => {
     setTravelMode(mode)
   }, [])
+
+  const totalPages = Math.max(1, Math.ceil(sortedResellers.length / PAGE_SIZE))
+  const desktopPager = sortedResellers.length > PAGE_SIZE && (
+    <div className="flex items-center justify-center gap-2 p-4 bg-white dark:bg-dark-surface border-t border-neutral-200 dark:border-neutral-800">
+      <button disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="px-4 py-2.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 hover:bg-neutral-200 transition-all duration-300">Précédent</button>
+      <span className="text-xs text-neutral-600 dark:text-neutral-400 tabular-nums">Page {currentPage} sur {totalPages}</span>
+      <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="px-4 py-2.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 disabled:opacity-50 hover:bg-neutral-200 transition-all duration-300">Suivant</button>
+    </div>
+  )
 
   const shouldShowPrompt = showGeolocationPrompt && !userLocation && !hasSkippedGeolocation
 
@@ -378,18 +398,21 @@ export default function ResellersPage() {
         <div className="relative h-[calc(100vh-320px)] sm:h-[calc(100vh-360px)]">
           {view === 'split' && (
             <div className="flex h-full">
-              <div className="w-2/5 overflow-y-auto">
-                <ResellersList
-                  resellers={sortedResellers}
-                  selectedReseller={selectedReseller}
-                  onSelectReseller={setSelectedReseller}
-                  distances={distances}
-                  hasGps={!!userLocation}
-                  isLoading={isLoadingResellers}
-                />
+              <div className="w-2/5 flex flex-col">
+                <div className="flex-1 overflow-y-auto">
+                  <ResellersList
+                    resellers={paginatedResellers}
+                    selectedReseller={selectedReseller}
+                    onSelectReseller={setSelectedReseller}
+                    distances={distances}
+                    hasGps={!!userLocation}
+                    isLoading={isLoadingResellers}
+                  />
+                </div>
+                {desktopPager}
               </div>
               <div className="w-3/5 relative">
-                <ResellerMap resellers={searchFilteredResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} userLocation={userLocation} distances={distances} />
+                {isDesktop === true && <ResellerMap resellers={searchFilteredResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} userLocation={userLocation} distances={distances} />}
                 <GeolocationButton onLocationFound={handleLocationFound} onError={handleGeolocationError} />
               </div>
             </div>
@@ -422,7 +445,7 @@ export default function ResellersPage() {
           )}
           {view === 'map' && (
             <div className="relative h-full">
-              <ResellerMap resellers={searchFilteredResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} userLocation={userLocation} distances={distances} />
+              {isDesktop === true && <ResellerMap resellers={searchFilteredResellers} selectedReseller={selectedReseller} onSelectReseller={setSelectedReseller} userLocation={userLocation} distances={distances} />}
               <GeolocationButton onLocationFound={handleLocationFound} onError={handleGeolocationError} />
             </div>
           )}
@@ -443,16 +466,18 @@ export default function ResellersPage() {
             transition: 'bottom 0.35s cubic-bezier(0.32, 0.72, 0, 1)',
           }}
         >
-          <ResellerMap
-            resellers={searchFilteredResellers}
-            selectedReseller={selectedReseller}
-            onSelectReseller={(reseller) => {
-              setSelectedReseller(reseller)
-              setSheetState('quarter')
-            }}
-            userLocation={userLocation}
-            distances={distances}
-          />
+          {isDesktop === false && (
+            <ResellerMap
+              resellers={searchFilteredResellers}
+              selectedReseller={selectedReseller}
+              onSelectReseller={(reseller) => {
+                setSelectedReseller(reseller)
+                setSheetState('quarter')
+              }}
+              userLocation={userLocation}
+              distances={distances}
+            />
+          )}
           <GeolocationButton onLocationFound={handleLocationFound} onError={handleGeolocationError} />
         </div>
 

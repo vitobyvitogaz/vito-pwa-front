@@ -31,7 +31,7 @@ export const ResellersList: React.FC<ResellersListProps> = ({
     if (!selectedReseller || !containerRef.current) return
     const el = containerRef.current.querySelector(`[data-reseller-id="${selectedReseller.id}"]`)
     el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-  }, [selectedReseller])
+  }, [selectedReseller, resellers])
 
   if (isLoading) {
     return (
