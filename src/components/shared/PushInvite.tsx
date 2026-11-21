@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { Bell, X } from '@phosphor-icons/react'
-import { isPushSubscribed, isPushSupported, subscribeToPush } from '@/lib/webpush'
+import { isPushSubscribed, isPushSupported } from '@/lib/webpush'
 import {
+  activatePush,
   afterShown,
   decideInvite,
   isBusyRoute,
@@ -18,10 +19,7 @@ import {
 
 // Délai avant d'afficher l'invitation : on laisse d'abord la personne voir la page.
 const SHOW_DELAY_MS = 4000
-// Le navigateur peut ne jamais répondre (service worker absent) : on abandonne au bout de 15 s.
-const SUBSCRIBE_TIMEOUT_MS = 15000
-
-type Phase = 'idle' | 'asking' | 'done' | 'blocked'
+type Phase = 'idle' | 'asking' | 'done' | 'blocked' | 'failed'
 
 const isIOS = (): boolean =>
   /iPad|iPhone|iPod/.test(navigator.userAgent) ||
@@ -44,6 +42,7 @@ export function PushInvite() {
   const pathname = usePathname()
   const [source, setSource] = useState<InviteSource | null>(null)
   const [phase, setPhase] = useState<Phase>('idle')
+  const [failedStep, setFailedStep] = useState('')
   const justInstalled = useRef(false)
   const sourceRef = useRef<InviteSource | null>(null)
 
@@ -107,30 +106,38 @@ export function PushInvite() {
   const accept = async () => {
     const current = sourceRef.current
     if (!current || phase === 'asking') return
+    const isRetry = phase === 'failed'
     setPhase('asking')
-    trackInviteEvent(current, 'accepted')
+    if (!isRetry) trackInviteEvent(current, 'accepted')
 
-    // Le clic est le geste exigé par le navigateur pour afficher sa propre demande.
-    const result = await Promise.race<boolean>([
-      subscribeToPush(userZones()),
-      new Promise<boolean>((resolve) => setTimeout(() => resolve(false), SUBSCRIBE_TIMEOUT_MS)),
-    ])
+    // Le clic est le geste exigé par le navigateur. Le temps que la personne met à répondre à sa demande
+    // n'est pas borné ; seules les étapes techniques le sont (voir activatePush).
+    const result = await activatePush(userZones())
 
-    if (result) {
+    if (result.status === 'ok') {
+      saveState({ ...loadState(), activationFailed: false })
       trackInviteEvent(current, 'granted')
       setPhase('done')
       setTimeout(close, 3000)
       return
     }
-    if (Notification.permission === 'denied') {
+    if (result.status === 'denied') {
       trackInviteEvent(current, 'denied')
       setPhase('blocked')
       setTimeout(close, 6000)
       return
     }
-    // Ni accepté ni refusé (demande fermée, délai dépassé…) : on referme et on pourra reproposer plus tard.
+    if (result.status === 'dismissed') {
+      // Demande du navigateur fermée sans réponse : ce n'est pas une panne, on pourra reproposer plus tard.
+      trackInviteEvent(current, 'dismissed')
+      close()
+      return
+    }
+    // Échec technique après l'autorisation : on le dit, avec le code de l'étape, et on propose de réessayer.
+    saveState({ ...loadState(), activationFailed: true })
     trackInviteEvent(current, 'error')
-    close()
+    setFailedStep(result.step)
+    setPhase('failed')
   }
 
   if (!source) return null
@@ -161,6 +168,11 @@ export function PushInvite() {
               <p role="status" className="text-sm font-semibold text-neutral-900 dark:text-white">
                 Notifications activées
               </p>
+            ) : phase === 'failed' ? (
+              <p role="status" className="text-sm text-neutral-700 dark:text-neutral-300">
+                L&apos;activation n&apos;a pas abouti. Vérifiez votre connexion, puis réessayez.{' '}
+                <span className="text-neutral-500 dark:text-neutral-400 tabular-nums">(code : {failedStep})</span>
+              </p>
             ) : phase === 'blocked' ? (
               <p role="status" className="text-sm text-neutral-700 dark:text-neutral-300">
                 Les notifications sont bloquées pour ce site. Vous pourrez les réactiver dans les réglages du
@@ -188,7 +200,7 @@ export function PushInvite() {
               disabled={phase === 'asking'}
               className="flex-1 rounded-full bg-primary px-4 py-3 text-sm font-medium text-white hover:bg-primary-600 transition-colors duration-200 active:scale-95 disabled:opacity-60"
             >
-              {phase === 'asking' ? 'Activation…' : 'Activer les notifications'}
+              {phase === 'asking' ? 'Activation…' : phase === 'failed' ? 'Réessayer' : 'Activer les notifications'}
             </button>
             <button
               type="button"
@@ -196,7 +208,7 @@ export function PushInvite() {
               disabled={phase === 'asking'}
               className="rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-4 py-3 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-200 active:scale-95 disabled:opacity-60"
             >
-              Plus tard
+              {phase === 'failed' ? 'Fermer' : 'Plus tard'}
             </button>
           </div>
         )}
