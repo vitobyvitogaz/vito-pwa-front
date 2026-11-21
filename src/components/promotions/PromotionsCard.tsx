@@ -56,7 +56,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
       onClick={handleClick}
       className={`group relative bg-white dark:bg-dark-surface border transition-all duration-300 hover:-translate-y-1 animate-slide-up cursor-pointer rounded-2xl overflow-hidden h-full flex flex-col ${
         featured ? 'border-primary/30' : 'border-neutral-200 dark:border-neutral-800'
-      } ${isExpired ? 'opacity-60' : ''}`}
+      } ${isExpired ? 'grayscale' : ''}`}
       style={{
         animationDelay: `${delay}s`,
         boxShadow: featured

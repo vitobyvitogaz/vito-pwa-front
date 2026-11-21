@@ -182,7 +182,7 @@ export default function PromotionsPage() {
                   <p className="text-xs font-semibold text-neutral-600 uppercase tracking-widest mb-4">
                     Offres expirées
                   </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch opacity-50">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
                     {expired.map((promo, i) => (
                       <PromotionCard key={promo.id} promotion={promo} delay={i * 0.04} />
                     ))}
