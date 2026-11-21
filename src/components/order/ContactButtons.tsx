@@ -28,7 +28,7 @@ export const ContactButtons: React.FC = () => {
       subtitle: 'Réponse rapide',
       icon: MessageSquare,
       onClick: handleWhatsApp,
-      color: 'text-emerald-600',
+      color: 'text-emerald-700',
       hoverColor: 'bg-emerald-600',
     },
     {

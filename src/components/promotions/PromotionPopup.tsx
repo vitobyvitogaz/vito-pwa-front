@@ -61,9 +61,9 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
   }, [promotion.valid_until, isVisible, autoCloseSec])
 
   const getUrgency = () => {
-    if (isExpired) return { text: 'text-neutral-500', bg: 'bg-neutral-100 dark:bg-neutral-800' }
+    if (isExpired) return { text: 'text-neutral-600', bg: 'bg-neutral-100 dark:bg-neutral-800' }
     const days = Math.floor((new Date(promotion.valid_until).getTime() - Date.now()) / 86400000)
-    if (days > 7) return { text: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20' }
+    if (days > 7) return { text: 'text-emerald-700 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20' }
     if (days > 3) return { text: 'text-amber-600 dark:text-amber-400',     bg: 'bg-amber-50 dark:bg-amber-900/20' }
     return          { text: 'text-red-600 dark:text-red-400',               bg: 'bg-red-50 dark:bg-red-900/20' }
   }
@@ -175,7 +175,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
                   </div>
                   <div className="flex items-center gap-1.5 pl-3 border-l border-neutral-200 dark:border-neutral-700">
                     <Calendar className="w-3.5 h-3.5 text-neutral-400" strokeWidth={1.5} />
-                    <span className="text-xs text-neutral-400 font-sans">
+                    <span className="text-xs text-neutral-600 font-sans">
                       {new Date(promotion.valid_until).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
                     </span>
                   </div>
@@ -251,7 +251,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
                 {promotion.title}
               </h2>
               {(promotion as any).subtitle && (
-                <p className="text-sm text-neutral-500 dark:text-neutral-400 font-sans mt-1.5">{(promotion as any).subtitle}</p>
+                <p className="text-sm text-neutral-600 dark:text-neutral-400 font-sans mt-1.5">{(promotion as any).subtitle}</p>
               )}
             </div>
             <button onClick={handleClose}
@@ -272,7 +272,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
 
           {/* Countdown */}
           <div className="px-7 py-5">
-            <p className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-3 font-sans">
+            <p className="text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-3 font-sans">
               {isExpired ? 'Offre expirée' : 'Expire dans'}
             </p>
             {!isExpired ? (
@@ -289,7 +289,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
                   <div className="flex items-center gap-2 pl-5 border-l border-neutral-200 dark:border-neutral-700">
                     <Calendar className="w-4 h-4 text-neutral-400" strokeWidth={1.5} />
                     <div>
-                      <p className="text-[10px] text-neutral-400 font-sans">Expire le</p>
+                      <p className="text-[10px] text-neutral-600 font-sans">Expire le</p>
                       <p className="text-xs font-semibold text-neutral-600 dark:text-neutral-300 font-sans">
                         {new Date(promotion.valid_until).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                       </p>
@@ -307,12 +307,12 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
           {/* Conditions */}
           {(promotion as any).conditions?.length > 0 && (
             <div className="px-7 pb-5">
-              <p className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2 font-sans">Conditions</p>
+              <p className="text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-2 font-sans">Conditions</p>
               <ul className="space-y-1.5">
                 {(promotion as any).conditions.slice(0, 3).map((c: string, i: number) => (
                   <li key={i} className="flex items-start gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0 mt-1.5" />
-                    <span className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">{c}</span>
+                    <span className="text-xs text-neutral-600 dark:text-neutral-400 font-sans">{c}</span>
                   </li>
                 ))}
               </ul>
@@ -330,7 +330,7 @@ export const PromotionPopup: React.FC<PromotionPopupProps> = ({
               </button>
             )}
             <p onClick={handleClose}
-              className="text-center text-xs text-neutral-400 font-sans mt-3 cursor-pointer hover:text-neutral-600 transition-colors">
+              className="text-center text-xs text-neutral-600 font-sans mt-3 cursor-pointer hover:text-neutral-600 transition-colors">
               Fermer
             </p>
           </div>

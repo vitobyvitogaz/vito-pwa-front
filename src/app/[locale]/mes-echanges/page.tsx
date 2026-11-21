@@ -180,7 +180,7 @@ export default function MesEchangesPage() {
               <p className="text-lg font-bold text-amber-700">{pendingCount}</p>
             </div>
             <div className="bg-emerald-50 p-3 rounded-xl text-center">
-              <p className="text-xs text-emerald-600 mb-1">Validés</p>
+              <p className="text-xs text-emerald-700 mb-1">Validés</p>
               <p className="text-lg font-bold text-emerald-700">{approvedCount}</p>
             </div>
           </div>

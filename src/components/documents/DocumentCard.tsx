@@ -79,9 +79,9 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, i
         )}
       </div>
 
-      <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2.5 line-clamp-2 min-h-[2.75em] leading-snug tracking-tight group-hover:text-primary-600 transition-colors duration-200 font-sans">
+      <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2.5 line-clamp-2 min-h-[2.75em] leading-snug tracking-tight group-hover:text-primary-600 transition-colors duration-200 font-sans">
         {document.title}
-      </h3>
+      </h2>
 
       {/* Toujours rendue : 2 lignes sont réservées même sans description, pour que toutes les cartes aient la même hauteur */}
       <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-5 line-clamp-2 min-h-[3.25em] leading-relaxed font-sans">
@@ -89,7 +89,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ document, onClick, i
       </p>
 
       {/* Métadonnées — seulement si elles existent (jamais « N/A ») */}
-      <div className="flex items-center justify-between h-7 text-sm text-neutral-500 dark:text-neutral-400 mb-6 font-medium font-sans tabular-nums">
+      <div className="flex items-center justify-between h-7 text-sm text-neutral-600 dark:text-neutral-400 mb-6 font-medium font-sans tabular-nums">
         {hasMeta && (
           <>
             {document.page_count ? <span>{document.page_count} pages</span> : <span />}

@@ -35,7 +35,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
   }, [promotion.valid_until])
 
   const getUrgency = () => {
-    if (isExpired)     return { text: 'text-neutral-500',                        bg: 'bg-neutral-100 dark:bg-neutral-800',         icon: Clock,         label: 'Expirée' }
+    if (isExpired)     return { text: 'text-neutral-600',                        bg: 'bg-neutral-100 dark:bg-neutral-800',         icon: Clock,         label: 'Expirée' }
     if (daysLeft > 7)  return { text: 'text-emerald-700 dark:text-emerald-400',  bg: 'bg-emerald-50 dark:bg-emerald-900/20',       icon: CheckCircle,   label: `${daysLeft}j restants` }
     if (daysLeft > 3)  return { text: 'text-amber-700 dark:text-amber-400',      bg: 'bg-amber-50 dark:bg-amber-900/20',           icon: Clock,         label: `Plus que ${daysLeft}j` }
     return               { text: 'text-red-700 dark:text-red-400',               bg: 'bg-red-50 dark:bg-red-900/20',               icon: AlertTriangle, label: 'Expire bientôt !' }
@@ -133,9 +133,9 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
 
         {/* Titre + description sur l'image */}
         <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
-          <h3 className={`font-bold text-white font-sans leading-tight drop-shadow-sm line-clamp-2 ${featured ? 'text-base' : 'text-sm'}`}>
+          <h2 className={`font-bold text-white font-sans leading-tight drop-shadow-sm line-clamp-2 ${featured ? 'text-base' : 'text-sm'}`}>
             {promotion.title}
-          </h3>
+          </h2>
           {promotion.description && (
             <p className="text-xs text-white/75 font-sans line-clamp-1 drop-shadow-sm mt-0.5">
               {promotion.description}
@@ -153,7 +153,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
             <UrgencyIcon className="w-3 h-3" strokeWidth={1.5} />
             {urgency.label}
           </div>
-          <span className="text-[10px] text-neutral-400 dark:text-neutral-500 font-sans truncate">
+          <span className="text-[10px] text-neutral-600 dark:text-neutral-500 font-sans truncate">
             jusqu&apos;au {fmtDate(promotion.valid_until)}
           </span>
         </div>
@@ -168,7 +168,7 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
           ) : (
             <>
               <MapPin className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0" strokeWidth={1.5} />
-              <span className="text-[10px] text-neutral-500 dark:text-neutral-400 font-sans line-clamp-1">
+              <span className="text-[10px] text-neutral-600 dark:text-neutral-400 font-sans line-clamp-1">
                 {promotion.zones!.slice(0, 3).join(' · ')}
                 {promotion.zones!.length > 3 && ` +${promotion.zones!.length - 3}`}
               </span>

@@ -213,7 +213,7 @@ const useTheme = () => {
 // ── Composants UI ─────────────────────────────────────────────────────────────
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div className="mb-5">
-    <p className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-2 px-1">
+    <p className="text-xs font-semibold text-neutral-600 dark:text-neutral-400 uppercase tracking-widest mb-2 px-1">
       {title}
     </p>
     <div className="bg-white dark:bg-dark-surface rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden divide-y divide-neutral-100 dark:divide-neutral-800">
@@ -234,7 +234,7 @@ const ToggleRow = ({
     </div>
     <div className="flex-1 min-w-0">
       <p className="text-sm font-medium text-neutral-900 dark:text-white font-sans">{label}</p>
-      {sublabel && <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">{sublabel}</p>}
+      {sublabel && <p className="text-xs text-neutral-600 dark:text-neutral-400 font-sans">{sublabel}</p>}
     </div>
     <button
       onClick={onToggle}
@@ -260,7 +260,7 @@ const ChevronRow = ({ icon, label, value, onClick }: {
     </div>
     <div className="flex-1 min-w-0 text-left">
       <p className="text-sm font-medium text-neutral-900 dark:text-white font-sans">{label}</p>
-      {value && <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans truncate">{value}</p>}
+      {value && <p className="text-xs text-neutral-600 dark:text-neutral-400 font-sans truncate">{value}</p>}
     </div>
     <ChevronRight className="w-4 h-4 text-neutral-400 flex-shrink-0" strokeWidth={1.5} />
   </button>
@@ -458,12 +458,12 @@ export default function ParametresPage() {
           {loadingPush ? (
             <div className="flex items-center gap-3 px-4 py-4">
               <Loader2 className="w-4 h-4 text-primary animate-spin" strokeWidth={1.5} />
-              <p className="text-sm text-neutral-500 dark:text-neutral-400 font-sans">Chargement...</p>
+              <p className="text-sm text-neutral-600 dark:text-neutral-400 font-sans">Chargement...</p>
             </div>
           ) : !pushSupported ? (
             <div className="px-4 py-4 flex items-center gap-3">
               <BellOff className="w-4 h-4 text-neutral-400" strokeWidth={1.5} />
-              <p className="text-sm text-neutral-500 dark:text-neutral-400 font-sans">
+              <p className="text-sm text-neutral-600 dark:text-neutral-400 font-sans">
                 Les notifications push ne sont pas supportées sur ce navigateur
               </p>
             </div>
@@ -484,7 +484,7 @@ export default function ParametresPage() {
               {/* ── Titres secondaires — sous-préférences ──────────────────── */}
               {pushSubscribed && (
                 <div className="bg-neutral-50 dark:bg-neutral-900/40 border-t border-neutral-100 dark:border-neutral-800">
-                  <p className="text-[10px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-widest px-4 pt-3 pb-1">
+                  <p className="text-[10px] font-semibold text-neutral-600 dark:text-neutral-500 uppercase tracking-widest px-4 pt-3 pb-1">
                     Types d&apos;alertes
                   </p>
                   {notifTypes.map((t) => (
@@ -514,7 +514,7 @@ export default function ParametresPage() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-neutral-900 dark:text-white font-sans">Ma zone</p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans truncate">
+              <p className="text-xs text-neutral-600 dark:text-neutral-400 font-sans truncate">
                 {isLocating ? 'Détection en cours...' : zone || 'Non définie'}
               </p>
             </div>
@@ -562,7 +562,7 @@ export default function ParametresPage() {
             </div>
             <div>
               <p className="text-sm font-medium text-neutral-900 dark:text-white font-sans">Vito by Vitogaz</p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">Version 1.0.0 — Madagascar</p>
+              <p className="text-xs text-neutral-600 dark:text-neutral-400 font-sans">Version 1.0.0 — Madagascar</p>
             </div>
           </div>
           <div className="px-4 py-3.5 flex items-center gap-4">
@@ -571,7 +571,7 @@ export default function ParametresPage() {
             </div>
             <div>
               <p className="text-sm font-medium text-neutral-900 dark:text-white font-sans">Leader du gaz depuis 25 ans</p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">020 22 364 64 · Lun-Ven 8h-17h</p>
+              <p className="text-xs text-neutral-600 dark:text-neutral-400 font-sans">020 22 364 64 · Lun-Ven 8h-17h</p>
             </div>
           </div>
         </Section>

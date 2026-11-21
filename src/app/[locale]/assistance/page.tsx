@@ -99,7 +99,7 @@ export default function AssistancePage() {
       <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-[65px] pb-20 md:pb-0 flex items-center justify-center p-4">
         <div className="w-full max-w-md text-center">
           <div className="w-20 h-20 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-10 h-10 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
+            <CheckCircle className="w-10 h-10 text-emerald-700 dark:text-emerald-400" strokeWidth={1.5} />
           </div>
           <p className="text-2xl font-semibold text-neutral-900 dark:text-white mb-2 tracking-tight">
             Message envoyé !
@@ -280,7 +280,7 @@ export default function AssistancePage() {
               {/* Téléphone */}
               <div>
                 <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
-                  Téléphone <span className="text-neutral-400 font-normal">(optionnel)</span>
+                  Téléphone <span className="text-neutral-600 font-normal">(optionnel)</span>
                 </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -346,7 +346,7 @@ export default function AssistancePage() {
                       form.message.length >= MAX_CHARS ? 'text-red-500' :
                       form.message.length >= MAX_CHARS * 0.8 ? 'text-amber-500' :
                       form.message.length >= 10 ? 'text-emerald-500' :
-                      'text-neutral-400'
+                      'text-neutral-600'
                     }`}>
                       {form.message.length}/{MAX_CHARS}
                     </span>
@@ -381,7 +381,7 @@ export default function AssistancePage() {
                 )}
               </button>
 
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 text-center">
+              <p className="text-xs text-neutral-600 dark:text-neutral-400 text-center">
                 Les champs marqués <span className="text-red-500">*</span> sont obligatoires
               </p>
             </form>

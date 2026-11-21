@@ -122,7 +122,7 @@ export const ProductsList: React.FC = () => {
           <h2 className="text-2xl font-semibold text-neutral-900 dark:text-white font-sans mb-2">
             {sortedProducts.length} produit{sortedProducts.length !== 1 ? 's' : ''} disponible{sortedProducts.length !== 1 ? 's' : ''}
           </h2>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400 font-sans">
+          <p className="text-sm text-neutral-600 dark:text-neutral-400 font-sans">
             Explorez notre gamme complète
           </p>
         </div>

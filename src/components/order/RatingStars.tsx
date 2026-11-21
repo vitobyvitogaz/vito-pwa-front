@@ -60,7 +60,7 @@ export const RatingStars: React.FC<RatingStarsProps> = ({
         <span className="ml-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 font-sans">
           {rating.toFixed(1)}
           {reviewCount !== undefined && (
-            <span className="text-neutral-500 dark:text-neutral-400 ml-1">
+            <span className="text-neutral-600 dark:text-neutral-400 ml-1">
               ({reviewCount})
             </span>
           )}

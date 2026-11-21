@@ -33,7 +33,7 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
     price ? (
       <p className="text-sm font-bold text-primary">{formatPrice(price)}</p>
     ) : (
-      <p className="text-sm font-normal text-neutral-400 dark:text-neutral-500">Sur demande</p>
+      <p className="text-sm font-normal text-neutral-600 dark:text-neutral-500">Sur demande</p>
     )
 
   return (
@@ -129,7 +129,7 @@ export const ProductsDisplayCompact: React.FC<ProductsDisplayCompactProps> = ({ 
                   
                   {/* ── text-xs → text-sm : description lisible ── */}
                   {product.description && (
-                    <p className="text-sm text-neutral-500 dark:text-neutral-400 line-clamp-2 mt-1">
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-2 mt-1">
                       {product.description}
                     </p>
                   )}

@@ -72,14 +72,14 @@ export const BusinessHours: React.FC<BusinessHoursProps> = ({ hours, currentDay,
 
         <div className="text-right">
           {isClosed ? (
-            <span className="text-sm text-neutral-500 dark:text-neutral-400 italic">Fermé</span>
+            <span className="text-sm text-neutral-600 dark:text-neutral-400 italic">Fermé</span>
           ) : (
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-sm text-neutral-900 dark:text-neutral-100">
                 <span>{formatTime(schedule.open!)} - {formatTime(schedule.close!)}</span>
               </div>
               {schedule.breaks && schedule.breaks.length > 0 && (
-                <div className="text-xs text-neutral-500 dark:text-neutral-400">
+                <div className="text-xs text-neutral-600 dark:text-neutral-400">
                   Pause : {schedule.breaks.map(b => `${formatTime(b.start)}-${formatTime(b.end)}`).join(', ')}
                 </div>
               )}

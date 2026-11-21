@@ -34,6 +34,7 @@ export const InstallPrompt: React.FC = () => {
       <div className="bg-white dark:bg-dark-surface rounded-2xl shadow-2xl border border-neutral-200 dark:border-neutral-700 p-4">
         <button
           onClick={() => setShowPrompt(false)}
+          aria-label="Fermer"
           className="absolute top-3 right-3 p-1.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
         >
           <XMarkIcon className="w-4 h-4 text-neutral-500 dark:text-neutral-400" />
@@ -42,10 +43,10 @@ export const InstallPrompt: React.FC = () => {
         <div className="flex items-start gap-3">
           <img src="/icons/icon-96x96.png" alt="Vito" className="w-12 h-12 rounded-2xl flex-shrink-0" />
           <div className="flex-1">
-            <h3 className="font-semibold text-neutral-900 dark:text-white mb-0.5">
+            <h2 className="font-semibold text-neutral-900 dark:text-white mb-0.5">
               Installer VitoByVitogaz
-            </h3>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-3">
+            </h2>
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
               Accès rapide depuis votre écran d&apos;accueil
             </p>
             <div className="flex gap-2">

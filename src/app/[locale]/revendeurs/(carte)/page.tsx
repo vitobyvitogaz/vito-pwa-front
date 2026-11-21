@@ -360,7 +360,7 @@ export default function ResellersPage() {
                     <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
                       <div className="flex items-start gap-3">
                         <div className="w-6 h-6 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <CheckCircle className="w-3 h-3 text-emerald-600" strokeWidth={1.5} />
+                          <CheckCircle className="w-3 h-3 text-emerald-700" strokeWidth={1.5} />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-emerald-800 dark:text-emerald-300">{Object.keys(distances).length} distances calculées</p>
@@ -399,7 +399,7 @@ export default function ResellersPage() {
               <div className="bg-white dark:bg-dark-surface p-4 border-b border-neutral-200 dark:border-neutral-800">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-neutral-900 dark:text-white">{sortedResellers.length} revendeur{sortedResellers.length > 1 ? 's' : ''}</p>
-                  <div className="text-xs text-neutral-500">Page {currentPage} sur {Math.ceil(sortedResellers.length / PAGE_SIZE)}</div>
+                  <div className="text-xs text-neutral-600">Page {currentPage} sur {Math.ceil(sortedResellers.length / PAGE_SIZE)}</div>
                 </div>
               </div>
               <div className="flex-1 overflow-y-auto">
@@ -524,7 +524,7 @@ export default function ResellersPage() {
                   {sortedResellers.length} revendeur{sortedResellers.length > 1 ? 's' : ''}
                 </span>
                 {userLocation && distances && Object.keys(distances).length > 0 && (
-                  <span className="text-xs text-emerald-600 dark:text-emerald-400">• triés par distance</span>
+                  <span className="text-xs text-emerald-700 dark:text-emerald-400">• triés par distance</span>
                 )}
                 {searchQuery && (
                   <span className="text-xs text-primary font-medium">• &quot;{searchQuery}&quot;</span>
@@ -551,6 +551,7 @@ export default function ResellersPage() {
                 {(sheetState === 'half' || sheetState === 'full') && (
                   <button
                     onClick={() => setSheetState(sheetState === 'full' ? 'half' : 'quarter')}
+                    aria-label="Réduire la liste des revendeurs"
                     className="w-11 h-11 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center active:scale-90 transition-transform"
                   >
                     <ChevronUp className="w-5 h-5 text-neutral-500 rotate-180" strokeWidth={2} />
@@ -559,6 +560,7 @@ export default function ResellersPage() {
                 {(sheetState === 'quarter' || sheetState === 'half') && (
                   <button
                     onClick={() => setSheetState(sheetState === 'quarter' ? 'half' : 'full')}
+                    aria-label="Agrandir la liste des revendeurs"
                     className="w-11 h-11 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center active:scale-90 transition-transform"
                   >
                     <ChevronUp className="w-5 h-5 text-neutral-500" strokeWidth={2} />
@@ -601,7 +603,7 @@ export default function ResellersPage() {
 
               {distances && Object.keys(distances).length > 0 && userLocation && (
                 <div className="flex items-center gap-2 px-3 py-2 mb-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
-                  <CheckCircle className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" strokeWidth={1.5} />
+                  <CheckCircle className="w-3.5 h-3.5 text-emerald-700 flex-shrink-0" strokeWidth={1.5} />
                   <span className="text-xs text-emerald-700 dark:text-emerald-300">
                     {Object.keys(distances).length} distances calculées
                   </span>
@@ -664,6 +666,7 @@ export default function ResellersPage() {
               <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">Filtres</h2>
               <button
                 onClick={() => setShowMobileFilters(false)}
+                aria-label="Fermer les filtres"
                 className="w-11 h-11 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center active:scale-90 transition-transform"
               >
                 <X className="w-5 h-5 text-neutral-600 dark:text-neutral-400" strokeWidth={1.5} />

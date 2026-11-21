@@ -17,7 +17,7 @@ export const TravelModeSelector: React.FC<TravelModeSelectorProps> = ({ mode, on
   return (
     // ── Compact : flex horizontal, moins de padding, pas de card wrapper ──
     <div className="flex items-center gap-2">
-      <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400 flex-shrink-0">
+      <span className="text-xs font-medium text-neutral-600 dark:text-neutral-400 flex-shrink-0">
         Transport :
       </span>
       <div className="flex gap-1.5">

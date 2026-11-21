@@ -122,7 +122,7 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({ document: doc, onClose }) 
                 {doc.title}
               </h2>
               {(doc.page_count || fileSize) && (
-                <div className="flex items-center gap-4 text-sm text-neutral-500 dark:text-neutral-400 mt-1.5 font-sans tabular-nums">
+                <div className="flex items-center gap-4 text-sm text-neutral-600 dark:text-neutral-400 mt-1.5 font-sans tabular-nums">
                   {doc.page_count ? <span>{doc.page_count} pages</span> : null}
                   {doc.page_count && fileSize ? (
                     <span className="w-1 h-1 rounded-full bg-neutral-300 dark:bg-neutral-700"></span>
@@ -199,7 +199,7 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({ document: doc, onClose }) 
               <div className="w-full flex-1 min-h-0 rounded-2xl overflow-hidden shadow-md">
                 <iframe src={blobUrl} className="w-full h-full bg-white" title={doc.title} />
               </div>
-              <p className="text-center text-sm text-neutral-500 dark:text-neutral-400 font-sans">
+              <p className="text-center text-sm text-neutral-600 dark:text-neutral-400 font-sans">
                 Le PDF ne s&apos;affiche pas correctement ?{' '}
                 <a
                   href={openLink}

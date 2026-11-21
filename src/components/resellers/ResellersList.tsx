@@ -81,7 +81,7 @@ export const ResellersList: React.FC<ResellersListProps> = ({
           {hasGps ? (
             // ── Avec GPS : les filtres sont probablement trop restrictifs ──
             <div className="space-y-2">
-              <p className="text-sm text-neutral-500 dark:text-neutral-400 font-sans max-w-xs mx-auto">
+              <p className="text-sm text-neutral-600 dark:text-neutral-400 font-sans max-w-xs mx-auto">
                 Aucun revendeur ne correspond à vos filtres dans cette zone.
               </p>
               <div className="flex items-center justify-center gap-1.5 text-xs text-primary font-sans">
@@ -92,7 +92,7 @@ export const ResellersList: React.FC<ResellersListProps> = ({
           ) : (
             // ── Sans GPS : inviter à choisir une zone manuellement ──
             <div className="space-y-2">
-              <p className="text-sm text-neutral-500 dark:text-neutral-400 font-sans max-w-xs mx-auto">
+              <p className="text-sm text-neutral-600 dark:text-neutral-400 font-sans max-w-xs mx-auto">
                 Activez le GPS pour trouver les revendeurs près de vous, ou sélectionnez une zone dans le filtre.
               </p>
               <div className="flex items-center justify-center gap-1.5 text-xs text-primary font-sans">

@@ -29,7 +29,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
         <div className="relative">
           {leftIcon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-600 dark:text-neutral-500">
               {leftIcon}
             </div>
           )}
@@ -56,7 +56,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-600 dark:text-neutral-500">
               {rightIcon}
             </div>
           )}
@@ -65,7 +65,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <p className="mt-1.5 text-sm text-red-600">{error}</p>
         )}
         {helperText && !error && (
-          <p className="mt-1.5 text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="mt-1.5 text-sm text-neutral-600 dark:text-neutral-400">
             {helperText}
           </p>
         )}

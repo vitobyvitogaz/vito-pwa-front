@@ -142,7 +142,7 @@ export default function ScanPage() {
       <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg flex items-center justify-center pt-[65px]">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
-          <p className="text-sm text-neutral-500 font-sans">Chargement de la promotion...</p>
+          <p className="text-sm text-neutral-600 font-sans">Chargement de la promotion...</p>
         </div>
       </div>
     )
@@ -158,7 +158,7 @@ export default function ScanPage() {
         <h1 className="text-2xl font-semibold font-display text-neutral-900 dark:text-white mb-3">
           Promotion introuvable
         </h1>
-        <p className="text-neutral-500 dark:text-neutral-400 font-sans mb-8 max-w-sm">
+        <p className="text-neutral-600 dark:text-neutral-400 font-sans mb-8 max-w-sm">
           {error || 'Ce QR code ne correspond à aucune promotion active.'}
         </p>
         <button onClick={() => router.push(`/${locale}/promotions`)}
@@ -174,7 +174,7 @@ export default function ScanPage() {
     return (
       <div className="min-h-screen bg-neutral-25 dark:bg-dark-bg flex flex-col items-center justify-center p-6 pt-[65px] text-center">
         <div className="w-24 h-24 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-          <CheckCircle className="w-12 h-12 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
+          <CheckCircle className="w-12 h-12 text-emerald-700 dark:text-emerald-400" strokeWidth={1.5} />
         </div>
 
         <h1 className="text-2xl font-semibold font-display text-neutral-900 dark:text-white mb-4">
@@ -209,7 +209,7 @@ export default function ScanPage() {
             </button>
           )}
           <button onClick={() => router.push(`/${locale}/promotions`)}
-            className="w-full py-3 text-neutral-500 dark:text-neutral-400 text-sm font-sans hover:text-neutral-700 transition-colors">
+            className="w-full py-3 text-neutral-600 dark:text-neutral-400 text-sm font-sans hover:text-neutral-700 transition-colors">
             Retour aux promotions
           </button>
         </div>
@@ -289,11 +289,11 @@ export default function ScanPage() {
             {/* Conditions */}
             {promo.conditions && promo.conditions.length > 0 && (
               <div className="space-y-1.5">
-                <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">Conditions</p>
+                <p className="text-xs font-semibold text-neutral-600 uppercase tracking-wide">Conditions</p>
                 {promo.conditions.map((c, i) => (
                   <div key={i} className="flex items-start gap-2">
                     <div className="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <CheckCircle className="w-2.5 h-2.5 text-emerald-600" strokeWidth={2} />
+                      <CheckCircle className="w-2.5 h-2.5 text-emerald-700" strokeWidth={2} />
                     </div>
                     <p className="text-xs text-neutral-600 dark:text-neutral-400 font-sans leading-snug">{c}</p>
                   </div>
@@ -309,7 +309,7 @@ export default function ScanPage() {
             <h2 className="text-base font-semibold font-display text-neutral-900 dark:text-white mb-1">
               Votre participation
             </h2>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400 font-sans">
+            <p className="text-xs text-neutral-600 dark:text-neutral-400 font-sans">
               Complétez les informations ci-dessous pour valider votre participation.
             </p>
           </div>
@@ -350,7 +350,7 @@ export default function ScanPage() {
               onChange={e => handleCinInput(e.target.value)}
               placeholder="12 chiffres (ex: 101234567890)"
               className="w-full px-4 py-3 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800/50 text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all font-sans tracking-wider" />
-            <p className="text-xs text-neutral-400 mt-1.5 font-sans">
+            <p className="text-xs text-neutral-600 mt-1.5 font-sans">
               {cinNumber.length}/12 chiffres
             </p>
           </div>
@@ -359,7 +359,7 @@ export default function ScanPage() {
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2 font-sans">
               <Mail className="w-4 h-4 text-neutral-400" strokeWidth={1.5} />
-              Email <span className="text-xs text-neutral-400 font-normal">(optionnel)</span>
+              Email <span className="text-xs text-neutral-600 font-normal">(optionnel)</span>
             </label>
             <input type="email" value={email} onChange={e => setEmail(e.target.value)}
               placeholder="Ex: jean@example.com"
