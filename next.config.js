@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Les balises (titre, description, adresse canonique, partage) doivent être dans l'en-tête <head> du HTML pour
+  // TOUS les visiteurs. Par défaut Next.js les diffuse en différé dans le corps de la page, sauf pour une liste de
+  // robots précis ; Googlebot et les robots d'IA n'en font pas partie et lisaient donc les balises hors de l'en-tête.
+  htmlLimitedBots: /.*/,
   turbopack: {},
   images: {
     remotePatterns: [
