@@ -1,5 +1,6 @@
 ﻿import { create } from 'zustand'
 import type { Reseller } from '@/types/reseller'
+import { RESELLERS_ACTIVE_URL } from '@/lib/api/resellers'
 
 interface ResellerState {
   resellers: Reseller[]
@@ -65,7 +66,7 @@ export const useResellerStore = create<ResellerState>((set) => ({
     try {
       const response = await fetchWithRetry(
         //'https://vito-backend-supabase.onrender.com/api/v1/resellers',
-        'https://vito-backend-supabase.onrender.com/api/v1/resellers/active',
+        RESELLERS_ACTIVE_URL,
         {},
         3, // 3 retries max (= 4 tentatives au total)
         1000 // 1 seconde de base
