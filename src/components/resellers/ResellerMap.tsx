@@ -37,11 +37,13 @@ const createResellerIcon = (color: string, isSelected: boolean = false) => {
   const size = isSelected ? 28 : 20
   const borderColor = isSelected ? '#FFD700' : '#ffffff'
   const borderWidth = isSelected ? 3 : 2
+  // Zone tactile d'au moins 24 px (WCAG 2.2), le cercle visible restant centré dans cette zone
+  const box = Math.max(size, 24)
   return L.divIcon({
     className: 'custom-marker',
-    html: `<div style="width:${size}px;height:${size}px;background-color:${color};border:${borderWidth}px solid ${borderColor};border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.3);${isSelected ? 'animation:bounce 0.7s;' : ''}"></div>`,
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
+    html: `<div style="width:${box}px;height:${box}px;display:flex;align-items:center;justify-content:center"><div style="width:${size}px;height:${size}px;background-color:${color};border:${borderWidth}px solid ${borderColor};border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.3);${isSelected ? 'animation:bounce 0.7s;' : ''}"></div></div>`,
+    iconSize: [box, box],
+    iconAnchor: [box / 2, box / 2],
   })
 }
 
@@ -168,7 +170,7 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
         <MapController resellers={resellers} selectedReseller={selectedReseller} userLocation={userLocation} />
 
         {userLocation && (
-          <Marker position={[userLocation.lat, userLocation.lng]} icon={createUserIcon()}>
+          <Marker position={[userLocation.lat, userLocation.lng]} icon={createUserIcon()} title="Votre position" keyboard={false}>
             <Popup><div className="text-sm font-medium">Votre position</div></Popup>
           </Marker>
         )}
@@ -178,6 +180,10 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
             key={reseller.id}
             position={[reseller.lat, reseller.lng]}
             icon={createResellerIcon(getColorForType(reseller.type), selectedReseller?.id === reseller.id)}
+            title={reseller.name}
+            // Les 620 marqueurs ne sont pas des arrêts de tabulation : la liste des revendeurs, à côté de la carte,
+            // offre la même sélection au clavier et aux lecteurs d'écran.
+            keyboard={false}
             eventHandlers={{ click: () => onSelectReseller(reseller) }}
           >
             <Popup>

@@ -286,7 +286,7 @@ export default function ResellersPage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-base font-medium text-neutral-900 dark:text-white">Calcul des distances</h3>
+                    <h2 className="text-base font-medium text-neutral-900 dark:text-white">Calcul des distances</h2>
                     <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-0.5">
                       {userLocation ? 'Personnalisé selon votre position' : 'Activez la géolocalisation'}
                     </p>

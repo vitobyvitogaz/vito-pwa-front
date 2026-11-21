@@ -48,7 +48,7 @@ export const Breadcrumb: React.FC = () => {
   }
 
   return (
-    <nav className="bg-white dark:bg-dark-surface border-b border-neutral-200 dark:border-neutral-800 mt-[64px] sm:mt-[70px]">
+    <nav aria-label="Fil d'Ariane" className="bg-white dark:bg-dark-surface border-b border-neutral-200 dark:border-neutral-800 mt-[64px] sm:mt-[70px]">
       <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
         <ol className="flex items-center gap-2 text-sm font-sans min-h-[3rem] py-3">
           <li className="flex items-center">
