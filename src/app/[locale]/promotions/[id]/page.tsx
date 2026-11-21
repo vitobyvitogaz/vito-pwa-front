@@ -458,7 +458,7 @@ export default function PromotionDetailPage() {
                 <div className="bg-white dark:bg-dark-surface border-2 border-dashed border-primary/30 rounded-2xl overflow-hidden">
                   <div className="px-4 py-2.5 border-b border-dashed border-primary/20 bg-primary/5 dark:bg-primary/10 flex items-center gap-2">
                     <Store className="w-4 h-4 text-primary" strokeWidth={1.5} />
-                    <p className="text-xs font-medium text-primary/80 font-sans">Présentez ce code à votre revendeur</p>
+                    <p className="text-xs font-medium text-primary font-sans">Présentez ce code à votre revendeur</p>
                   </div>
                   <div className="px-4 py-5 flex items-center justify-between">
                     <span className="text-3xl font-black text-primary font-mono tracking-[0.2em]">

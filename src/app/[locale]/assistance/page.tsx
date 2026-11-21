@@ -126,7 +126,7 @@ export default function AssistancePage() {
         <div className="container mx-auto max-w-2xl">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-white/70 hover:text-white transition-colors mb-6"
+            className="flex items-center gap-2 text-white hover:underline transition-colors mb-6"
           >
             <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
             <span className="text-sm font-medium">Retour à l&apos;accueil</span>
@@ -142,7 +142,7 @@ export default function AssistancePage() {
           {/* ── Téléphone EN PREMIER — action prioritaire pour le public malgache ── */}
           <a
             href="tel:+261202236464"
-            className="flex items-center gap-4 group mb-4 p-3 rounded-2xl bg-white/15 hover:bg-white/25 transition-all duration-200 active:scale-95"
+            className="flex items-center gap-4 group mb-4 p-3 rounded-2xl bg-primary-800/30 hover:bg-primary-800/40 transition-all duration-200 active:scale-95"
           >
             <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center flex-shrink-0">
               <Phone className="w-6 h-6 text-primary" strokeWidth={2} />
@@ -152,18 +152,18 @@ export default function AssistancePage() {
               <p className="text-white font-bold text-xl leading-tight">
                 020 22 364 64
               </p>
-              <p className="text-white/70 text-sm font-sans">
+              <p className="text-white text-sm font-sans">
                 Appuyez pour appeler
               </p>
             </div>
             <div className="ml-auto">
               <div className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
                 open
-                  ? 'bg-emerald-400/20 text-emerald-200 border border-emerald-400/30'
-                  : 'bg-red-400/20 text-red-200 border border-red-400/30'
+                  ? 'bg-white text-primary-700'
+                  : 'bg-white text-accent-700'
               }`}>
                 <div className="flex items-center gap-1.5">
-                  <div className={`w-1.5 h-1.5 rounded-full ${open ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`} />
+                  <div className={`w-1.5 h-1.5 rounded-full ${open ? 'bg-primary animate-pulse' : 'bg-accent'}`} />
                   {open ? 'Ouvert' : 'Fermé'}
                 </div>
               </div>
@@ -173,7 +173,7 @@ export default function AssistancePage() {
           {/* Horaires */}
           <div className="flex items-center gap-3 mb-6">
             <Clock className="w-4 h-4 text-white/60 flex-shrink-0" strokeWidth={1.5} />
-            <p className="text-white/70 text-sm font-sans">Lun. au Ven. | 8h - 17h</p>
+            <p className="text-white text-sm font-sans">Lun. au Ven. | 8h - 17h</p>
           </div>
 
           {/* Autres contacts */}
