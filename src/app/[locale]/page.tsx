@@ -121,6 +121,9 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-neutral-25 dark:bg-dark-bg pt-[65px] pb-20 md:pb-0">
+      {/* Titre principal stable, présent dès le HTML : le titre de la bannière, saisi dans le backoffice, n'arrive
+          qu'après chargement et n'est donc plus un h1. */}
+      <h1 className="sr-only">Vito by Vitogaz : revendeurs et gaz à Madagascar</h1>
       <InstallPrompt />
 
       {showPopup && selectedPromotion && (
@@ -156,9 +159,9 @@ export default function HomePage() {
                     <X className="w-5 h-5 text-white group-hover:rotate-90 transition-transform duration-200" />
                   </button>
                   {title && (
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold font-editorial text-white mb-4 tracking-tight text-center">
+                    <p className="text-4xl sm:text-5xl md:text-6xl font-semibold font-editorial text-white mb-4 tracking-tight text-center">
                       {title}
-                    </h1>
+                    </p>
                   )}
                   {subtitle && (
                     <h2 className="text-lg sm:text-xl md:text-2xl font-medium text-white/90 mb-6 tracking-tight text-center">
@@ -230,9 +233,9 @@ export default function HomePage() {
                   <X className="w-4 h-4 text-white group-hover:rotate-90 transition-transform duration-200" />
                 </button>
                 {title && (
-                  <h1 className="text-3xl font-semibold font-editorial text-white mb-3 tracking-tight text-center pr-8">
+                  <p className="text-3xl font-semibold font-editorial text-white mb-3 tracking-tight text-center pr-8">
                     {title}
-                  </h1>
+                  </p>
                 )}
                 {subtitle && (
                   <h2 className="text-base font-medium text-white/90 mb-4 tracking-tight text-center">

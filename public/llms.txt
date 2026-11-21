@@ -7,6 +7,7 @@ Langue : français. Les prix et les promotions varient selon la zone : la page P
 ## Pages principales
 
 - [Trouver un revendeur](https://vitobyvitogaz.mg/fr/revendeurs): carte des points de vente Vitogaz, avec distances et itinéraires
+- Revendeurs par ville : une page par ville, par exemple [Antananarivo](https://vitobyvitogaz.mg/fr/revendeurs/antananarivo), [Toamasina](https://vitobyvitogaz.mg/fr/revendeurs/toamasina), [Antsirabe](https://vitobyvitogaz.mg/fr/revendeurs/antsirabe) ; la liste complète est sur la page des revendeurs
 - [Commander du gaz à domicile](https://vitobyvitogaz.mg/fr/commander): sociétés de livraison de gaz partenaires
 - [Promotions](https://vitobyvitogaz.mg/fr/promotions): offres Vitogaz en cours, par zone
 - [Produits](https://vitobyvitogaz.mg/fr/produits): gamme des produits Vitogaz

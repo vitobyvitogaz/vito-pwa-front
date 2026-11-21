@@ -40,6 +40,10 @@ export const Breadcrumb: React.FC = () => {
       if (prev === 'revendeurs') return "Fiche revendeur"
       return "Détail"
     }
+    // Page d'une ville : /revendeurs/nosy-be → « Nosy Be »
+    if (segments[index - 1] === 'revendeurs') {
+      return segment.replace(/-/g, ' ').replace(/(^|\s)(\S)/g, (_m, sep: string, ch: string) => sep + ch.toUpperCase())
+    }
     return segment
   }
 
