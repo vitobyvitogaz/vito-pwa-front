@@ -22,6 +22,14 @@ const nextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
+  // Les versions /en et /mg ne sont pas traduites : elles affichaient le français en double.
+  // Redirection permanente vers la seule langue publiée. À retirer le jour où une langue sera réellement traduite.
+  async redirects() {
+    return [
+      { source: '/en/:path*', destination: '/fr/:path*', permanent: true },
+      { source: '/mg/:path*', destination: '/fr/:path*', permanent: true },
+    ]
+  },
   async headers() {
     return [
       {

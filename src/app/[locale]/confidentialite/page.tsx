@@ -3,7 +3,8 @@ import Link from 'next/link'
 import { ArrowLeft, ShieldCheck } from '@phosphor-icons/react/dist/ssr'
 
 export const metadata: Metadata = {
-  title: 'Politique de confidentialité — VitoByVitogaz',
+  title: 'Politique de confidentialité',
+  alternates: { canonical: '/fr/confidentialite' },
   description:
     "Les données personnelles que l'application Vito by Vitogaz collecte, pourquoi, avec qui elles sont partagées et comment exercer vos droits.",
 }
