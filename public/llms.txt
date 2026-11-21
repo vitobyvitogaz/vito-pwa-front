@@ -1,0 +1,24 @@
+# Vito by Vitogaz
+
+> Vito by Vitogaz est l'application de Vitogaz Madagascar, distributeur de gaz domestique en bouteilles. Elle permet de trouver un revendeur Vitogaz, de contacter une société de livraison de gaz à domicile, de consulter les promotions, les produits et les conseils de sécurité.
+
+Langue : français. Les prix et les promotions varient selon la zone : la page Promotions présente les offres en cours.
+
+## Pages principales
+
+- [Trouver un revendeur](https://vitobyvitogaz.mg/fr/revendeurs): carte des points de vente Vitogaz, avec distances et itinéraires
+- [Commander du gaz à domicile](https://vitobyvitogaz.mg/fr/commander): sociétés de livraison de gaz partenaires
+- [Promotions](https://vitobyvitogaz.mg/fr/promotions): offres Vitogaz en cours, par zone
+- [Produits](https://vitobyvitogaz.mg/fr/produits): gamme des produits Vitogaz
+- [Documents et sécurité](https://vitobyvitogaz.mg/fr/documents): vidéos, consignes de sécurité, guides et documentation
+- [Service clients](https://vitobyvitogaz.mg/fr/assistance): écrire à Vitogaz Madagascar
+- [Devenir partenaire](https://vitobyvitogaz.mg/fr/contact-pro): devenir revendeur ou client professionnel
+
+## Informations légales
+
+- [Conditions d'utilisation](https://vitobyvitogaz.mg/fr/conditions)
+- [Politique de confidentialité](https://vitobyvitogaz.mg/fr/confidentialite)
+
+## Contact
+
+Vitogaz Madagascar, Route digue 2, Andohatapenaka II, Andranoabo, 101 Antananarivo (B.P. 3984).
