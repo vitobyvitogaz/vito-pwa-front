@@ -144,6 +144,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
         <div className="flex flex-wrap gap-3 overflow-x-auto py-2">
           <div className="flex items-center gap-2 shrink-0">
             <select
+            aria-label="Filtrer par segment"
               value={selectedSegment}
               onChange={(e) => setSelectedSegment(e.target.value)}
               className="px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-sm font-medium text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 tracking-tight"
@@ -158,6 +159,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
           {cities.length > 0 && (
             <div className="flex items-center gap-2 shrink-0">
               <select
+              aria-label="Filtrer par ville"
                 value={selectedCity}
                 onChange={(e) => setSelectedCity(e.target.value)}
                 className="px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-sm font-medium text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 tracking-tight"
@@ -201,6 +203,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
         <div className="flex flex-wrap gap-2">
           <div className="flex-1 min-w-[140px]">
             <select
+            aria-label="Filtrer par segment"
               value={selectedSegment}
               onChange={(e) => setSelectedSegment(e.target.value)}
               className="w-full px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-sm font-medium text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 tracking-tight"
@@ -215,6 +218,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
           {cities.length > 0 && (
             <div className="flex-1 min-w-[140px]">
               <select
+              aria-label="Filtrer par ville"
                 value={selectedCity}
                 onChange={(e) => setSelectedCity(e.target.value)}
                 className="w-full px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface text-sm font-medium text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 tracking-tight"

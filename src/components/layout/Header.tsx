@@ -120,7 +120,7 @@ export const Header: React.FC = () => {
           </Link>
 
           {/* Nav Desktop */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav aria-label="Navigation principale" className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
               const Icon = item.icon
               const isActive = pathname.startsWith(item.href)

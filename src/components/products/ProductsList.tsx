@@ -171,6 +171,7 @@ export const ProductsList: React.FC = () => {
           <button
             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             disabled={currentPage === 1}
+            aria-label="Page précédente"
             className="p-3 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
@@ -195,6 +196,7 @@ export const ProductsList: React.FC = () => {
           <button
             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
             disabled={currentPage === totalPages}
+            aria-label="Page suivante"
             className="p-3 rounded-full bg-white dark:bg-dark-surface border border-neutral-200 dark:border-neutral-800 hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             <ChevronRight className="w-5 h-5" strokeWidth={1.5} />

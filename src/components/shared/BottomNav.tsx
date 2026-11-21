@@ -37,6 +37,7 @@ export const BottomNav: React.FC = () => {
   return (
     <>
       <nav
+        aria-label="Navigation mobile"
         className="md:hidden fixed bottom-0 left-0 right-0 z-[1002] bg-white/95 dark:bg-dark-surface/95 backdrop-blur-xl border-t border-neutral-200/60 dark:border-dark-border/60 shadow-[0_-8px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_-8px_24px_rgba(0,0,0,0.3)]"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
