@@ -41,6 +41,8 @@ export const metadata: Metadata = {
   applicationName: SITE_NAME,
   manifest: '/manifest.json',
   alternates: { canonical: './' },
+  // Vérification de la propriété du site dans Google Search Console (balise HTML)
+  verification: { google: 'y5EkqrgB_jEAX7OOCYSLKx0FTvYSFi9493r59FAzOTA' },
 
   icons: {
     icon: [
