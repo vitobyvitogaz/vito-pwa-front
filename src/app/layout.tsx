@@ -7,6 +7,7 @@ import { ScrollToTop } from '@/components/shared/ScrollToTop'
 import { ServiceWorkerRegister } from '@/components/shared/ServiceWorkerRegister'
 import { OfflineNavigation } from '@/components/shared/OfflineNavigation'
 import { OfflineBanner } from '@/components/ui/OfflineBanner'
+import { PushInvite } from '@/components/shared/PushInvite'
 import '@/styles/globals.css'
 import 'leaflet/dist/leaflet.css'
 
@@ -72,6 +73,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <OfflineBanner />
         <ServiceWorkerRegister />
         <OfflineNavigation />
+        <PushInvite />
       </body>
     </html>
   )

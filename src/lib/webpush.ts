@@ -1,6 +1,6 @@
 // src/lib/webpush.ts
 
-const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
+export const API_URL = 'https://vito-backend-supabase.onrender.com/api/v1'
 
 export const isPushSupported = (): boolean => {
   return (

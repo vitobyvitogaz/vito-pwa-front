@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     "Les données personnelles que l'application Vito by Vitogaz collecte, pourquoi, avec qui elles sont partagées et comment exercer vos droits.",
 }
 
-const lastUpdated = '20 novembre 2026'
+const lastUpdated = '21 novembre 2026'
 
 interface Item {
   label: string
@@ -65,11 +65,11 @@ const sections: Section[] = [
       },
       {
         label: 'Si vous activez les notifications (facultatif).',
-        text: "Nous enregistrons l'identifiant technique d'abonnement de votre navigateur, les zones et types de notifications choisis et votre type d'appareil. Vous pouvez les désactiver à tout moment dans Paramètres.",
+        text: "Nous enregistrons l'identifiant technique d'abonnement de votre navigateur, les zones et types de notifications choisis et votre type d'appareil. Vous pouvez les désactiver à tout moment dans Paramètres. Nous vous proposons de les activer à l'installation de l'application, puis par un bandeau (à partir de la deuxième visite, tous les 14 jours, trois fois au plus) tant que vous n'avez pas répondu. La demande de votre navigateur ne s'affiche que si vous touchez « Activer ». Pour savoir si cette invitation est utile, nous comptons chaque jour, sans aucun identifiant, combien de fois elle est affichée, acceptée, refusée ou fermée : ces compteurs ne sont rattachés ni à vous ni à votre appareil.",
       },
       {
         label: 'Sur votre appareil.',
-        text: "L'application mémorise sur votre appareil votre nom et votre numéro de téléphone après une participation (pour pré-remplir les formulaires), votre position, vos préférences (thème, notifications) et des copies de pages, de documents et d'images pour fonctionner hors ligne. Ces copies ne contiennent aucune donnée personnelle. Le bouton « Vider le cache » de Paramètres supprime les copies hors ligne ; les autres informations s'effacent dans les réglages de votre navigateur.",
+        text: "L'application mémorise sur votre appareil votre nom et votre numéro de téléphone après une participation (pour pré-remplir les formulaires), votre position, vos préférences (thème, notifications), l'état de l'invitation à activer les notifications (nombre de visites et dates d'affichage) et des copies de pages, de documents et d'images pour fonctionner hors ligne. Ces copies ne contiennent aucune donnée personnelle. Le bouton « Vider le cache » de Paramètres supprime les copies hors ligne ; les autres informations s'effacent dans les réglages de votre navigateur.",
       },
     ],
   },
@@ -80,7 +80,7 @@ const sections: Section[] = [
       'gérer le programme de fidélité, vérifier les participations et limiter la fraude ;',
       'répondre à vos demandes et à vos messages ;',
       'envoyer les notifications que vous avez choisies ;',
-      "mesurer l'usage de l'application (statistiques) ;",
+      "mesurer l'usage de l'application (statistiques), y compris, de façon anonyme, l'utilité de l'invitation à activer les notifications ;",
       'assurer la sécurité et le bon fonctionnement du service.',
     ],
     closing: ["L'application ne contient ni publicité ni outil de suivi publicitaire, et n'utilise pas de cookies."],
