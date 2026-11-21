@@ -103,7 +103,7 @@ export const Footer: React.FC = () => {
 
           {/* Liens rapides */}
           <div>
-            <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4 font-display">Liens rapides</h3>
+            <h2 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4 font-display">Liens rapides</h2>
             <ul className="space-y-2">
               <li><Link href="/fr/revendeurs" prefetch={false} className="text-neutral-600 dark:text-neutral-400 hover:text-primary transition-colors">Nos revendeurs</Link></li>
               <li><Link href="/fr/commander" prefetch={false} className="text-neutral-600 dark:text-neutral-400 hover:text-primary transition-colors">Commander</Link></li>
@@ -114,7 +114,7 @@ export const Footer: React.FC = () => {
 
           {/* Contact */}
           <div>
-            <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4 font-display">Contact</h3>
+            <h2 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4 font-display">Contact</h2>
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
                 <PhoneIcon className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />

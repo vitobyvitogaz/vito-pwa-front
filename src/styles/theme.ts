@@ -3,13 +3,13 @@
 export const colors = {
   // Couleurs principales Vitogaz
   primary: {
-    DEFAULT: '#008B7F',    // Vert Vitogaz principal
+    DEFAULT: '#007B71',    // Vert Vitogaz principal
     50: '#E6F7F5',
     100: '#CCEFEB',
     200: '#99DFD7',
     300: '#66CFC3',
     400: '#33BFAF',
-    500: '#008B7F',         // Base
+    500: '#007B71',         // Base
     600: '#007066',
     700: '#00544D',
     800: '#003833',

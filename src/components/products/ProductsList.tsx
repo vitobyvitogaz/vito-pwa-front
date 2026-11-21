@@ -101,9 +101,9 @@ export const ProductsList: React.FC = () => {
         <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900 dark:to-red-800 flex items-center justify-center">
           <Package className="w-10 h-10 text-red-500" strokeWidth={1} />
         </div>
-        <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-3 font-sans">
+        <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-3 font-sans">
           {error}
-        </h3>
+        </h2>
         <button
           onClick={fetchProducts}
           className="px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-600 transition-colors duration-200 font-sans"
@@ -208,9 +208,9 @@ export const ProductsList: React.FC = () => {
           <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-900 dark:to-neutral-800 flex items-center justify-center">
             <Package className="w-10 h-10 text-neutral-400" strokeWidth={1} />
           </div>
-          <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-3 font-sans">
+          <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-3 font-sans">
             Aucun produit dans cette catégorie
-          </h3>
+          </h2>
           <p className="text-neutral-600 dark:text-neutral-400 mb-6 font-sans">
             Consultez nos autres catégories
           </p>

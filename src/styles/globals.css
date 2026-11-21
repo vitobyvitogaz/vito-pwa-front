@@ -28,7 +28,7 @@
 
   /* Focus clavier visible et cohérent (accessibilité) */
   :focus-visible {
-    outline: 2px solid #008B7F;
+    outline: 2px solid #007B71;
     outline-offset: 2px;
     border-radius: 4px;
   }

@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       subject: `[VITO] ${singleLine(subject)} — ${singleLine(name)}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="background: #008B7F; padding: 24px; border-radius: 12px 12px 0 0;">
+          <div style="background: #007B71; padding: 24px; border-radius: 12px 12px 0 0;">
             <h1 style="color: white; margin: 0; font-size: 20px;">Nouveau message via VITO</h1>
           </div>
           <div style="background: #f9f9f9; padding: 24px; border-radius: 0 0 12px 12px; border: 1px solid #e5e5e5;">

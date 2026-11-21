@@ -3,7 +3,7 @@
 import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Shield } from '@phosphor-icons/react'
 
-const VITOGAZ_GREEN = '#008B7F'
+const VITOGAZ_GREEN = '#007B71'
 
 const lastUpdated = '1er avril 2026'
 

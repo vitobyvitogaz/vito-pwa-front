@@ -122,7 +122,7 @@ export default function AssistancePage() {
     <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-[65px] pb-20 md:pb-0">
 
       {/* Header teal */}
-      <div style={{ backgroundColor: '#008B7F' }} className="px-4 py-8">
+      <div style={{ backgroundColor: '#007B71' }} className="px-4 py-8">
         <div className="container mx-auto max-w-2xl">
           <button
             onClick={() => router.back()}

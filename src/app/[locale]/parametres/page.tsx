@@ -237,6 +237,10 @@ const ToggleRow = ({
       {sublabel && <p className="text-xs text-neutral-600 dark:text-neutral-400 font-sans">{sublabel}</p>}
     </div>
     <button
+      type="button"
+      role="switch"
+      aria-checked={enabled}
+      aria-label={label}
       onClick={onToggle}
       disabled={loading || disabled}
       className={`relative w-12 h-7 rounded-full transition-all duration-300 flex-shrink-0 ${

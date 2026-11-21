@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { ArrowLeft, Package, Lock, CheckCircle, WarningCircle as AlertCircle } from "@phosphor-icons/react";
 
-const VITOGAZ_GREEN = "#008B7F";
+const VITOGAZ_GREEN = "#007B71";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://vito-backend-supabase.onrender.com/api/v1";
 
 interface RewardItem {
@@ -171,7 +171,7 @@ export default function ExchangePage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block w-8 h-8 border-4 border-gray-200 border-t-[#008B7F] rounded-full animate-spin" />
+          <div className="inline-block w-8 h-8 border-4 border-gray-200 border-t-[#007B71] rounded-full animate-spin" />
           <p className="text-sm text-gray-500 mt-3">Chargement...</p>
         </div>
       </div>
@@ -315,7 +315,7 @@ export default function ExchangePage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Votre nom"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008B7F] focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#007B71] focus:border-transparent"
                 />
               </div>
 
@@ -344,7 +344,7 @@ export default function ExchangePage() {
                   value={formData.pin}
                   onChange={(e) => handlePINInput(e.target.value)}
                   placeholder="••••"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008B7F] focus:border-transparent text-center text-2xl tracking-widest"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#007B71] focus:border-transparent text-center text-2xl tracking-widest"
                 />
                 <p className="text-xs text-gray-500 mt-2">
                   {hasPIN
