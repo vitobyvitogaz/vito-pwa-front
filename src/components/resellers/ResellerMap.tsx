@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
+import { useEffect, useMemo, useState } from 'react'
+import { MapContainer, TileLayer, Marker, CircleMarker, Popup, Tooltip, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import type { Reseller } from '@/types/reseller'
 import type { DistanceResult } from '@/lib/hooks/useDistanceMatrix'
@@ -33,19 +33,16 @@ const LEGEND_ITEMS = [
   { type: 'Maison du gaz'   as const, color: '#0639a7', label: 'Maison du gaz' },
 ]
 
-const createResellerIcon = (color: string, isSelected: boolean = false) => {
-  const size = isSelected ? 28 : 20
-  const borderColor = isSelected ? '#FFD700' : '#ffffff'
-  const borderWidth = isSelected ? 3 : 2
-  // Zone tactile d'au moins 24 px (WCAG 2.2), le cercle visible restant centré dans cette zone
-  const box = Math.max(size, 24)
-  return L.divIcon({
-    className: 'custom-marker',
-    html: `<div style="width:${box}px;height:${box}px;display:flex;align-items:center;justify-content:center"><div style="width:${size}px;height:${size}px;background-color:${color};border:${borderWidth}px solid ${borderColor};border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.3);${isSelected ? 'animation:bounce 0.7s;' : ''}"></div></div>`,
-    iconSize: [box, box],
-    iconAnchor: [box / 2, box / 2],
-  })
-}
+// Les points des revendeurs sont dessinés sur un canevas (et non en éléments HTML) : 620 éléments DOM
+// bloquaient le navigateur plusieurs secondes sur mobile. Le rendu visuel est inchangé : mêmes couleurs, même
+// taille (20 px, 28 px pour le revendeur sélectionné), bord blanc ou doré.
+const RESELLER_RADIUS = 10
+const SELECTED_RADIUS = 14
+// Marge de clic autour de chaque point : rayon 10 + 12 = zone de 44 px de diamètre (minimum WCAG 2.2 : 24 px).
+const CLICK_TOLERANCE = 12
+
+// Chaque point garde l'identifiant de son revendeur : plusieurs revendeurs peuvent partager les mêmes coordonnées.
+type ResellerPathOptions = L.PathOptions & { resellerId: string }
 
 const createUserIcon = () => L.divIcon({
   className: 'custom-pin',
@@ -130,6 +127,12 @@ const MapController = ({
   useEffect(() => {
     if (selectedReseller) {
       map.setView([selectedReseller.lat, selectedReseller.lng], 16, { animate: true })
+      // Le revendeur sélectionné est dessiné par-dessus ses voisins (sans recréer le point : sa fenêtre reste ouverte).
+      map.eachLayer((layer) => {
+        if (layer instanceof L.CircleMarker && (layer.options as ResellerPathOptions).resellerId === selectedReseller.id) {
+          layer.bringToFront()
+        }
+      })
     }
   }, [selectedReseller, map])
 
@@ -141,6 +144,8 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
 }) => {
   const [isClient, setIsClient] = useState(false)
   useEffect(() => { setIsClient(true) }, [])
+  // Un moteur de dessin par carte (il se rattache à la carte qui le reçoit).
+  const canvasRenderer = useMemo(() => L.canvas({ padding: 0.5, tolerance: CLICK_TOLERANCE }), [])
 
   if (!isClient) {
     return (
@@ -158,11 +163,12 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
   return (
     <div className="relative h-full">
       <style jsx global>{`
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .custom-pin { background: none !important; border: none !important; }
+        /* L'infobulle du survol disparaît quand une fenêtre de revendeur est ouverte (elle dépasserait sous sa pointe). */
+        .leaflet-container:has(.leaflet-popup) .leaflet-tooltip { display: none; }
       `}</style>
 
-      <MapContainer center={defaultCenter} zoom={12} className="h-full w-full" zoomControl scrollWheelZoom>
+      <MapContainer center={defaultCenter} zoom={12} className="h-full w-full" zoomControl scrollWheelZoom preferCanvas renderer={canvasRenderer}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -175,18 +181,27 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
           </Marker>
         )}
 
-        {resellers.map((reseller) => (
-          <Marker
+        {resellers.map((reseller) => {
+          const isSelected = selectedReseller?.id === reseller.id
+          const pathOptions: ResellerPathOptions = {
+            resellerId: reseller.id,
+            fillColor: getColorForType(reseller.type),
+            fillOpacity: 1,
+            color: isSelected ? '#FFD700' : '#ffffff',
+            weight: isSelected ? 3 : 2,
+          }
+          return (
+          // Les points ne sont pas atteignables au clavier : la liste des revendeurs, à côté de la carte, offre la
+          // même sélection au clavier et aux lecteurs d'écran.
+          <CircleMarker
             key={reseller.id}
-            position={[reseller.lat, reseller.lng]}
-            icon={createResellerIcon(getColorForType(reseller.type), selectedReseller?.id === reseller.id)}
-            title={reseller.name}
-            // Les 620 marqueurs ne sont pas des arrêts de tabulation : la liste des revendeurs, à côté de la carte,
-            // offre la même sélection au clavier et aux lecteurs d'écran.
-            keyboard={false}
+            center={[reseller.lat, reseller.lng]}
+            radius={isSelected ? SELECTED_RADIUS : RESELLER_RADIUS}
+            pathOptions={pathOptions}
             eventHandlers={{ click: () => onSelectReseller(reseller) }}
           >
-            <Popup>
+            <Tooltip direction="top" offset={[0, -12]}>{reseller.name}</Tooltip>
+            <Popup offset={[0, -12]}>
               <div className="min-w-[210px] max-w-[240px]">
                 <h3 className="font-semibold text-neutral-900 text-[15px] leading-snug mb-1">{reseller.name}</h3>
 
@@ -236,8 +251,9 @@ export const ResellerMap: React.FC<ResellerMapProps> = ({
                 </div>
               </div>
             </Popup>
-          </Marker>
-        ))}
+          </CircleMarker>
+          )
+        })}
       </MapContainer>
 
       {/* ── Légende horizontale compacte — bas de carte ── */}

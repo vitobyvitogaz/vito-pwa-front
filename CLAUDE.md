@@ -20,6 +20,7 @@ Application publique, grand public malgache. Priorités : lisibilité en plein s
 - **Appels API côté serveur** : `NEXT_PUBLIC_API_URL` est `undefined` dans les route handlers Next côté serveur. Pour les appels server-side, utiliser `API_URL` (sans le préfixe). Pour transmettre l'IP visiteur au backend, passer l'en-tête `x-forwarded-for` depuis le route handler (Vercel capture sinon sa propre IP serveur).
 - **Backend Render.com** : comportement de mise en veille — prévoir une logique de retry sur les premiers appels.
 - **Google Maps API** : vérifier que la variable d'env est bien chargée avant tout appel.
+- **Carte des revendeurs** (`src/components/resellers/ResellerMap.tsx`) : les 620 points sont des `CircleMarker` dessinés sur un canevas (`preferCanvas`, marge de clic de 12 px), **pas** des `Marker` HTML : 620 éléments DOM bloquaient le navigateur plusieurs secondes sur mobile. Seule l'épingle « Votre position » reste un `Marker`. Les points ne sont pas atteignables au clavier : la liste des revendeurs offre la même sélection. Ne pas revenir à des `divIcon` par revendeur.
 
 ## Communication avec le backend
 - API REST via le backend NestJS (`vito-backend-supabase.onrender.com/api/v1`).
