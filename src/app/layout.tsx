@@ -10,6 +10,7 @@ import { OfflineNavigation } from '@/components/shared/OfflineNavigation'
 import { OfflineBanner } from '@/components/ui/OfflineBanner'
 import { PushInvite } from '@/components/shared/PushInvite'
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/lib/site'
+import { THEME_INIT_SCRIPT } from '@/lib/theme'
 import '@/styles/globals.css'
 import 'leaflet/dist/leaflet.css'
 
@@ -80,8 +81,13 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    // ── Mode clair par défaut — le ThemeSwitcher peut basculer en dark via JS ──
-    <html lang="fr" className={`${poppins.variable} ${ebGaramond.variable}`}>
+    // ── Mode clair par défaut. Le choix « sombre » du visiteur (Paramètres) est ré-appliqué par le
+    // script du <head> avant le premier affichage ; suppressHydrationWarning : ce script ajoute la
+    // classe `dark` à <html> avant l'hydratation de React.
+    <html lang="fr" className={`${poppins.variable} ${ebGaramond.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body className={poppins.className}>
         <Header />
         <Breadcrumb />

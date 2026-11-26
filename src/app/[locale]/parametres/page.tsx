@@ -8,6 +8,7 @@ import {
   CaretRight as ChevronRight, CircleNotch as Loader2, CheckCircle, Shield,
 } from '@phosphor-icons/react'
 import { hapticFeedback } from '@/lib/utils/haptic'
+import { useTheme } from '@/lib/hooks/useTheme'
 
 type Preferences = {
   promotions: boolean
@@ -194,22 +195,6 @@ const getStoredPreferences = (): Preferences => {
   return { ...DEFAULT_PREFERENCES }
 }
 
-// ── ThemeSwitcher inline ──────────────────────────────────────────────────────
-const useTheme = () => {
-  const [isDark, setIsDark] = useState(true)
-  useEffect(() => {
-    setIsDark(localStorage.getItem('theme') !== 'light')
-  }, [])
-  const toggle = () => {
-    const newIsDark = !isDark
-    setIsDark(newIsDark)
-    document.documentElement.classList.toggle('dark', newIsDark)
-    localStorage.setItem('theme', newIsDark ? 'dark' : 'light')
-    hapticFeedback('light')
-  }
-  return { isDark, toggle }
-}
-
 // ── Composants UI ─────────────────────────────────────────────────────────────
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div className="mb-5">
@@ -273,7 +258,11 @@ const ChevronRow = ({ icon, label, value, onClick }: {
 // ── Page principale ───────────────────────────────────────────────────────────
 export default function ParametresPage() {
   const router = useRouter()
-  const { isDark, toggle: toggleTheme } = useTheme()
+  const { isDark, toggle } = useTheme()
+  const toggleTheme = () => {
+    toggle()
+    hapticFeedback('light')
+  }
 
   const [mounted, setMounted]           = useState(false)
   const [pushSupported, setPushSupported]   = useState(false)
