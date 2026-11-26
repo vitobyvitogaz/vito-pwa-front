@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Package, Gift, CaretRight as ChevronRight, Funnel as Filter } from "@phosphor-icons/react";
 
-const VITOGAZ_GREEN = "#007B71";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://vito-backend-supabase.onrender.com/api/v1";
 
 interface RewardItem {
@@ -105,19 +104,18 @@ export default function RewardItemsPage() {
   const canAfford = (cost: number) => userPoints >= cost;
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-neutral-50 pb-20">
       {/* Header fixe */}
-      <div className="sticky top-0 z-30 bg-white border-b border-gray-200">
+      <div className="sticky top-0 z-30 bg-white border-b border-neutral-200">
         <div className="px-4 py-4">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Catalogue Cadeaux</h1>
-              <p className="text-sm text-gray-500">Échangez vos points</p>
+              <h1 className="text-xl font-bold text-neutral-900">Catalogue Cadeaux</h1>
+              <p className="text-sm text-neutral-500">Échangez vos points</p>
             </div>
             <button
               onClick={() => router.push("/fr/mes-echanges")}
-              className="flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-medium"
-              style={{ backgroundColor: VITOGAZ_GREEN }}
+              className="flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-medium bg-primary"
             >
               <Gift className="w-4 h-4" />
               Mes échanges
@@ -126,17 +124,16 @@ export default function RewardItemsPage() {
 
           {/* Solde points */}
           <div
-            className="p-4 rounded-2xl"
-            style={{ backgroundColor: "#f0faf9", borderColor: "#b2dbd8", borderWidth: "1px" }}
+            className="p-4 rounded-2xl bg-primary-50 border border-primary-100"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wide">Votre solde</p>
-                <p className="text-2xl font-bold" style={{ color: VITOGAZ_GREEN }}>
+                <p className="text-xs text-neutral-500 uppercase tracking-wide">Votre solde</p>
+                <p className="text-2xl font-bold text-primary">
                   {userPoints.toLocaleString()} pts
                 </p>
               </div>
-              <Package className="w-8 h-8 text-gray-400" />
+              <Package className="w-8 h-8 text-neutral-400" />
             </div>
           </div>
         </div>
@@ -145,14 +142,13 @@ export default function RewardItemsPage() {
         <div className="px-4 pb-3">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full text-sm font-medium text-gray-700 w-full justify-center"
+            className="flex items-center gap-2 px-4 py-2 bg-neutral-100 rounded-full text-sm font-medium text-neutral-700 w-full justify-center"
           >
             <Filter className="w-4 h-4" />
             Filtrer par catégorie
             {selectedCategory !== "Tous" && (
               <span
-                className="px-2 py-0.5 rounded-full text-xs text-white"
-                style={{ backgroundColor: VITOGAZ_GREEN }}
+                className="px-2 py-0.5 rounded-full text-xs text-white bg-primary"
               >
                 {selectedCategory}
               </span>
@@ -162,7 +158,7 @@ export default function RewardItemsPage() {
 
         {/* Filtres catégories */}
         {showFilters && (
-          <div className="px-4 pb-4 pt-2 border-t border-gray-100">
+          <div className="px-4 pb-4 pt-2 border-t border-neutral-100">
             <div className="flex flex-wrap gap-2">
               {CATEGORIES.map((cat) => (
                 <button
@@ -173,14 +169,9 @@ export default function RewardItemsPage() {
                   }}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                     selectedCategory === cat
-                      ? "text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      ? "bg-primary text-white"
+                      : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
                   }`}
-                  style={
-                    selectedCategory === cat
-                      ? { backgroundColor: VITOGAZ_GREEN }
-                      : {}
-                  }
                 >
                   {cat}
                 </button>
@@ -194,13 +185,13 @@ export default function RewardItemsPage() {
       <div className="px-4 py-6">
         {loading ? (
           <div className="text-center py-12">
-            <div className="inline-block w-8 h-8 border-4 border-gray-200 border-t-[#007B71] rounded-full animate-spin" />
-            <p className="text-sm text-gray-500 mt-3">Chargement...</p>
+            <div className="inline-block w-8 h-8 border-4 border-neutral-200 border-t-primary rounded-full animate-spin" />
+            <p className="text-sm text-neutral-500 mt-3">Chargement...</p>
           </div>
         ) : filteredItems.length === 0 ? (
           <div className="text-center py-12">
-            <Package className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-sm text-gray-500">
+            <Package className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
+            <p className="text-sm text-neutral-500">
               {selectedCategory === "Tous"
                 ? "Aucun article disponible pour le moment"
                 : `Aucun article dans la catégorie "${selectedCategory}"`}
@@ -213,10 +204,10 @@ export default function RewardItemsPage() {
               return (
                 <div
                   key={item.id}
-                  className="flex flex-col h-full bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200"
+                  className="flex flex-col h-full bg-white rounded-2xl overflow-hidden shadow-sm border border-neutral-200"
                 >
                   {/* Image */}
-                  <div className="relative aspect-square bg-gray-100">
+                  <div className="relative aspect-square bg-neutral-100">
                     {item.image_url ? (
                       <Image
                         src={item.image_url}
@@ -226,12 +217,12 @@ export default function RewardItemsPage() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <Package className="w-12 h-12 text-gray-300" />
+                        <Package className="w-12 h-12 text-neutral-300" />
                       </div>
                     )}
                     {!affordable && (
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                        <span className="bg-white px-3 py-1 rounded-full text-xs font-medium text-gray-700">
+                        <span className="bg-white px-3 py-1 rounded-full text-xs font-medium text-neutral-700">
                           Points insuffisants
                         </span>
                       </div>
@@ -240,11 +231,11 @@ export default function RewardItemsPage() {
 
                   {/* Contenu */}
                   <div className="flex flex-1 flex-col p-3">
-                    <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 min-h-[2.5em] mb-1">
+                    <h3 className="font-semibold text-sm text-neutral-900 line-clamp-2 min-h-[2.5em] mb-1">
                       {item.name}
                     </h3>
                     {/* Toujours rendue : une ligne est réservée même sans catégorie (alignement des cartes) */}
-                    <p className="text-xs text-gray-500 mb-2 min-h-4">{item.category}</p>
+                    <p className="text-xs text-neutral-500 mb-2 min-h-4">{item.category}</p>
                     {item.stock_quantity <= 5 && (
                       <p className="text-xs text-amber-600 mb-2">
                         Plus que {item.stock_quantity} en stock
@@ -253,8 +244,7 @@ export default function RewardItemsPage() {
                     {/* Points + bouton : ancrés en bas de la carte */}
                     <div className="mt-auto flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
                       <span
-                        className="text-sm font-bold whitespace-nowrap"
-                        style={{ color: VITOGAZ_GREEN }}
+                        className="text-sm font-bold whitespace-nowrap text-primary"
                       >
                         {item.points_cost.toLocaleString()} pts
                       </span>
@@ -263,10 +253,9 @@ export default function RewardItemsPage() {
                         disabled={!affordable}
                         className={`ml-auto px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1 transition-all ${
                           affordable
-                            ? "text-white"
-                            : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                            ? "bg-primary text-white"
+                            : "bg-neutral-100 text-neutral-400 cursor-not-allowed"
                         }`}
-                        style={affordable ? { backgroundColor: VITOGAZ_GREEN } : {}}
                       >
                         Échanger
                         {affordable && <ChevronRight className="w-3 h-3" />}

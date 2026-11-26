@@ -25,8 +25,8 @@ const TYPE_CONFIG: Record<string, {
 }> = {
   PROMOTIONS: {
     icon:  <Tag className="w-4 h-4" strokeWidth={1.5} />,
-    color: 'text-amber-600 dark:text-amber-400',
-    bg:    'bg-amber-100 dark:bg-amber-900/30',
+    color: 'text-neutral-800 dark:text-gold',
+    bg:    'bg-gold/20 dark:bg-gold/15',
     label: 'Promotion',
   },
   RESELLERS: {
@@ -37,20 +37,20 @@ const TYPE_CONFIG: Record<string, {
   },
   DELIVERY: {
     icon:  <Truck className="w-4 h-4" strokeWidth={1.5} />,
-    color: 'text-blue-600 dark:text-blue-400',
-    bg:    'bg-blue-100 dark:bg-blue-900/30',
+    color: 'text-navy-600 dark:text-navy-300',
+    bg:    'bg-navy-100 dark:bg-navy-900/30',
     label: 'Livraison',
   },
   BROADCAST: {
     icon:  <Megaphone className="w-4 h-4" strokeWidth={1.5} />,
-    color: 'text-purple-600 dark:text-purple-400',
-    bg:    'bg-purple-100 dark:bg-purple-900/30',
+    color: 'text-navy-600 dark:text-navy-300',
+    bg:    'bg-navy-100 dark:bg-navy-900/30',
     label: 'Info Vitogaz',
   },
   FEEDBACK: {
     icon:  <Sparkles className="w-4 h-4" strokeWidth={1.5} />,
-    color: 'text-emerald-700 dark:text-emerald-400',
-    bg:    'bg-emerald-100 dark:bg-emerald-900/30',
+    color: 'text-neutral-700 dark:text-neutral-300',
+    bg:    'bg-neutral-100 dark:bg-neutral-800',
     label: 'Feedback',
   },
 }

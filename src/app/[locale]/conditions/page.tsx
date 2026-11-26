@@ -3,7 +3,6 @@
 import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Shield } from '@phosphor-icons/react'
 
-const VITOGAZ_GREEN = '#007B71'
 
 const lastUpdated = '1er avril 2026'
 
@@ -138,8 +137,8 @@ export default function ConditionsPage() {
 
         {/* ── En-tête ── */}
         <div className="flex items-start gap-4 mb-8">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${VITOGAZ_GREEN}15` }}>
-            <Shield className="w-6 h-6" style={{ color: VITOGAZ_GREEN }} strokeWidth={1.5} />
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 bg-primary/[0.08]">
+            <Shield className="w-6 h-6 text-primary" strokeWidth={1.5} />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-neutral-900 dark:text-white font-display leading-tight">
@@ -152,8 +151,8 @@ export default function ConditionsPage() {
         </div>
 
         {/* ── Encart intro ── */}
-        <div className="rounded-2xl p-4 mb-8 border" style={{ backgroundColor: `${VITOGAZ_GREEN}08`, borderColor: `${VITOGAZ_GREEN}25` }}>
-          <p className="text-sm font-sans leading-relaxed" style={{ color: VITOGAZ_GREEN }}>
+        <div className="rounded-2xl p-4 mb-8 border bg-primary/[0.03] border-primary/[0.15]">
+          <p className="text-sm font-sans leading-relaxed text-primary">
             En utilisant l&apos;application Vito by Vitogaz, vous acceptez les présentes conditions d&apos;utilisation.
             Veuillez les lire attentivement avant toute utilisation des services.
           </p>

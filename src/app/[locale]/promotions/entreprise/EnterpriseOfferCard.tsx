@@ -45,7 +45,7 @@ export const EnterpriseOfferCard: React.FC = () => {
     <div className="relative bg-white dark:bg-dark-surface rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-sm">
 
       {/* Header coloré */}
-      <div style={{ backgroundColor: '#007B71' }} className="px-8 py-10 flex flex-col items-center text-center">
+      <div className="bg-primary px-8 py-10 flex flex-col items-center text-center">
 
         {/* Icône gaz */}
         <div className="w-16 h-16 rounded-2xl bg-white/15 flex items-center justify-center mb-6">
@@ -65,7 +65,7 @@ export const EnterpriseOfferCard: React.FC = () => {
         </h2>
 
         {/* Ligne décorative rouge */}
-        <div style={{ width: 60, height: 3, backgroundColor: '#E53E3E', borderRadius: 2, marginTop: 16, marginBottom: 16 }} />
+        <div className="w-[60px] h-[3px] bg-accent rounded-sm my-4" />
 
         {/* Sous-titre */}
         <p className="text-white/80 text-base sm:text-lg font-sans leading-relaxed max-w-md">

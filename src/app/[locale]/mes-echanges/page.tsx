@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, CaretLeft as ChevronLeft, CaretRight as ChevronRight, Gift, CheckCircle, XCircle, Clock, Package, X } from "@phosphor-icons/react";
 
-const VITOGAZ_GREEN = "#007B71";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://vito-backend-supabase.onrender.com/api/v1";
 const ITEMS_PER_PAGE = 10;
 
@@ -107,9 +106,9 @@ export default function MesEchangesPage() {
         return {
           icon: Clock,
           label: status,
-          bgColor: "bg-gray-100",
-          textColor: "text-gray-700",
-          iconColor: "text-gray-500",
+          bgColor: "bg-neutral-100",
+          textColor: "text-neutral-700",
+          iconColor: "text-neutral-500",
         };
     }
   };
@@ -152,28 +151,28 @@ export default function MesEchangesPage() {
   }).length;
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-neutral-50 pb-20">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-white border-b border-gray-200">
+      <div className="sticky top-0 z-30 bg-white border-b border-neutral-200">
         <div className="px-4 py-4">
           <div className="flex items-center gap-3 mb-4">
             <button
               onClick={() => router.push("/fr/reward-items")}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-2 hover:bg-neutral-100 rounded-full transition-colors"
             >
-              <ArrowLeft className="w-5 h-5 text-gray-700" />
+              <ArrowLeft className="w-5 h-5 text-neutral-700" />
             </button>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Mes échanges</h1>
-              <p className="text-sm text-gray-500">Historique de vos demandes</p>
+              <h1 className="text-xl font-bold text-neutral-900">Mes échanges</h1>
+              <p className="text-sm text-neutral-500">Historique de vos demandes</p>
             </div>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-2">
-            <div className="bg-gray-50 p-3 rounded-xl text-center">
-              <p className="text-xs text-gray-500 mb-1">Total</p>
-              <p className="text-lg font-bold text-gray-900">{exchanges.length}</p>
+            <div className="bg-neutral-50 p-3 rounded-xl text-center">
+              <p className="text-xs text-neutral-500 mb-1">Total</p>
+              <p className="text-lg font-bold text-neutral-900">{exchanges.length}</p>
             </div>
             <div className="bg-amber-50 p-3 rounded-xl text-center">
               <p className="text-xs text-amber-600 mb-1">En attente</p>
@@ -191,17 +190,16 @@ export default function MesEchangesPage() {
       <div className="px-4 py-6">
         {loading ? (
           <div className="text-center py-12">
-            <div className="inline-block w-8 h-8 border-4 border-gray-200 border-t-[#007B71] rounded-full animate-spin" />
-            <p className="text-sm text-gray-500 mt-3">Chargement...</p>
+            <div className="inline-block w-8 h-8 border-4 border-neutral-200 border-t-primary rounded-full animate-spin" />
+            <p className="text-sm text-neutral-500 mt-3">Chargement...</p>
           </div>
         ) : exchanges.length === 0 ? (
           <div className="text-center py-12">
-            <Gift className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-sm text-gray-500 mb-4">Aucun échange pour le moment</p>
+            <Gift className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
+            <p className="text-sm text-neutral-500 mb-4">Aucun échange pour le moment</p>
             <button
               onClick={() => router.push("/fr/reward-items")}
-              className="px-6 py-2.5 rounded-full text-white text-sm font-medium"
-              style={{ backgroundColor: VITOGAZ_GREEN }}
+              className="px-6 py-2.5 rounded-full text-white text-sm font-medium bg-primary"
             >
               Découvrir le catalogue
             </button>
@@ -217,7 +215,7 @@ export default function MesEchangesPage() {
                 return (
                   <div
                     key={exchange.id}
-                    className={`bg-white rounded-2xl border border-gray-200 overflow-hidden ${
+                    className={`bg-white rounded-2xl border border-neutral-200 overflow-hidden ${
                       isRejected && exchange.admin_notes ? "cursor-pointer hover:shadow-md transition-shadow" : ""
                     }`}
                     onClick={() => isRejected && exchange.admin_notes && handleRejectClick(exchange)}
@@ -233,16 +231,16 @@ export default function MesEchangesPage() {
                               className="w-16 h-16 object-cover rounded-xl"
                             />
                           ) : (
-                            <div className="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center">
-                              <Package className="w-6 h-6 text-gray-400" />
+                            <div className="w-16 h-16 bg-neutral-100 rounded-xl flex items-center justify-center">
+                              <Package className="w-6 h-6 text-neutral-400" />
                             </div>
                           )}
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-sm text-gray-900 line-clamp-2">
+                            <h3 className="font-semibold text-sm text-neutral-900 line-clamp-2">
                               {exchange.reward_items?.name || "Article"}
                             </h3>
                             {exchange.reward_items?.category && (
-                              <p className="text-xs text-gray-500 mt-1">
+                              <p className="text-xs text-neutral-500 mt-1">
                                 {exchange.reward_items.category}
                               </p>
                             )}
@@ -261,14 +259,14 @@ export default function MesEchangesPage() {
                       {/* Détails */}
                       <div className="space-y-2 text-sm">
                         <div className="flex items-center justify-between">
-                          <span className="text-gray-500">Points utilisés</span>
-                          <span className="font-semibold" style={{ color: VITOGAZ_GREEN }}>
+                          <span className="text-neutral-500">Points utilisés</span>
+                          <span className="font-semibold text-primary">
                             {exchange.reward_items?.points_cost?.toLocaleString() || "—"} pts
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-gray-500">Date de demande</span>
-                          <span className="text-gray-900 text-xs">
+                          <span className="text-neutral-500">Date de demande</span>
+                          <span className="text-neutral-900 text-xs">
                             {formatDate(exchange.requested_at)}
                           </span>
                         </div>
@@ -294,13 +292,13 @@ export default function MesEchangesPage() {
                   disabled={currentPage === 1}
                   className={`p-2 rounded-full transition-colors ${
                     currentPage === 1
-                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                      : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
+                      ? "bg-neutral-100 text-neutral-400 cursor-not-allowed"
+                      : "bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-50"
                   }`}
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-neutral-600">
                   Page {currentPage} / {totalPages}
                 </span>
                 <button
@@ -308,8 +306,8 @@ export default function MesEchangesPage() {
                   disabled={currentPage === totalPages}
                   className={`p-2 rounded-full transition-colors ${
                     currentPage === totalPages
-                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                      : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
+                      ? "bg-neutral-100 text-neutral-400 cursor-not-allowed"
+                      : "bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-50"
                   }`}
                 >
                   <ChevronRight className="w-5 h-5" />
@@ -318,7 +316,7 @@ export default function MesEchangesPage() {
             )}
 
             {/* Footer info */}
-            <p className="text-xs text-center text-gray-400 mt-6">
+            <p className="text-xs text-center text-neutral-400 mt-6">
               {startIndex + 1}-{Math.min(endIndex, exchanges.length)} sur {exchanges.length}{" "}
               échange(s)
             </p>
@@ -342,34 +340,34 @@ export default function MesEchangesPage() {
                   <XCircle className="w-6 h-6 text-red-600" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg text-gray-900">Demande refusée</h3>
-                  <p className="text-sm text-gray-500">Motif du refus</p>
+                  <h3 className="font-bold text-lg text-neutral-900">Demande refusée</h3>
+                  <p className="text-sm text-neutral-500">Motif du refus</p>
                 </div>
               </div>
               <button
                 onClick={() => setShowRejectModal(false)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-2 hover:bg-neutral-100 rounded-full transition-colors"
               >
-                <X className="w-5 h-5 text-gray-500" />
+                <X className="w-5 h-5 text-neutral-500" />
               </button>
             </div>
 
             <div className="bg-red-50 border border-red-100 rounded-xl p-4 mb-4">
-              <p className="text-sm text-gray-700 leading-relaxed">
+              <p className="text-sm text-neutral-700 leading-relaxed">
                 {selectedExchange.admin_notes}
               </p>
             </div>
 
             <div className="space-y-2 text-sm mb-4">
               <div className="flex items-center justify-between">
-                <span className="text-gray-500">Article demandé</span>
-                <span className="font-medium text-gray-900">
+                <span className="text-neutral-500">Article demandé</span>
+                <span className="font-medium text-neutral-900">
                   {selectedExchange.reward_items?.name || "—"}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-500">Points concernés</span>
-                <span className="font-semibold" style={{ color: VITOGAZ_GREEN }}>
+                <span className="text-neutral-500">Points concernés</span>
+                <span className="font-semibold text-primary">
                   {selectedExchange.reward_items?.points_cost?.toLocaleString() || "—"} pts
                 </span>
               </div>
@@ -377,8 +375,7 @@ export default function MesEchangesPage() {
 
             <button
               onClick={() => setShowRejectModal(false)}
-              className="w-full py-3 rounded-full text-white font-medium"
-              style={{ backgroundColor: VITOGAZ_GREEN }}
+              className="w-full py-3 rounded-full text-white font-medium bg-primary"
             >
               J&apos;ai compris
             </button>

@@ -122,7 +122,7 @@ export default function AssistancePage() {
     <div className="min-h-screen bg-neutral-50 dark:bg-dark-bg pt-[65px] pb-20 md:pb-0">
 
       {/* Header teal */}
-      <div style={{ backgroundColor: '#007B71' }} className="px-4 py-8">
+      <div className="bg-primary px-4 py-8">
         <div className="container mx-auto max-w-2xl">
           <button
             onClick={() => router.back()}
@@ -137,7 +137,7 @@ export default function AssistancePage() {
           </p>
 
           {/* Ligne décorative rouge */}
-          <div style={{ width: 60, height: 3, backgroundColor: '#E53E3E', borderRadius: 2, marginBottom: 24 }} />
+          <div className="w-[60px] h-[3px] bg-accent rounded-sm mb-6" />
 
           {/* ── Téléphone EN PREMIER — action prioritaire pour le public malgache ── */}
           <a

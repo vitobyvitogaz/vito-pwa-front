@@ -193,7 +193,7 @@ export const ResellerCard: React.FC<ResellerCardProps> = ({
         {/* Itinéraire */}
         <button
           onClick={handleDirections}
-          className="flex items-center justify-center w-11 h-11 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300"
+          className="flex items-center justify-center w-11 h-11 rounded-full bg-primary text-white hover:bg-primary-600 transition-all duration-300"
           title="Itinéraire"
         >
           <MapPin className="w-5 h-5" strokeWidth={1.5} />

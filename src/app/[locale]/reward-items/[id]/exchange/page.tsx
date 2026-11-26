@@ -5,7 +5,6 @@ import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { ArrowLeft, Package, Lock, CheckCircle, WarningCircle as AlertCircle } from "@phosphor-icons/react";
 
-const VITOGAZ_GREEN = "#007B71";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://vito-backend-supabase.onrender.com/api/v1";
 
 interface RewardItem {
@@ -169,10 +168,10 @@ export default function ExchangePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block w-8 h-8 border-4 border-gray-200 border-t-[#007B71] rounded-full animate-spin" />
-          <p className="text-sm text-gray-500 mt-3">Chargement...</p>
+          <div className="inline-block w-8 h-8 border-4 border-neutral-200 border-t-primary rounded-full animate-spin" />
+          <p className="text-sm text-neutral-500 mt-3">Chargement...</p>
         </div>
       </div>
     );
@@ -180,14 +179,13 @@ export default function ExchangePage() {
 
   if (!item) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-neutral-50 flex items-center justify-center px-4">
         <div className="text-center">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
-          <p className="text-sm text-gray-700 mb-4">Article introuvable</p>
+          <p className="text-sm text-neutral-700 mb-4">Article introuvable</p>
           <button
             onClick={() => router.push("/fr/reward-items")}
-            className="px-6 py-2.5 rounded-full text-white text-sm font-medium"
-            style={{ backgroundColor: VITOGAZ_GREEN }}
+            className="px-6 py-2.5 rounded-full text-white text-sm font-medium bg-primary"
           >
             Retour au catalogue
           </button>
@@ -198,19 +196,18 @@ export default function ExchangePage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-neutral-50 flex items-center justify-center px-4">
         <div className="text-center max-w-sm">
           <div
-            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-            style={{ backgroundColor: "#e6f7f5" }}
+            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-primary-50"
           >
-            <CheckCircle className="w-8 h-8" style={{ color: VITOGAZ_GREEN }} />
+            <CheckCircle className="w-8 h-8 text-primary" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Demande envoyée !</h2>
-          <p className="text-sm text-gray-600 mb-6">
+          <h2 className="text-xl font-bold text-neutral-900 mb-2">Demande envoyée !</h2>
+          <p className="text-sm text-neutral-600 mb-6">
             Votre demande d&apos;échange a été enregistrée. Un administrateur va la valider sous peu.
           </p>
-          <p className="text-xs text-gray-400">Redirection en cours...</p>
+          <p className="text-xs text-neutral-400">Redirection en cours...</p>
         </div>
       </div>
     );
@@ -219,20 +216,20 @@ export default function ExchangePage() {
   const canAfford = userPoints >= item.points_cost;
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-neutral-50 pb-20">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-white border-b border-gray-200">
+      <div className="sticky top-0 z-30 bg-white border-b border-neutral-200">
         <div className="px-4 py-4">
           <div className="flex items-center gap-3">
             <button
               onClick={() => router.back()}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-2 hover:bg-neutral-100 rounded-full transition-colors"
             >
-              <ArrowLeft className="w-5 h-5 text-gray-700" />
+              <ArrowLeft className="w-5 h-5 text-neutral-700" />
             </button>
             <div>
-              <h1 className="text-lg font-bold text-gray-900">Confirmer l&apos;échange</h1>
-              <p className="text-xs text-gray-500">Vérifiez les détails</p>
+              <h1 className="text-lg font-bold text-neutral-900">Confirmer l&apos;échange</h1>
+              <p className="text-xs text-neutral-500">Vérifiez les détails</p>
             </div>
           </div>
         </div>
@@ -240,31 +237,31 @@ export default function ExchangePage() {
 
       <div className="px-4 py-6">
         {/* Article */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-4 mb-6">
-          <p className="text-xs text-gray-500 uppercase tracking-wide mb-3">Article sélectionné</p>
+        <div className="bg-white rounded-2xl border border-neutral-200 p-4 mb-6">
+          <p className="text-xs text-neutral-500 uppercase tracking-wide mb-3">Article sélectionné</p>
           <div className="flex items-start gap-4">
-            <div className="relative w-20 h-20 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
+            <div className="relative w-20 h-20 bg-neutral-100 rounded-xl overflow-hidden flex-shrink-0">
               {item.image_url ? (
                 <Image src={item.image_url} alt={item.name} fill className="object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <Package className="w-8 h-8 text-gray-300" />
+                  <Package className="w-8 h-8 text-neutral-300" />
                 </div>
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-gray-900 mb-1">{item.name}</h3>
-              {item.category && <p className="text-xs text-gray-500 mb-2">{item.category}</p>}
+              <h3 className="font-semibold text-neutral-900 mb-1">{item.name}</h3>
+              {item.category && <p className="text-xs text-neutral-500 mb-2">{item.category}</p>}
               {item.description && (
-                <p className="text-sm text-gray-600 line-clamp-2">{item.description}</p>
+                <p className="text-sm text-neutral-600 line-clamp-2">{item.description}</p>
               )}
             </div>
           </div>
           <div
-            className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100"
+            className="flex items-center justify-between mt-4 pt-4 border-t border-neutral-100"
           >
-            <span className="text-sm text-gray-500">Coût</span>
-            <span className="text-lg font-bold" style={{ color: VITOGAZ_GREEN }}>
+            <span className="text-sm text-neutral-500">Coût</span>
+            <span className="text-lg font-bold text-primary">
               {item.points_cost.toLocaleString()} pts
             </span>
           </div>
@@ -279,7 +276,7 @@ export default function ExchangePage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide">Votre solde</p>
+              <p className="text-xs text-neutral-500 uppercase tracking-wide">Votre solde</p>
               <p
                 className={`text-xl font-bold ${
                   canAfford ? "text-emerald-700" : "text-red-700"
@@ -301,12 +298,12 @@ export default function ExchangePage() {
 
         {/* Formulaire */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="bg-white rounded-2xl border border-gray-200 p-4">
-            <p className="text-xs text-gray-500 uppercase tracking-wide mb-4">Vos informations</p>
+          <div className="bg-white rounded-2xl border border-neutral-200 p-4">
+            <p className="text-xs text-neutral-500 uppercase tracking-wide mb-4">Vos informations</p>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
                   Nom complet *
                 </label>
                 <input
@@ -315,24 +312,24 @@ export default function ExchangePage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Votre nom"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#007B71] focus:border-transparent"
+                  className="w-full px-4 py-3 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
                   Téléphone
                 </label>
                 <input
                   type="text"
                   disabled
                   value={formData.phone}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-500"
+                  className="w-full px-4 py-3 border border-neutral-200 rounded-xl bg-neutral-50 text-neutral-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
                   <Lock className="w-4 h-4 inline mr-1" />
                   {hasPIN ? "Votre code PIN" : "Créer un code PIN"} (4 chiffres) *
                 </label>
@@ -344,9 +341,9 @@ export default function ExchangePage() {
                   value={formData.pin}
                   onChange={(e) => handlePINInput(e.target.value)}
                   placeholder="••••"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#007B71] focus:border-transparent text-center text-2xl tracking-widest"
+                  className="w-full px-4 py-3 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-center text-2xl tracking-widest"
                 />
-                <p className="text-xs text-gray-500 mt-2">
+                <p className="text-xs text-neutral-500 mt-2">
                   {hasPIN
                     ? "Saisissez votre code PIN pour confirmer l'échange"
                     : "Ce code PIN sera requis pour vos futurs échanges"}
@@ -366,17 +363,14 @@ export default function ExchangePage() {
             disabled={submitting || !canAfford}
             className={`w-full py-4 rounded-xl text-white font-semibold transition-all ${
               submitting || !canAfford
-                ? "bg-gray-300 cursor-not-allowed"
-                : "shadow-lg hover:shadow-xl"
+                ? "bg-neutral-300 cursor-not-allowed"
+                : "bg-primary shadow-lg hover:shadow-xl"
             }`}
-            style={
-              submitting || !canAfford ? {} : { backgroundColor: VITOGAZ_GREEN }
-            }
           >
             {submitting ? "Envoi en cours..." : "Confirmer l'échange"}
           </button>
 
-          <p className="text-xs text-center text-gray-400">
+          <p className="text-xs text-center text-neutral-400">
             En confirmant, vous acceptez que {item.points_cost.toLocaleString()} points soient déduits
             de votre compte après validation par un administrateur.
           </p>

@@ -206,12 +206,12 @@ export const PromotionsList: React.FC = () => {
       {(selectedZones.length > 0 || sortBy !== 'discount_desc') && (
         <div className="flex flex-wrap gap-2 mb-4">
           {selectedZones.length > 0 && (
-            <div className="flex items-center gap-1 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm border border-blue-200 dark:border-blue-800">
+            <div className="flex items-center gap-1 px-3 py-2 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm border border-primary-200 dark:border-primary-800">
               <MapPin className="w-4 h-4" strokeWidth={1.5} />
               <span>Zones : {selectedZones.length}</span>
               <button
                 onClick={() => setSelectedZones([])}
-                className="w-11 h-11 flex items-center justify-center text-blue-500 hover:text-blue-700 active:scale-90 transition-all"
+                className="w-11 h-11 flex items-center justify-center text-primary-500 hover:text-primary-700 active:scale-90 transition-all"
                 aria-label="Effacer le filtre zones"
               >
                 <X className="w-4 h-4" strokeWidth={2} />
@@ -219,11 +219,11 @@ export const PromotionsList: React.FC = () => {
             </div>
           )}
           {sortBy !== 'discount_desc' && (
-            <div className="flex items-center gap-1 px-3 py-2 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm border border-purple-200 dark:border-purple-800">
+            <div className="flex items-center gap-1 px-3 py-2 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm border border-primary-200 dark:border-primary-800">
               <span>Tri : {sortOptions.find(s => s.id === sortBy)?.label}</span>
               <button
                 onClick={() => setSortBy('discount_desc')}
-                className="w-11 h-11 flex items-center justify-center text-purple-500 hover:text-purple-700 active:scale-90 transition-all"
+                className="w-11 h-11 flex items-center justify-center text-primary-500 hover:text-primary-700 active:scale-90 transition-all"
                 aria-label="Effacer le tri"
               >
                 <X className="w-4 h-4" strokeWidth={2} />
