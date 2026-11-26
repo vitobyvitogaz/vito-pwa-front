@@ -24,8 +24,8 @@ export const DeliveryInfo: React.FC = () => {
         'Dimanche : 8h - 13h',
         'Livraison express : +2h',
       ],
-      color: 'text-blue-600',
-      bg: 'bg-blue-50 dark:bg-blue-950',
+      color: 'text-primary-600',
+      bg: 'bg-primary-50 dark:bg-primary-950',
     },
     {
       icon: CreditCardIcon,

@@ -155,15 +155,15 @@ export default function DeliveryPage() {
             <span className="text-[10px] text-neutral-600 dark:text-neutral-400 font-sans mt-0.5">Sociétés</span>
           </div>
           <div className="flex-1 flex flex-col items-center py-3 px-2">
-            <span className="text-lg font-bold text-emerald-700 leading-none">{stats.averageRating}</span>
+            <span className="text-lg font-bold text-primary leading-none">{stats.averageRating}</span>
             <span className="text-[10px] text-neutral-600 dark:text-neutral-400 font-sans mt-0.5">Note moy.</span>
           </div>
           <div className="flex-1 flex flex-col items-center py-3 px-2">
-            <span className="text-lg font-bold text-blue-600 leading-none">{stats.fastestDelivery}h</span>
+            <span className="text-lg font-bold text-primary leading-none">{stats.fastestDelivery}h</span>
             <span className="text-[10px] text-neutral-600 dark:text-neutral-400 font-sans mt-0.5">+ rapide</span>
           </div>
           <div className="flex-1 flex flex-col items-center py-3 px-2">
-            <span className="text-lg font-bold text-purple-600 leading-none">{stats.verifiedCount}</span>
+            <span className="text-lg font-bold text-primary leading-none">{stats.verifiedCount}</span>
             <span className="text-[10px] text-neutral-600 dark:text-neutral-400 font-sans mt-0.5">Vérifiées</span>
           </div>
         </div>
@@ -280,8 +280,8 @@ export default function DeliveryPage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white dark:bg-dark-surface rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
-              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4">
-                <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">1</span>
+              <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mb-4">
+                <span className="text-2xl font-bold text-primary-700 dark:text-primary-300">1</span>
               </div>
               <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">
                 Choisissez une société
@@ -291,8 +291,8 @@ export default function DeliveryPage() {
               </p>
             </div>
             <div className="bg-white dark:bg-dark-surface rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
-              <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mb-4">
-                <span className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">2</span>
+              <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mb-4">
+                <span className="text-2xl font-bold text-primary-700 dark:text-primary-300">2</span>
               </div>
               <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">
                 {/* ── Étape 2 corrigée : plus concret pour le public malgache ── */}
@@ -303,8 +303,8 @@ export default function DeliveryPage() {
               </p>
             </div>
             <div className="bg-white dark:bg-dark-surface rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800">
-              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mb-4">
-                <span className="text-2xl font-bold text-purple-600 dark:text-purple-400">3</span>
+              <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mb-4">
+                <span className="text-2xl font-bold text-primary-700 dark:text-primary-300">3</span>
               </div>
               <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-2 font-sans">
                 Recevez votre gaz

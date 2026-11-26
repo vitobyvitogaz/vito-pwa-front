@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { EMAIL_PATTERN, escapeHtml, singleLine } from '@/lib/utils/escapeHtml'
 import { parseRecipients } from '@/lib/utils/recipients'
+import { EMAIL_COLORS } from '@/lib/email-theme'
 
 // Expéditeur et destinataire configurables (variables Vercel). Sans CONTACT_FROM_EMAIL, on garde
 // l'adresse de test de Resend, qui n'envoie qu'à l'e-mail du compte Resend.
@@ -33,18 +34,18 @@ export async function POST(request: NextRequest) {
       subject: `[VITO] ${singleLine(subject)} — ${singleLine(name)}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="background: #007B71; padding: 24px; border-radius: 12px 12px 0 0;">
+          <div style="background: ${EMAIL_COLORS.brand}; padding: 24px; border-radius: 12px 12px 0 0;">
             <h1 style="color: white; margin: 0; font-size: 20px;">Nouveau message via VITO</h1>
           </div>
-          <div style="background: #f9f9f9; padding: 24px; border-radius: 0 0 12px 12px; border: 1px solid #e5e5e5;">
+          <div style="background: ${EMAIL_COLORS.surface}; padding: 24px; border-radius: 0 0 12px 12px; border: 1px solid ${EMAIL_COLORS.border};">
             <table style="width: 100%; border-collapse: collapse;">
-              <tr><td style="padding: 8px 0; color: #666; width: 120px;">Nom</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(name)}</td></tr>
-              <tr><td style="padding: 8px 0; color: #666;">Email</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(email)}</td></tr>
-              ${phone ? `<tr><td style="padding: 8px 0; color: #666;">Téléphone</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(phone)}</td></tr>` : ''}
-              <tr><td style="padding: 8px 0; color: #666;">Sujet</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(subject)}</td></tr>
+              <tr><td style="padding: 8px 0; color: ${EMAIL_COLORS.muted}; width: 120px;">Nom</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(name)}</td></tr>
+              <tr><td style="padding: 8px 0; color: ${EMAIL_COLORS.muted};">Email</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(email)}</td></tr>
+              ${phone ? `<tr><td style="padding: 8px 0; color: ${EMAIL_COLORS.muted};">Téléphone</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(phone)}</td></tr>` : ''}
+              <tr><td style="padding: 8px 0; color: ${EMAIL_COLORS.muted};">Sujet</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(subject)}</td></tr>
             </table>
-            <div style="margin-top: 16px; padding: 16px; background: white; border-radius: 8px; border: 1px solid #e5e5e5;">
-              <p style="color: #666; margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase;">Message</p>
+            <div style="margin-top: 16px; padding: 16px; background: white; border-radius: 8px; border: 1px solid ${EMAIL_COLORS.border};">
+              <p style="color: ${EMAIL_COLORS.muted}; margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase;">Message</p>
               <p style="margin: 0; line-height: 1.6;">${escapeHtml(message).replace(/\n/g, '<br>')}</p>
             </div>
           </div>

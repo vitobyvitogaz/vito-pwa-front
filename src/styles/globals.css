@@ -230,24 +230,24 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 139, 127, 0.4);
+  background: rgba(0, 123, 113, 0.4);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 139, 127, 0.6);
+  background: rgba(0, 123, 113, 0.6);
 }
 
 /* Pour Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(0, 139, 127, 0.4) rgba(0, 0, 0, 0.05);
+  scrollbar-color: rgba(0, 123, 113, 0.4) rgba(0, 0, 0, 0.05);
 }
 
 /* ===== SELECTION DE TEXTE ===== */
 
 ::selection {
-  background-color: rgba(0, 139, 127, 0.2);
+  background-color: rgba(0, 123, 113, 0.2);
   color: inherit;
 }
 

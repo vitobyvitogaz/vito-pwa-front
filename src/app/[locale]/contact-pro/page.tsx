@@ -108,8 +108,8 @@ export default function ContactProPage() {
           </Link>
           
           <div className="flex items-center gap-4 mb-2">
-            <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-              <Briefcase className="w-6 h-6 text-purple-600 dark:text-purple-400" strokeWidth={1.5} />
+            <div className="w-12 h-12 rounded-2xl bg-navy-100 dark:bg-navy-900/30 flex items-center justify-center">
+              <Briefcase className="w-6 h-6 text-navy-600 dark:text-navy-400" strokeWidth={1.5} />
             </div>
             <div>
               <h1 className="text-3xl sm:text-4xl font-semibold text-neutral-900 dark:text-white tracking-tight">
@@ -331,8 +331,8 @@ export default function ContactProPage() {
           </p>
         </form>
 
-        <div className="mt-6 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-          <p className="text-sm text-blue-800 dark:text-blue-300">
+        <div className="mt-6 p-4 rounded-xl bg-navy-50 dark:bg-navy-900/20 border border-navy-200 dark:border-navy-800">
+          <p className="text-sm text-navy-800 dark:text-navy-300">
             💡 <strong>Bon à savoir :</strong> Nous recherchons activement des partenaires dans toutes les régions de Madagascar pour développer notre réseau.
           </p>
         </div>

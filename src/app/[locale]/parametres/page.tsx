@@ -401,8 +401,8 @@ export default function ParametresPage() {
   const notifTypes: { key: keyof Preferences; icon: React.ReactNode; label: string; sublabel: string }[] = [
     { key: 'promotions', icon: <Tag className="w-4 h-4 text-amber-500" strokeWidth={1.5} />, label: 'Promotions & offres', sublabel: 'Nouvelles promos Vitogaz' },
     { key: 'resellers',  icon: <Building2 className="w-4 h-4 text-primary" strokeWidth={1.5} />, label: 'Nouveaux revendeurs', sublabel: 'Points de vente près de vous' },
-    { key: 'delivery',   icon: <Truck className="w-4 h-4 text-blue-500" strokeWidth={1.5} />, label: 'Nouvelles sociétés de livraison', sublabel: 'Livraison à domicile disponible' },
-    { key: 'broadcast',  icon: <Megaphone className="w-4 h-4 text-purple-500" strokeWidth={1.5} />, label: 'Infos Vitogaz', sublabel: 'Annonces importantes' },
+    { key: 'delivery',   icon: <Truck className="w-4 h-4 text-primary" strokeWidth={1.5} />, label: 'Nouvelles sociétés de livraison', sublabel: 'Livraison à domicile disponible' },
+    { key: 'broadcast',  icon: <Megaphone className="w-4 h-4 text-primary" strokeWidth={1.5} />, label: 'Infos Vitogaz', sublabel: 'Annonces importantes' },
   ]
 
   if (!mounted) {
@@ -438,7 +438,7 @@ export default function ParametresPage() {
         {/* Apparence */}
         <Section title="Apparence">
           <ToggleRow
-            icon={isDark ? <Moon className="w-4 h-4 text-indigo-500" strokeWidth={1.5} /> : <Sun className="w-4 h-4 text-amber-500" strokeWidth={1.5} />}
+            icon={isDark ? <Moon className="w-4 h-4 text-primary" strokeWidth={1.5} /> : <Sun className="w-4 h-4 text-primary" strokeWidth={1.5} />}
             label="Mode sombre"
             sublabel={isDark ? 'Thème sombre activé' : 'Thème clair activé'}
             enabled={isDark}

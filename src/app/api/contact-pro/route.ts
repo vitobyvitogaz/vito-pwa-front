@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { EMAIL_PATTERN, escapeHtml, singleLine } from '@/lib/utils/escapeHtml'
 import { parseRecipients } from '@/lib/utils/recipients'
+import { EMAIL_COLORS } from '@/lib/email-theme'
 
 // Expéditeur et destinataire configurables (variables Vercel). Sans CONTACT_FROM_EMAIL, on garde
 // l'adresse de test de Resend, qui n'envoie qu'à l'e-mail du compte Resend.
@@ -35,22 +36,22 @@ export async function POST(request: NextRequest) {
       subject: `[VITO] ${typeLabel} — ${singleLine(fullName)}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="background: #7C3AED; padding: 24px; border-radius: 12px 12px 0 0;">
+          <div style="background: ${EMAIL_COLORS.brand}; padding: 24px; border-radius: 12px 12px 0 0;">
             <h1 style="color: white; margin: 0; font-size: 20px;">Nouvelle demande partenaire via VITO</h1>
             <p style="color: white/80; margin: 8px 0 0 0; font-size: 14px;">${typeLabel}</p>
           </div>
-          <div style="background: #f9f9f9; padding: 24px; border-radius: 0 0 12px 12px; border: 1px solid #e5e5e5;">
+          <div style="background: ${EMAIL_COLORS.surface}; padding: 24px; border-radius: 0 0 12px 12px; border: 1px solid ${EMAIL_COLORS.border};">
             <table style="width: 100%; border-collapse: collapse;">
-              <tr><td style="padding: 8px 0; color: #666; width: 140px;">Type</td><td style="padding: 8px 0; font-weight: 600;">${typeLabel}</td></tr>
-              <tr><td style="padding: 8px 0; color: #666;">Nom complet</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(fullName)}</td></tr>
-              <tr><td style="padding: 8px 0; color: #666;">Entreprise</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(company)}</td></tr>
-              <tr><td style="padding: 8px 0; color: #666;">Téléphone</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(phone)}</td></tr>
-              <tr><td style="padding: 8px 0; color: #666;">Email</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(email)}</td></tr>
-              <tr><td style="padding: 8px 0; color: #666;">Ville</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(city)}</td></tr>
+              <tr><td style="padding: 8px 0; color: ${EMAIL_COLORS.muted}; width: 140px;">Type</td><td style="padding: 8px 0; font-weight: 600;">${typeLabel}</td></tr>
+              <tr><td style="padding: 8px 0; color: ${EMAIL_COLORS.muted};">Nom complet</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(fullName)}</td></tr>
+              <tr><td style="padding: 8px 0; color: ${EMAIL_COLORS.muted};">Entreprise</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(company)}</td></tr>
+              <tr><td style="padding: 8px 0; color: ${EMAIL_COLORS.muted};">Téléphone</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(phone)}</td></tr>
+              <tr><td style="padding: 8px 0; color: ${EMAIL_COLORS.muted};">Email</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(email)}</td></tr>
+              <tr><td style="padding: 8px 0; color: ${EMAIL_COLORS.muted};">Ville</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(city)}</td></tr>
             </table>
             ${message ? `
-            <div style="margin-top: 16px; padding: 16px; background: white; border-radius: 8px; border: 1px solid #e5e5e5;">
-              <p style="color: #666; margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase;">Message</p>
+            <div style="margin-top: 16px; padding: 16px; background: white; border-radius: 8px; border: 1px solid ${EMAIL_COLORS.border};">
+              <p style="color: ${EMAIL_COLORS.muted}; margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase;">Message</p>
               <p style="margin: 0; line-height: 1.6;">${escapeHtml(message).replace(/\n/g, '<br>')}</p>
             </div>` : ''}
           </div>

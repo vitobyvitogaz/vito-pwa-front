@@ -10,6 +10,10 @@ interface MapFiltersProps {
   onFilterChange: (filtered: Reseller[]) => void
 }
 
+// Pastille de produit non sélectionnée : neutre (la sélection passe en teal). Le produit se reconnaît à son nom.
+const PRODUCT_PILL_IDLE =
+  'bg-neutral-100 text-neutral-700 border-neutral-200 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-700 dark:hover:bg-neutral-700'
+
 export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChange }) => {
   const searchParams = useSearchParams()
   const produitParam = searchParams.get('produit')
@@ -103,21 +107,6 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
 
   const hasActiveFilters = selectedSegment !== 'all' || selectedProducts.length > 0 || selectedCity !== 'all'
 
-  const getProductCategoryColor = (category: string) => {
-    switch (category) {
-      case 'Bouteille':
-      case 'Bouteilles':
-        return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-800'
-      case 'Accessoire':
-      case 'Accessoires':
-        return 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 border-purple-200 dark:border-purple-800'
-      case 'Kit':
-        return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-800'
-      default:
-        return 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700'
-    }
-  }
-
   const getSegmentColor = (segment: string) => {
     switch (segment) {
       case 'Station Service':
@@ -179,7 +168,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border shrink-0 ${
                 selectedProducts.includes(product.id)
                   ? 'bg-primary text-white border-primary'
-                  : `${getProductCategoryColor(product.category)} hover:opacity-80`
+                  : PRODUCT_PILL_IDLE
               }`}
             >
               {product.name}
@@ -240,7 +229,7 @@ export const MapFilters: React.FC<MapFiltersProps> = ({ resellers, onFilterChang
               className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${
                 selectedProducts.includes(product.id)
                   ? 'bg-primary text-white border-primary'
-                  : `${getProductCategoryColor(product.category)} hover:opacity-80`
+                  : PRODUCT_PILL_IDLE
               }`}
             >
               {product.name}
