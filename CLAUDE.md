@@ -21,6 +21,7 @@ Application publique, grand public malgache. Priorités : lisibilité en plein s
 - **Backend Render.com** : comportement de mise en veille — prévoir une logique de retry sur les premiers appels.
 - **Google Maps API** : vérifier que la variable d'env est bien chargée avant tout appel.
 - **Carte des revendeurs** (`src/components/resellers/ResellerMap.tsx`) : les 620 points sont des `CircleMarker` dessinés sur un canevas (`preferCanvas`, marge de clic de 12 px), **pas** des `Marker` HTML : 620 éléments DOM bloquaient le navigateur plusieurs secondes sur mobile. Seule l'épingle « Votre position » reste un `Marker`. Les points ne sont pas atteignables au clavier : la liste des revendeurs offre la même sélection. Ne pas revenir à des `divIcon` par revendeur.
+- **Thème clair / sombre** (`src/lib/theme.ts`, `src/lib/hooks/useTheme.ts`) : mode **clair par défaut** ; le choix « sombre » du visiteur (Paramètres) est enregistré dans `localStorage` (`theme`) et ré-appliqué par un script du `<head>` (`layout.tsx`) avant le premier affichage, d'où `suppressHydrationWarning` sur `<html>`. L'interrupteur lit la classe `dark` de `<html>` (`useSyncExternalStore`) : ne jamais recopier le thème dans un état local, et ne pas ajouter un second mécanisme de thème.
 
 ## Communication avec le backend
 - API REST via le backend NestJS (`vito-backend-supabase.onrender.com/api/v1`).
